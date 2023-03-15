@@ -7,11 +7,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.amiyul</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.amiyul.phantom</groupId>
     <artifactId>phantom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>driver</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -23,6 +28,7 @@
         <powerMockVersion>2.0.9</powerMockVersion>
 
         <!-- Plugin Versions -->
+        <formatterPluginVersion>2.16.0</formatterPluginVersion>
         <licencePluginVerison>3.0</licencePluginVerison>
         <resourcePluginVersion>3.3.0</resourcePluginVersion>
         <compilerPluginVerison>3.10.1</compilerPluginVerison>
@@ -59,6 +65,26 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>net.revelc.code.formatter</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>2.17.1</version><!--${formatterPluginVersion}-->
+                    <configuration>
+                        <lineEnding>LF</lineEnding>
+                        <configFile>Formatter.xml</configFile>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
@@ -100,8 +126,12 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        
+
         <plugins>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
