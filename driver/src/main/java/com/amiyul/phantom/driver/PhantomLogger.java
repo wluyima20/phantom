@@ -1,3 +1,6 @@
+/*
+ * Add Copyright
+ */
 package com.amiyul.phantom.driver;
 
 import java.util.logging.Level;

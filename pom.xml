@@ -68,10 +68,10 @@
                 <plugin>
                     <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
-                    <version>2.17.1</version><!--${formatterPluginVersion}-->
+                    <version>${formatterPluginVersion}</version>
                     <configuration>
                         <lineEnding>LF</lineEnding>
-                        <configFile>Formatter.xml</configFile>
+                        <configFile>../Formatter.xml</configFile>
                         <includes>
                             <include>**/*.java</include>
                         </includes>
@@ -94,6 +94,9 @@
                         <mapping>
                             <java>SLASHSTAR_STYLE</java>
                         </mapping>
+                        <excludes>
+                            <exclude>eclipse.importorder</exclude>
+                        </excludes>
                     </configuration>
                     <executions>
                         <execution>
