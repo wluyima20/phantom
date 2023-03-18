@@ -4,7 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.PhantomDriver.URL_SUFFIX;
-import static com.amiyul.phantom.driver.PhantomLogger.LOGGER;
+import static com.amiyul.phantom.driver.JavaLogger.LOGGER;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -9,11 +9,11 @@ import java.util.logging.Logger;
 /**
  * Logger used by the driver
  */
-public final class PhantomLogger {
+public final class JavaLogger {
 	
-	protected static final String PROP_ENABLE_LOGGING = PhantomLogger.class.getName() + ".enabled";
+	protected static final String PROP_ENABLE_LOGGING = JavaLogger.class.getName() + ".enabled";
 	
-	private static final String LOGGER_NAME = PhantomLogger.class.getPackage().getName() + ".logger";
+	private static final String LOGGER_NAME = JavaLogger.class.getPackage().getName() + ".logger";
 	
 	protected static final Logger LOGGER;
 	
