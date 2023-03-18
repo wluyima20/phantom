@@ -21,12 +21,13 @@ public final class PhantomDriver implements Driver {
 	protected static final String URL_PREFIX = "jdbc:" + URL_SUFFIX;
 	
 	static {
+		//TODO Register driver via the service loader mechanism
 		LOGGER.info("Registering Phantom Driver...");
 		
 		try {
 			DriverManager.registerDriver(new PhantomDriver());
-			//TODO Spawn a new thread that periodically pings the db connection
-			//service to keep local caches up to date and minimise failures
+			//TODO Spawn a new thread that periodically pings the credential source to keep local caches
+			//up to date and minimise failures e.g. a file watcher
 		}
 		catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -141,21 +142,24 @@ public final class PhantomDriver implements Driver {
 	
 	@Override
 	public int getMajorVersion() {
+		//TODO read it from project version info
 		return 1;
 	}
 	
 	@Override
 	public int getMinorVersion() {
+		//TODO read it from project version info
 		return 0;
 	}
 	
 	@Override
 	public boolean jdbcCompliant() {
-		return true;
+		return false;
 	}
 	
 	@Override
 	public Logger getParentLogger() {
+		//TODO throw SQLFeatureNotSupportedException
 		return LOGGER;
 	}
 	
