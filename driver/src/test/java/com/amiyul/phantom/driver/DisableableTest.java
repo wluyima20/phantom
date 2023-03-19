@@ -1,13 +1,13 @@
 /*
  * Add Copyright
  */
+package com.amiyul.phantom.driver;
+
 import java.time.LocalDateTime;
 import java.time.Month;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.amiyul.phantom.driver.Disableable;
 
 public class DisableableTest {
 	

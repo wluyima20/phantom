@@ -1,8 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver;
+package com.amiyul.phantom.driver.config;
 
+import com.amiyul.phantom.driver.DatabaseMetadataProvider;
 import com.amiyul.phantom.driver.DriverLogger.LoggingApi;
 
 import lombok.Getter;
