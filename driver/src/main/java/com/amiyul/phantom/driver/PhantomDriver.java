@@ -3,7 +3,6 @@
  */
 package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.JavaLogger.LOGGER;
 import static com.amiyul.phantom.driver.Utils.isBlank;
 
 import java.sql.Connection;
@@ -11,10 +10,13 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 public final class PhantomDriver implements Driver {
+	
+	protected static DriverLogger LOGGER;
 	
 	protected static final String URL_SUFFIX = "phantom:";
 	
@@ -85,7 +87,7 @@ public final class PhantomDriver implements Driver {
 			}
 			catch (SQLException e) {
 				if (!isServerInfoFromService) {
-					LOGGER.warning("Failed to obtain Connection to url: " + resolvedUrl + ", attempting failover");
+					LOGGER.debug("Failed to obtain Connection to url: " + resolvedUrl + ", attempting failover");
 					
 					String updatedHostAndPort = Utils.lookupFromDbService(logicalName);
 					if (isBlank(updatedHostAndPort)) {
@@ -158,9 +160,8 @@ public final class PhantomDriver implements Driver {
 	}
 	
 	@Override
-	public Logger getParentLogger() {
-		//TODO throw SQLFeatureNotSupportedException
-		return LOGGER;
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		throw new SQLFeatureNotSupportedException();
 	}
 	
 }

@@ -4,7 +4,6 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.PhantomDriver.URL_SUFFIX;
-import static com.amiyul.phantom.driver.JavaLogger.LOGGER;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +16,8 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Utils {
+	
+	protected static DriverLogger LOGGER;
 	
 	private static final String DB_SERVER_SERVICE_URL = "http://localhost:8080/";
 	

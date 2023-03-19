@@ -3,27 +3,39 @@
  */
 package com.amiyul.phantom.driver;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Logger used by the driver
+ * {@link DriverLogger} implementation that uses java logging api
  */
-public final class JavaLogger {
-	
-	protected static final String PROP_ENABLE_LOGGING = JavaLogger.class.getName() + ".enabled";
+public final class JavaLogger implements DriverLogger {
 	
 	private static final String LOGGER_NAME = JavaLogger.class.getPackage().getName() + ".logger";
 	
-	protected static final Logger LOGGER;
+	private static final Logger LOGGER = Logger.getLogger(LOGGER_NAME);
 	
-	static {
-		LOGGER = Logger.getLogger(LOGGER_NAME);
-		if ("true".equalsIgnoreCase(System.getProperty(PROP_ENABLE_LOGGING))) {
-			LOGGER.setLevel(Level.INFO);
-		} else {
-			LOGGER.setLevel(Level.OFF);
-		}
+	/**
+	 * @see DriverLogger#debug(String)
+	 */
+	@Override
+	public void debug(String message) {
+		LOGGER.config(message);
+	}
+	
+	/**
+	 * @see DriverLogger#info(String)
+	 */
+	@Override
+	public void info(String message) {
+		LOGGER.info(message);
+	}
+	
+	/**
+	 * @see DriverLogger#error(String)
+	 */
+	@Override
+	public void error(String message) {
+		LOGGER.severe(message);
 	}
 	
 }
