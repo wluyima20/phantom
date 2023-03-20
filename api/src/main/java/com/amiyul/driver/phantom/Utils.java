@@ -3,6 +3,8 @@
  */
 package com.amiyul.driver.phantom;
 
+import com.amiyul.driver.phantom.logging.DriverLogger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

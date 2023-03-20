@@ -3,7 +3,7 @@
  */
 package com.amiyul.driver.phantom.config;
 
-import com.amiyul.driver.phantom.DriverLogger;
+import com.amiyul.driver.phantom.logging.DriverLogger;
 import com.amiyul.driver.phantom.DatabaseMetadata;
 
 /**

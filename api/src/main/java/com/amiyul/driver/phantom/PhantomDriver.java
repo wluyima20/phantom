@@ -3,6 +3,8 @@
  */
 package com.amiyul.driver.phantom;
 
+import com.amiyul.driver.phantom.logging.DriverLogger;
+
 import static com.amiyul.driver.phantom.Utils.isBlank;
 
 import java.sql.Connection;
