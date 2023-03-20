@@ -1,9 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver;
-
-import static com.amiyul.phantom.driver.PhantomDriver.URL_SUFFIX;
+package com.amiyul.driver.phantom;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +25,8 @@ public class Utils {
 	
 	protected static final String LOGICAL_NAME_PLACEHOLDER = "@logicalName@";
 	
-	protected static final String WIPE_OUT_TEMPLATE = URL_SUFFIX + DOUBLE_FORWARD_SLASH + LOGICAL_NAME_PLACEHOLDER
-	        + FORWARD_SLASH;
+	protected static final String WIPE_OUT_TEMPLATE = PhantomDriver.URL_SUFFIX + DOUBLE_FORWARD_SLASH
+	        + LOGICAL_NAME_PLACEHOLDER + FORWARD_SLASH;
 	
 	private static final Map<String, String> nameServerMap = new ConcurrentHashMap();
 	

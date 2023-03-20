@@ -1,10 +1,10 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.config;
+package com.amiyul.driver.phantom.config;
 
-import com.amiyul.phantom.driver.DatabaseMetadata;
-import com.amiyul.phantom.driver.DriverLogger.LoggingApi;
+import com.amiyul.driver.phantom.DriverLogger;
+import com.amiyul.driver.phantom.DatabaseMetadata;
 
 /**
  * Marker interface for the driver configuration
@@ -16,7 +16,7 @@ public interface Config {
 	 *
 	 * @return the loggingApi
 	 */
-	LoggingApi getLoggingApi();
+	DriverLogger.LoggingApi getLoggingApi();
 	
 	/**
 	 * Gets the {@link DatabaseMetadata} for the database matching the specified name

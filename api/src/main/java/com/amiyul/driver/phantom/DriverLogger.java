@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver;
+package com.amiyul.driver.phantom;
 
 /**
  * Interface to be implemented by loggers used by the driver, if no logging API is configured, by

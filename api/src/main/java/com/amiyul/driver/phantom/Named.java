@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver;
+package com.amiyul.driver.phantom;
 
 /**
  * Marker interface for objects that are named

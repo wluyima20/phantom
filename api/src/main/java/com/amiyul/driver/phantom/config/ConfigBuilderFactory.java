@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.config;
+package com.amiyul.driver.phantom.config;
 
 /**
  * Factory class for {@link ConfigBuilder} instances

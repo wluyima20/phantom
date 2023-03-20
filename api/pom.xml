@@ -10,11 +10,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.amiyul.phantom</groupId>
+        <groupId>com.amiyul.driver</groupId>
         <artifactId>phantom</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>driver</artifactId>
+    <artifactId>phantom-api</artifactId>
     <packaging>jar</packaging>
 
 </project>

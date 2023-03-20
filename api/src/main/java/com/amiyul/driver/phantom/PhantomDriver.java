@@ -1,9 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver;
+package com.amiyul.driver.phantom;
 
-import static com.amiyul.phantom.driver.Utils.isBlank;
+import static com.amiyul.driver.phantom.Utils.isBlank;
 
 import java.sql.Connection;
 import java.sql.Driver;
