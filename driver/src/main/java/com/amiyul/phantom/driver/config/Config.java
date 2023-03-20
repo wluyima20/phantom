@@ -3,21 +3,26 @@
  */
 package com.amiyul.phantom.driver.config;
 
-import com.amiyul.phantom.driver.DatabaseMetadataProvider;
+import com.amiyul.phantom.driver.DatabaseMetadata;
 import com.amiyul.phantom.driver.DriverLogger.LoggingApi;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * Encapsulates driver configuration info
+ * Marker interface for the driver configuration
  */
-@Getter
-@Setter
-public class Config {
+public interface Config {
 	
-	private LoggingApi loggingApi;
+	/**
+	 * Gets the loggingApi
+	 *
+	 * @return the loggingApi
+	 */
+	LoggingApi getLoggingApi();
 	
-	private DatabaseMetadataProvider dbMetadataProviders;
+	/**
+	 * Gets the {@link DatabaseMetadata} for the database matching the specified name
+	 *
+	 * @return name the database name
+	 */
+	DatabaseMetadata getDatabaseMetadata(String name);
 	
 }
