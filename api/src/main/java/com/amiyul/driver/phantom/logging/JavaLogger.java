@@ -30,12 +30,18 @@ public final class JavaLogger implements DriverLogger {
 		LOGGER.info(message);
 	}
 	
+	@Override
+	public void warn(String message) {
+		LOGGER.warning(message);
+	}
+	
 	/**
-	 * @see DriverLogger#error(String)
+	 * @see DriverLogger#error(String, Throwable)
 	 */
 	@Override
-	public void error(String message) {
+	public void error(String message, Throwable throwable) {
 		LOGGER.severe(message);
+		throwable.printStackTrace();
 	}
 	
 }

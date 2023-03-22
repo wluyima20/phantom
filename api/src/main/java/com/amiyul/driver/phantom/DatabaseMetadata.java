@@ -24,6 +24,8 @@ public class DatabaseMetadata implements Named, Disableable {
 	
 	private Properties properties;
 	
+	private DatabaseMetadataProvider provider;
+	
 	/**
 	 * @see Named#getName()
 	 */

@@ -36,10 +36,18 @@ public interface DriverLogger {
 	void info(String message);
 	
 	/**
-	 * Logs an error message
+	 * Logs a warning message
 	 *
 	 * @param message the message to log
 	 */
-	void error(String message);
+	void warn(String message);
+	
+	/**
+	 * Logs an error message
+	 *
+	 * @param message the message to log
+	 * @param throwable the thrown {@link Throwable}
+	 */
+	void error(String message, Throwable throwable);
 	
 }
