@@ -13,18 +13,22 @@ import java.util.ServiceLoader;
  */
 public class ConfigFileParserFactory {
 	
+	private static List<ConfigFileParser> parsers;
+	
 	/**
 	 * Creates and returns a {@link ConfigFileParser} for the specified config file
-	 * 
+	 *
 	 * @param configFile the driver config file
 	 * @return ConfigFileParser instance
 	 */
 	public synchronized static ConfigFileParser createParser(File configFile) {
-		List<ConfigFileParser> parsers = new ArrayList();
-		ServiceLoader<ConfigFileParser> services = ServiceLoader.load(ConfigFileParser.class);
-		services.iterator().forEachRemaining(service -> parsers.add(service));
+		if (parsers == null) {
+			parsers = new ArrayList();
+			ServiceLoader<ConfigFileParser> services = ServiceLoader.load(ConfigFileParser.class);
+			services.iterator().forEachRemaining(service -> parsers.add(service));
+		}
 		
-		for (ConfigFileParser candidate : services) {
+		for (ConfigFileParser candidate : parsers) {
 			if (candidate.canParse(configFile)) {
 				return candidate;
 			}

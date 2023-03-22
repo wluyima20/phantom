@@ -3,23 +3,23 @@
  */
 package com.amiyul.driver.phantom;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Super interface for {@link DatabaseMetadata} providers
  */
-public interface DatabaseMetadataProvider extends Named, Disableable {
+public interface DatabaseMetadataProvider extends Disableable {
 	
 	/**
-	 * Gets the {@link DatabaseMetadata} list of the databases known to this provider
+	 * Gets a map of database id and {@link DatabaseMetadata} mappings
 	 * 
-	 * @return list of {@link DatabaseMetadata}
+	 * @return Map of database id and {@link DatabaseMetadata}
 	 */
-	List<DatabaseMetadata> getMetadata();
+	Map<String, DatabaseMetadata> getDatabaseMetadata();
 	
 	/**
-	 * Reloads all the metadata
+	 * Loads the database metadata
 	 */
-	void reload();
+	void load();
 	
 }

@@ -6,6 +6,9 @@ package com.amiyul.driver.phantom;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import com.amiyul.driver.phantom.config.Config;
 import com.amiyul.driver.phantom.config.ConfigFileParser;
@@ -18,7 +21,7 @@ public class Utils {
 	
 	protected static final String PROP_CONFIG_LOCATION = Utils.class.getPackage().getName() + ".config.location";
 	
-	protected Config loadConfig() throws FileNotFoundException {
+	protected synchronized static Config loadConfig() throws FileNotFoundException {
 		String filePath = System.getProperty(PROP_CONFIG_LOCATION);
 		if (isBlank(filePath)) {
 			filePath = SystemUtils.getEnv(PROP_CONFIG_LOCATION);
@@ -51,6 +54,21 @@ public class Utils {
 	 */
 	protected static boolean isBlank(String s) {
 		return s == null || s.trim().isEmpty();
+	}
+	
+	protected static Connection getConnection(DatabaseMetadata metadata, boolean suppressExceptions) throws SQLException {
+		LOGGER.debug("Obtaining connection for url: " + metadata.getUrl());
+		
+		try {
+			return DriverManager.getConnection(metadata.getUrl(), metadata.getProperties());
+		}
+		catch (SQLException e) {
+			if (!suppressExceptions) {
+				throw e;
+			}
+			
+			return null;
+		}
 	}
 	
 }
