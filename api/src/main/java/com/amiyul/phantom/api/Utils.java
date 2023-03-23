@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom;
+package com.amiyul.phantom.api;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,10 +10,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.amiyul.driver.phantom.config.Config;
-import com.amiyul.driver.phantom.config.ConfigFileParser;
-import com.amiyul.driver.phantom.config.ConfigFileParserFactory;
-import com.amiyul.driver.phantom.logging.DriverLogger;
+import com.amiyul.phantom.api.config.Config;
+import com.amiyul.phantom.api.config.ConfigFileParser;
+import com.amiyul.phantom.api.config.ConfigFileParserFactory;
+import com.amiyul.phantom.api.logging.DriverLogger;
 
 public class Utils {
 	

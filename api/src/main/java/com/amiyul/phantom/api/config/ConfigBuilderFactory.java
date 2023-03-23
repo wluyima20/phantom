@@ -1,11 +1,11 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom.config;
+package com.amiyul.phantom.api.config;
 
-import com.amiyul.driver.phantom.DatabaseMetadata;
-import com.amiyul.driver.phantom.DatabaseMetadataProvider;
-import com.amiyul.driver.phantom.logging.DriverLogger.LoggingApi;
+import com.amiyul.phantom.api.DatabaseMetadata;
+import com.amiyul.phantom.api.DatabaseMetadataProvider;
+import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
  * Factory class for {@link ConfigBuilder} instances

@@ -1,9 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom.config;
+package com.amiyul.phantom.api.config;
 
-import com.amiyul.driver.phantom.logging.DriverLogger.LoggingApi;
+import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
  * Super interface for builders for {@link Config} instance

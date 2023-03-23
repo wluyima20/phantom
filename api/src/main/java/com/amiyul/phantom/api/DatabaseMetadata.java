@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom;
+package com.amiyul.phantom.api;
 
 import java.time.LocalDateTime;
 import java.util.Properties;

@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom;
+package com.amiyul.phantom.api;
 
 public interface RequestContext<TR, T extends Request<TR>, SR, S extends Response<SR>> {
 	

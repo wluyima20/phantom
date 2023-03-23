@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom.config;
+package com.amiyul.phantom.api.config;
 
 import java.io.File;
 import java.util.ArrayList;

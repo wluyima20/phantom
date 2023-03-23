@@ -1,11 +1,12 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom;
+package com.amiyul.phantom;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 
+import com.amiyul.phantom.api.Disableable;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,17 +1,12 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom.server;
+package com.amiyul.phantom.api;
 
 import java.sql.SQLException;
 
-import com.amiyul.driver.phantom.Request;
-import com.amiyul.driver.phantom.RequestContext;
-import com.amiyul.driver.phantom.Response;
-
 /**
- * Simulation of a database server to process connection requests from the
- * {@link com.amiyul.driver.phantom.Client}
+ * Simulation of a database server to process connection requests from the {@link Client}
  */
 public interface Server {
 	

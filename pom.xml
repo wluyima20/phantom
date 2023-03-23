@@ -9,13 +9,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.amiyul.driver</groupId>
-    <artifactId>phantom</artifactId>
+    <groupId>com.amiyul.phantom</groupId>
+    <artifactId>phantom-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>api</module>
+        <module>driver-api</module>
+        <module>server-api</module>
     </modules>
 
     <properties>

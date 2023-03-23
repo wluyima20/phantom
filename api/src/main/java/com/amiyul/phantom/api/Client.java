@@ -1,14 +1,14 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom;
+package com.amiyul.phantom.api;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
  * Simulation of a database client to be used by the {@link PhantomDriver} to request for
- * connections from the {@link com.amiyul.driver.phantom.server.Server}
+ * connections from the {@link Server}
  */
 public interface Client {
 	

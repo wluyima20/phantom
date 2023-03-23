@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom.logging;
+package com.amiyul.phantom.api.logging;
 
 import java.util.logging.Logger;
 

@@ -1,9 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.driver.phantom;
+package com.amiyul.phantom.api;
 
-import static com.amiyul.driver.phantom.Utils.isBlank;
+import static com.amiyul.phantom.api.Utils.isBlank;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -13,8 +13,8 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import com.amiyul.driver.phantom.config.Config;
-import com.amiyul.driver.phantom.logging.DriverLogger;
+import com.amiyul.phantom.api.config.Config;
+import com.amiyul.phantom.api.logging.DriverLogger;
 
 public final class PhantomDriver implements Driver {
 	
