@@ -3,8 +3,7 @@
  */
 package com.amiyul.phantom.api.config;
 
-import com.amiyul.phantom.api.DatabaseMetadata;
-import com.amiyul.phantom.api.DatabaseMetadataProvider;
+import com.amiyul.phantom.api.Server;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
@@ -24,13 +23,7 @@ public class ConfigBuilderFactory {
 		return ConfigBuilderFactoryHolder.INSTANCE;
 	}
 	
-	/**
-	 * Creates a {@link ConfigBuilder} instance with the specified {@link DatabaseMetadataProvider}
-	 *
-	 * @param provider the {@link DatabaseMetadataProvider} instance
-	 * @return ConfigBuilder instance
-	 */
-	protected ConfigBuilder createBuilder(DatabaseMetadataProvider provider) {
+	protected ConfigBuilder createBuilder(Server server) {
 		return new ConfigBuilder() {
 			
 			private LoggingApi loggingApi;
@@ -46,8 +39,8 @@ public class ConfigBuilderFactory {
 				Config config = new Config() {
 					
 					@Override
-					public DatabaseMetadata getDatabaseMetadata(String databaseId) {
-						return provider.getDatabaseMetadata().get(databaseId);
+					public Server getServer() {
+						return server;
 					}
 					
 					@Override
@@ -56,8 +49,6 @@ public class ConfigBuilderFactory {
 					}
 					
 				};
-				
-				provider.load();
 				
 				return config;
 			}

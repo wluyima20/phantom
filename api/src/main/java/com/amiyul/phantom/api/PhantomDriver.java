@@ -43,7 +43,7 @@ public final class PhantomDriver implements Driver {
 			
 			LOGGER.debug("Extracted database id: " + id);
 			
-			DatabaseMetadata metadata = config.getDatabaseMetadata(id);
+			/*DatabaseMetadata metadata = config.getDatabaseMetadata(id);
 			Connection connection;
 			if (metadata != null) {
 				connection = Utils.getConnection(metadata, true);
@@ -60,9 +60,9 @@ public final class PhantomDriver implements Driver {
 			//TODO get the timeout and keep trying again before failing
 			if (reloadedMetadata == null || reloadedMetadata.equals(metadata)) {
 				throw new SQLException("No database metadata found matching id: " + id);
-			}
+			}*/
 			
-			return Utils.getConnection(reloadedMetadata, false);
+			return null;//Utils.getConnection(reloadedMetadata, false);
 		}
 		catch (Exception e) {
 			throw new SQLException(e);

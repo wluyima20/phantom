@@ -6,9 +6,6 @@ package com.amiyul.phantom.api;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.config.ConfigFileParser;
@@ -56,7 +53,7 @@ public class Utils {
 		return s == null || s.trim().isEmpty();
 	}
 	
-	protected static Connection getConnection(DatabaseMetadata metadata, boolean suppressExceptions) throws SQLException {
+	/*protected static Connection getConnection(DatabaseMetadata metadata, boolean suppressExceptions) throws SQLException {
 		LOGGER.debug("Obtaining connection for url: " + metadata.getUrl());
 		
 		try {
@@ -89,6 +86,6 @@ public class Utils {
 			
 			return null;
 		}
-	}
+	}*/
 	
 }

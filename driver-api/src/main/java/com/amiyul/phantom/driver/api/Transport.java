@@ -1,7 +1,11 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api;
+package com.amiyul.phantom.driver.api;
+
+import com.amiyul.phantom.api.Request;
+import com.amiyul.phantom.api.RequestContext;
+import com.amiyul.phantom.api.Response;
 
 public interface Transport {
 	

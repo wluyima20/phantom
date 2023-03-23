@@ -1,10 +1,13 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api;
+package com.amiyul.phantom.server.api.config;
 
 import java.time.LocalDateTime;
 import java.util.Properties;
+
+import com.amiyul.phantom.api.Disableable;
+import com.amiyul.phantom.api.Named;
 
 import lombok.Getter;
 import lombok.Setter;

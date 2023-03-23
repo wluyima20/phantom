@@ -3,7 +3,7 @@
  */
 package com.amiyul.phantom.api.config;
 
-import com.amiyul.phantom.api.DatabaseMetadata;
+import com.amiyul.phantom.api.Server;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
@@ -11,12 +11,7 @@ import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
  */
 public interface Config {
 	
-	/**
-	 * Gets the {@link DatabaseMetadata} for the database matching the specified id
-	 *
-	 * @return id the database id
-	 */
-	DatabaseMetadata getDatabaseMetadata(String databaseId);
+	Server getServer();
 	
 	/**
 	 * Gets the loggingApi
