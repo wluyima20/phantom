@@ -9,5 +9,5 @@ public interface ServerMetadata {
 	
 	Class<Server> getServerClass();
 	
-	Object getServerConfig();
+	Object getProperties();
 }

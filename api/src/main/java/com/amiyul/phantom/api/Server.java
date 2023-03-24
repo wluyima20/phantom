@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * Simulation of a database server to process connection requests from the client
  */
-public interface Server {
+public interface Server extends Disableable {
 	
 	/**
 	 * Starts the server, implementation can use this method for initialization

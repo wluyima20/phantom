@@ -25,6 +25,8 @@ public final class PhantomDriver implements Driver {
 	
 	private static Config config;
 	
+	private static ServerManager serverManager;
+	
 	@Override
 	public Connection connect(String url, Properties info) throws SQLException {
 		if (!acceptsURL(url)) {
@@ -38,30 +40,36 @@ public final class PhantomDriver implements Driver {
 				config = DriverUtils.loadConfig();
 			}
 			
-			String id = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
+			String key = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
 			
-			LOGGER.debug("Extracted database id: " + id);
+			LOGGER.debug("Extracted database key: " + key);
 			
-			/*DatabaseMetadata metadata = config.getDatabaseMetadata(id);
-			Connection connection;
-			if (metadata != null) {
-				connection = Utils.getConnection(metadata, true);
-				if (connection != null) {
-					return connection;
-				}
+			if (serverManager == null) {
+				serverManager = ServerManagerFactory.getInstance().createManager(config.getServer());
+				serverManager.startServer();
 			}
 			
-			LOGGER.debug("Failed to obtain Connection to " + metadata + ", reloading metadata");
+			Connection connection = DriverUtils.getConnection(key, true);
+			if (connection != null) {
+				return connection;
+			}
 			
-			config = Utils.loadConfig();
+			LOGGER.debug("Failed to obtain Connection to database with " + key + ", reloading server");
 			
-			DatabaseMetadata reloadedMetadata = config.getDatabaseMetadata(id);
+			try {
+				serverManager.stopServer();
+			}
+			catch (Exception e) {
+				LOGGER.warn("Failed to stop database server with error");
+			}
+			
+			config = DriverUtils.loadConfig();
+			//TODO If server is disabled, wait to try again
 			//TODO get the timeout and keep trying again before failing
-			if (reloadedMetadata == null || reloadedMetadata.equals(metadata)) {
-				throw new SQLException("No database metadata found matching id: " + id);
-			}*/
+			serverManager = ServerManagerFactory.getInstance().createManager(config.getServer());
+			serverManager.startServer();
 			
-			return null;//Utils.getConnection(reloadedMetadata, false);
+			return DriverUtils.getConnection(key, false);
 		}
 		catch (Exception e) {
 			throw new SQLException(e);

@@ -1,9 +1,10 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api.config;
+package com.amiyul.phantom.driver.api.config;
 
 import com.amiyul.phantom.api.Server;
+import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
@@ -12,6 +13,12 @@ import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 public class ConfigBuilderFactory {
 	
 	private ConfigBuilderFactory() {
+	}
+	
+	private static class ConfigBuilderFactoryHolder {
+		
+		private static final ConfigBuilderFactory INSTANCE = new ConfigBuilderFactory();
+		
 	}
 	
 	/**
@@ -53,12 +60,6 @@ public class ConfigBuilderFactory {
 				return config;
 			}
 		};
-	}
-	
-	private static class ConfigBuilderFactoryHolder {
-		
-		private static final ConfigBuilderFactory INSTANCE = new ConfigBuilderFactory();
-		
 	}
 	
 }

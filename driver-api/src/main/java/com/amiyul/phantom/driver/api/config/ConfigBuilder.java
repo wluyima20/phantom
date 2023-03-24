@@ -1,8 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api.config;
+package com.amiyul.phantom.driver.api.config;
 
+import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
