@@ -11,7 +11,7 @@ public class SystemUtils {
 	 * @param name the name of environment variable
 	 * @return the value
 	 */
-	protected static String getEnv(String name) {
+	public static String getEnv(String name) {
 		return System.getenv(name);
 	}
 	

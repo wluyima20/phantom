@@ -6,7 +6,7 @@ package com.amiyul.phantom.api;
 import java.sql.SQLException;
 
 /**
- * Simulation of a database server to process connection requests from the {@link Client}
+ * Simulation of a database server to process connection requests from the client
  */
 public interface Server {
 	

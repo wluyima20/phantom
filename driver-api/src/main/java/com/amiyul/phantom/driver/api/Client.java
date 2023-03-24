@@ -6,7 +6,6 @@ package com.amiyul.phantom.driver.api;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.amiyul.phantom.api.PhantomDriver;
 import com.amiyul.phantom.api.Server;
 
 /**

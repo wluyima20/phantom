@@ -1,9 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api;
-
-import static com.amiyul.phantom.api.Utils.isBlank;
+package com.amiyul.phantom.driver.api;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -13,6 +11,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.logging.DriverLogger;
 
@@ -36,7 +35,7 @@ public final class PhantomDriver implements Driver {
 		try {
 			if (config == null) {
 				LOGGER.info("Loading " + DRIVER_NAME + " driver configuration");
-				config = Utils.loadConfig();
+				config = DriverUtils.loadConfig();
 			}
 			
 			String id = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
@@ -71,7 +70,7 @@ public final class PhantomDriver implements Driver {
 	
 	@Override
 	public boolean acceptsURL(String url) {
-		if (isBlank(url)) {
+		if (Utils.isBlank(url)) {
 			return false;
 		}
 		
