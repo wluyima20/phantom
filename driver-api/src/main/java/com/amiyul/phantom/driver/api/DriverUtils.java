@@ -14,7 +14,7 @@ import com.amiyul.phantom.api.SystemUtils;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.config.ConfigFileParser;
-import com.amiyul.phantom.api.config.ConfigFileParserFactory;
+import com.amiyul.phantom.api.config.ConfigUtils;
 import com.amiyul.phantom.api.config.ConfigMetadata;
 import com.amiyul.phantom.api.logging.DriverLogger;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
@@ -62,7 +62,7 @@ public class DriverUtils {
 			File configFile = new File(configFilePath);
 			
 			if (parser == null) {
-				parser = ConfigFileParserFactory.createParser(configFile);
+				parser = ConfigUtils.createParser(configFile);
 			}
 			
 			if (parser == null) {

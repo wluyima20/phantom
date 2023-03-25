@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 /**
- * Factory class for {@link ConfigFileParser} instances
+ * Contains config utilities
  */
-public class ConfigFileParserFactory {
+public class ConfigUtils {
 	
 	private static List<ConfigFileParser> parsers;
 	
