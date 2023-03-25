@@ -11,21 +11,15 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
-import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.logging.DriverLogger;
 
 public final class PhantomDriver implements Driver {
 	
 	private static DriverLogger LOGGER;
 	
-	protected static final String DRIVER_NAME = "phantom";
-	
-	protected static final String URL_PREFIX = "jdbc:" + DRIVER_NAME + "://";
-	
-	private static Config config;
-	
-	private static ServerManager serverManager;
+	protected static final String URL_PREFIX = "jdbc:" + Constants.DATABASE_NAME + "://";
 	
 	@Override
 	public Connection connect(String url, Properties info) throws SQLException {
@@ -35,41 +29,11 @@ public final class PhantomDriver implements Driver {
 		}
 		
 		try {
-			if (config == null) {
-				LOGGER.info("Loading " + DRIVER_NAME + " driver configuration");
-				config = DriverUtils.loadConfig();
-			}
-			
 			String key = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
 			
 			LOGGER.debug("Extracted database key: " + key);
 			
-			if (serverManager == null) {
-				serverManager = ServerManagerFactory.getInstance().createManager(config.getServer());
-				serverManager.startServer();
-			}
-			
-			Connection connection = DriverUtils.getConnection(key, true);
-			if (connection != null) {
-				return connection;
-			}
-			
-			LOGGER.debug("Failed to obtain Connection to database with " + key + ", reloading server");
-			
-			try {
-				serverManager.stopServer();
-			}
-			catch (Exception e) {
-				LOGGER.warn("Failed to stop database server with error");
-			}
-			
-			config = DriverUtils.loadConfig();
-			//TODO If server is disabled, wait to try again
-			//TODO get the timeout and keep trying again before failing
-			serverManager = ServerManagerFactory.getInstance().createManager(config.getServer());
-			serverManager.startServer();
-			
-			return DriverUtils.getConnection(key, false);
+			return DriverUtils.getConnection(key);
 		}
 		catch (Exception e) {
 			throw new SQLException(e);

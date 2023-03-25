@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.SystemUtils;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.Config;
@@ -22,31 +23,79 @@ public class DriverUtils {
 	
 	protected static final String PROP_CONFIG_LOCATION = Utils.class.getPackage().getName() + ".config.location";
 	
+	private static String configFilePath;
+	
+	private static Config config;
+	
+	private static ServerManager serverManager;
+	
 	private static Client client;
 	
-	public synchronized static Config loadConfig() throws FileNotFoundException {
-		String filePath = System.getProperty(PROP_CONFIG_LOCATION);
-		if (Utils.isBlank(filePath)) {
-			filePath = SystemUtils.getEnv(PROP_CONFIG_LOCATION);
+	private static Config getConfig(boolean reload) throws FileNotFoundException {
+		if (config == null || reload) {
+			LOGGER.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
+			
+			if (configFilePath == null) {
+				configFilePath = System.getProperty(PROP_CONFIG_LOCATION);
+				
+				if (Utils.isBlank(configFilePath)) {
+					configFilePath = SystemUtils.getEnv(PROP_CONFIG_LOCATION);
+				}
+				
+				if (Utils.isBlank(configFilePath)) {
+					throw new RuntimeException("Found no defined location for the driver config file");
+				}
+				
+				LOGGER.debug("Using driver config file located at -> " + configFilePath);
+			}
+			
+			File configFile = new File(configFilePath);
+			
+			ConfigFileParser parser = ConfigFileParserFactory.createParser(configFile);
+			
+			if (parser == null) {
+				throw new RuntimeException("No appropriate parser found for specified driver config file");
+			}
+			
+			LOGGER.debug("Parsing driver config file with parser of type -> " + parser.getClass());
+			
+			config = parser.parse(new FileInputStream(configFile));
 		}
 		
-		if (Utils.isBlank(filePath)) {
-			throw new RuntimeException("Found no defined location for the driver config file");
+		return config;
+	}
+	
+	private static synchronized void initServerManagerIfNecessary(boolean reload) throws FileNotFoundException {
+		if (serverManager == null || reload) {
+			if (serverManager != null) {
+				try {
+					serverManager.stopServer();
+				}
+				catch (Exception e) {
+					LOGGER.warn("Failed to stop database server with error");
+				}
+			}
+			
+			serverManager = ServerManagerFactory.getInstance().createManager(getConfig(reload).getServer());
+			serverManager.startServer();
+		}
+	}
+	
+	protected static Connection getConnection(String databaseKey) throws FileNotFoundException, SQLException {
+		initServerManagerIfNecessary(false);
+		
+		Connection connection = getConnection(databaseKey, true);
+		if (connection != null) {
+			return connection;
 		}
 		
-		LOGGER.debug("Using driver config file located at -> " + filePath);
+		LOGGER.debug("Failed to obtain Connection to database with key " + databaseKey + ", refreshing config");
 		
-		File configFile = new File(filePath);
+		//TODO If server is disabled, wait to try again
+		//TODO get the timeout and keep trying again before failing
+		initServerManagerIfNecessary(true);
 		
-		ConfigFileParser parser = ConfigFileParserFactory.createParser(configFile);
-		
-		if (parser == null) {
-			throw new RuntimeException("No appropriate parser found for specified driver config file");
-		}
-		
-		LOGGER.debug("Parsing driver config file with parser of type -> " + parser.getClass());
-		
-		return parser.parse(new FileInputStream(configFile));
+		return getConnection(databaseKey, false);
 	}
 	
 	protected static Connection getConnection(String databaseKey, boolean suppressExceptions) throws SQLException {
