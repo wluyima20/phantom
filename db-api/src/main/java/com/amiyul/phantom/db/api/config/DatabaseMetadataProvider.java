@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.server.api.config;
+package com.amiyul.phantom.db.api.config;
 
 import java.sql.SQLException;
 import java.util.Map;
