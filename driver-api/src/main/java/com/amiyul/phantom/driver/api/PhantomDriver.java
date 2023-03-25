@@ -5,6 +5,7 @@ package com.amiyul.phantom.driver.api;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -20,6 +21,15 @@ public final class PhantomDriver implements Driver {
 	private static DriverLogger LOGGER;
 	
 	protected static final String URL_PREFIX = "jdbc:" + Constants.DATABASE_NAME + "://";
+	
+	static {
+		try {
+			DriverManager.registerDriver(new PhantomDriver());
+		}
+		catch (SQLException e) {
+			throw new RuntimeException("Failed to register driver");
+		}
+	}
 	
 	@Override
 	public Connection connect(String url, Properties info) throws SQLException {
