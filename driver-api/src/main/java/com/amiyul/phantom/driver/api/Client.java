@@ -15,7 +15,7 @@ public interface Client {
 	/**
 	 * Requests connection from the server
 	 *
-	 * @param databaseKey the unique key for the database
+	 * @param databaseKey the unique key for the target database
 	 * @return Connection object
 	 * @throws SQLException
 	 */
