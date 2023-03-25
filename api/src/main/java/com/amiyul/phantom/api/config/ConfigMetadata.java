@@ -10,6 +10,10 @@ import com.amiyul.phantom.api.DatabaseProvider;
  */
 public interface ConfigMetadata {
 	
+	String PROP_DB_PROVIDER_CLASS = "databaseProviderClass";
+	
+	String PROP_LOGGING_API = "loggingApi";
+	
 	/**
 	 * Gets the {@link DatabaseProvider} class object
 	 *

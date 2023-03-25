@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import com.amiyul.phantom.api.DatabaseProvider;
+import com.amiyul.phantom.api.Utils;
+
 /**
  * Contains config utilities
  */
@@ -35,6 +38,36 @@ public class ConfigUtils {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Creates a {@link ConfigMetadata} instance
+	 * 
+	 * @param dbProviderClass the database provider class name
+	 * @param loggingApi the name of the logging api
+	 * @return ConfigMetadata object
+	 * @throws Exception
+	 */
+	public static ConfigMetadata createMetadata(String dbProviderClass, String loggingApi) throws Exception {
+		if (Utils.isBlank(dbProviderClass)) {
+			throw new RuntimeException("Database provider class name is required");
+		}
+		
+		Class<DatabaseProvider> providerClass = (Class) ConfigUtils.class.getClassLoader().loadClass(dbProviderClass);
+		
+		return new ConfigMetadata() {
+			
+			@Override
+			public Class<DatabaseProvider> getDatabaseProviderClass() {
+				return providerClass;
+			}
+			
+			@Override
+			public String getLoggingApi() {
+				return loggingApi;
+			}
+			
+		};
 	}
 	
 }

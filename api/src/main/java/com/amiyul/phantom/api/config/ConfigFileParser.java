@@ -25,7 +25,8 @@ public interface ConfigFileParser {
 	 * 
 	 * @param configInputStream the input stream for the config file to parse
 	 * @return {@link ConfigMetadata}
+	 * @throws Exception
 	 */
-	ConfigMetadata parse(FileInputStream configInputStream);
+	ConfigMetadata parse(FileInputStream configInputStream) throws Exception;
 	
 }
