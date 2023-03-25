@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 
 /**
  * Classes that implement this interface parse the contents of a driver config file and generate a
- * {@link Config} instance
+ * {@link ConfigMetadata} instance
  */
 public interface ConfigFileParser {
 	
@@ -21,11 +21,11 @@ public interface ConfigFileParser {
 	boolean canParse(File configFile);
 	
 	/**
-	 * Parses the specified file input stream and generates a {@link Config} instance
+	 * Parses the specified file input stream and generates a {@link ConfigMetadata} instance
 	 * 
 	 * @param configInputStream the input stream for the config file to parse
-	 * @return the generated config
+	 * @return {@link ConfigMetadata}
 	 */
-	Config parse(FileInputStream configInputStream);
+	ConfigMetadata parse(FileInputStream configInputStream);
 	
 }

@@ -18,6 +18,7 @@
         <module>api</module>
         <module>driver-api</module>
         <module>db-api</module>
+        <module>driver</module>
     </modules>
 
     <properties>
