@@ -4,6 +4,7 @@
 package com.amiyul.phantom.driver.api.config;
 
 import com.amiyul.phantom.api.Database;
+import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
@@ -24,13 +25,19 @@ public class ConfigBuilderFactory {
 	/**
 	 * Gets the {@link ConfigBuilderFactory} instance
 	 * 
-	 * @return
+	 * @return ConfigBuilderFactory object
 	 */
 	protected static ConfigBuilderFactory getInstance() {
 		return ConfigBuilderFactoryHolder.INSTANCE;
 	}
 	
-	protected ConfigBuilder createBuilder(Database database) {
+	/**
+	 * Creates a {@link ConfigBuilder} with the specified {@link DatabaseProvider} instance
+	 * 
+	 * @param databaseProvider the {@link DatabaseProvider} object
+	 * @return ConfigBuilder
+	 */
+	protected ConfigBuilder createBuilder(DatabaseProvider databaseProvider) {
 		return new ConfigBuilder() {
 			
 			private LoggingApi loggingApi;
@@ -47,7 +54,7 @@ public class ConfigBuilderFactory {
 					
 					@Override
 					public Database getDatabase() {
-						return database;
+						return databaseProvider.get();
 					}
 					
 					@Override
