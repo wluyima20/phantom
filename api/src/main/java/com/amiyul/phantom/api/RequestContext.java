@@ -9,10 +9,6 @@ public interface RequestContext<TR, T extends Request<TR>, SR, S extends Respons
 	
 	S getResponse();
 	
-	Pipeline getPipeline();
-	
-	void next();
-	
 	TR read();
 	
 	void write(SR result);
