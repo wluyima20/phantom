@@ -3,7 +3,7 @@
  */
 package com.amiyul.phantom.driver.api;
 
-import com.amiyul.phantom.api.Server;
+import com.amiyul.phantom.api.Database;
 
 public class ServerManagerFactory {
 	
@@ -20,7 +20,7 @@ public class ServerManagerFactory {
 		return ServerManagerFactoryHolder.INSTANCE;
 	}
 	
-	public ServerManager createManager(Server server) {
+	public ServerManager createManager(Database database) {
 		return null;
 	}
 	

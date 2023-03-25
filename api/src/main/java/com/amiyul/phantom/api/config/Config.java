@@ -3,7 +3,7 @@
  */
 package com.amiyul.phantom.api.config;
 
-import com.amiyul.phantom.api.Server;
+import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
@@ -11,7 +11,7 @@ import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
  */
 public interface Config {
 	
-	Server getServer();
+	Database getDatabase();
 	
 	/**
 	 * Gets the loggingApi

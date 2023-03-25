@@ -3,7 +3,7 @@
  */
 package com.amiyul.phantom.driver.api.config;
 
-import com.amiyul.phantom.api.Server;
+import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.config.Config;
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
@@ -30,7 +30,7 @@ public class ConfigBuilderFactory {
 		return ConfigBuilderFactoryHolder.INSTANCE;
 	}
 	
-	protected ConfigBuilder createBuilder(Server server) {
+	protected ConfigBuilder createBuilder(Database database) {
 		return new ConfigBuilder() {
 			
 			private LoggingApi loggingApi;
@@ -46,8 +46,8 @@ public class ConfigBuilderFactory {
 				Config config = new Config() {
 					
 					@Override
-					public Server getServer() {
-						return server;
+					public Database getDatabase() {
+						return database;
 					}
 					
 					@Override

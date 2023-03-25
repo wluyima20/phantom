@@ -3,11 +3,11 @@
  */
 package com.amiyul.phantom.api.config;
 
-import com.amiyul.phantom.api.Server;
+import com.amiyul.phantom.api.Database;
 
 public interface ServerMetadata {
 	
-	Class<Server> getServerClass();
+	Class<Database> getDatabaseClass();
 	
 	Object getProperties();
 }

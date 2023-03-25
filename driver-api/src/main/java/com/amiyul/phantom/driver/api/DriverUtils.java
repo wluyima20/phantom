@@ -76,7 +76,7 @@ public class DriverUtils {
 				}
 			}
 			
-			serverManager = ServerManagerFactory.getInstance().createManager(getConfig(reload).getServer());
+			serverManager = ServerManagerFactory.getInstance().createManager(getConfig(reload).getDatabase());
 			serverManager.startServer();
 		}
 	}
