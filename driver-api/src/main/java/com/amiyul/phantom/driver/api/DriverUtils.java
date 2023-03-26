@@ -39,7 +39,7 @@ public class DriverUtils {
 	 * Gets the {@link ConfigMetadata} instance
 	 * 
 	 * @return ConfigMetadata
-	 * @throws FileNotFoundException
+	 * @throws Exception
 	 */
 	private synchronized static ConfigMetadata getConfigMetadata() throws Exception {
 		if (configMetadata == null) {
@@ -81,7 +81,7 @@ public class DriverUtils {
 	 * Gets the {@link Config} instance
 	 *
 	 * @return Config
-	 * @throws FileNotFoundException
+	 * @throws Exception
 	 */
 	protected synchronized static Config getConfig() throws Exception {
 		if (config == null) {

@@ -5,11 +5,11 @@ package com.amiyul.phantom.api.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
 
 import com.amiyul.phantom.api.DatabaseProvider;
-import com.amiyul.phantom.api.Utils;
+import com.amiyul.phantom.api.ServiceLoaderUtils;
 
 /**
  * Contains config utilities
@@ -27,8 +27,8 @@ public class ConfigUtils {
 	public synchronized static ConfigFileParser createParser(File configFile) {
 		if (parsers == null) {
 			parsers = new ArrayList();
-			ServiceLoader<ConfigFileParser> services = ServiceLoader.load(ConfigFileParser.class);
-			services.iterator().forEachRemaining(service -> parsers.add(service));
+			Iterator<ConfigFileParser> foundParsers = ServiceLoaderUtils.getProviders(ConfigFileParser.class);
+			foundParsers.forEachRemaining(parser -> parsers.add(parser));
 		}
 		
 		for (ConfigFileParser candidate : parsers) {
@@ -49,11 +49,8 @@ public class ConfigUtils {
 	 * @throws Exception
 	 */
 	public static ConfigMetadata createMetadata(String dbProviderClass, String loggingApi) throws Exception {
-		if (Utils.isBlank(dbProviderClass)) {
-			throw new RuntimeException("Database provider class name is required");
-		}
-		
-		Class<DatabaseProvider> providerClass = (Class) ConfigUtils.class.getClassLoader().loadClass(dbProviderClass);
+		Class<DatabaseProvider> providerClass = (Class) Thread.currentThread().getContextClassLoader()
+		        .loadClass(dbProviderClass);
 		
 		return new ConfigMetadata() {
 			
