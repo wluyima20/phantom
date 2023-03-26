@@ -9,7 +9,7 @@ import java.io.File;
  * {@link ConfigFileParser} that checks the config file extension to determine if it can parse the
  * file
  */
-public abstract class ExtensionBasedConfigFileParser implements ConfigFileParser {
+public abstract class BaseExtensionConfigFileParser implements ConfigFileParser {
 	
 	@Override
 	public boolean canParse(File configFile) {
