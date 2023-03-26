@@ -23,7 +23,7 @@ public class DriverUtils {
 	
 	protected static DriverLogger LOGGER;
 	
-	protected static final String PROP_CONFIG_LOCATION = Utils.class.getPackage().getName() + ".config.location";
+	protected static final String PROP_CONFIG_LOCATION = DriverUtils.class.getPackage().getName() + ".config.location";
 	
 	private static String configFilePath;
 	
@@ -94,7 +94,7 @@ public class DriverUtils {
 			}
 			
 			final Database database = provider.get();
-			final LoggingApi loggingApi = LoggingApi.valueOf(getConfigMetadata().getLoggingApi());
+			final LoggingApi loggingApi = LoggingApi.valueOf(getConfigMetadata().getLoggingApi().toUpperCase());
 			
 			return new Config() {
 				

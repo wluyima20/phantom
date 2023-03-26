@@ -11,13 +11,7 @@ public interface DriverLogger {
 	
 	enum LoggingApi {
 		
-		SLF4J("slf4j"), JAVA("java");
-		
-		private String value;
-		
-		LoggingApi(String value) {
-			this.value = value;
-		}
+		SLF4J, JAVA;
 		
 	}
 	
