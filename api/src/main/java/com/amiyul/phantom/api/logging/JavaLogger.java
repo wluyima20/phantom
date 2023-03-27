@@ -6,25 +6,23 @@ package com.amiyul.phantom.api.logging;
 import java.util.logging.Logger;
 
 /**
- * {@link DriverLogger} implementation that delegates to a java logging api logger
+ * {@link DriverLogger} implementation that delegates to the java logging api logger
  */
-public final class JavaLogger extends BaseDelegatingDriverLogger<Logger> {
+public final class JavaLogger extends BaseDelegatingLogger<Logger> {
 	
-	public JavaLogger(Logger nativeLogger) {
-		super(nativeLogger);
+	private JavaLogger() {
+		super(Logger.getLogger(JavaLogger.class.getName()));
 	}
 	
-	/**
-	 * @see DriverLogger#debug(String)
-	 */
+	public static JavaLogger getInstance() {
+		return JavaLoggerHolder.INSTANCE;
+	}
+	
 	@Override
 	public void debug(String message) {
 		getNativeLogger().config(message);
 	}
 	
-	/**
-	 * @see DriverLogger#info(String)
-	 */
 	@Override
 	public void info(String message) {
 		getNativeLogger().info(message);
@@ -35,13 +33,16 @@ public final class JavaLogger extends BaseDelegatingDriverLogger<Logger> {
 		getNativeLogger().warning(message);
 	}
 	
-	/**
-	 * @see DriverLogger#error(String, Throwable)
-	 */
 	@Override
 	public void error(String message, Throwable throwable) {
 		getNativeLogger().severe(message);
 		throwable.printStackTrace();
+	}
+	
+	private static class JavaLoggerHolder {
+		
+		private static final JavaLogger INSTANCE = new JavaLogger();
+		
 	}
 	
 }

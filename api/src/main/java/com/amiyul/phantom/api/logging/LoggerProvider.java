@@ -18,19 +18,10 @@ public interface LoggerProvider<T extends DriverLogger> {
 	LoggingApi getSupportedLoggingApi();
 	
 	/**
-	 * Gets a logger named according to the specified name
+	 * Gets the logger instance
 	 *
 	 * @return logger
 	 */
-	T getLogger(String name);
-	
-	/**
-	 * Gets a logger named according to the specified class
-	 *
-	 * @return logger
-	 */
-	default T getLogger(Class<?> clazz) {
-		return getLogger(clazz.getName());
-	}
+	T getLogger();
 	
 }

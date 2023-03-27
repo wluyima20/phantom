@@ -40,26 +40,38 @@ public final class LoggerUtils {
 				throw new RuntimeException("No appropriate provider found for the configured logging api");
 			}
 			
-			debug(LoggerUtils.class, "Found logging api provider -> " + provider.getClass());
+			debug("Found logging api provider -> " + provider.getClass());
 		}
 		
 		return provider;
 	}
 	
-	public static void debug(Class<?> clazz, String message) {
-		getProvider().getLogger(clazz).debug(message);
+	/**
+	 * @see DriverLogger#debug(String)
+	 */
+	public static void debug(String message) {
+		getProvider().getLogger().debug(message);
 	}
 	
-	public static void info(Class<?> clazz, String message) {
-		getProvider().getLogger(clazz).info(message);
+	/**
+	 * @see DriverLogger#info(String)
+	 */
+	public static void info(String message) {
+		getProvider().getLogger().info(message);
 	}
 	
-	public static void warn(Class<?> clazz, String message) {
-		getProvider().getLogger(clazz).warn(message);
+	/**
+	 * @see DriverLogger#warn(String)
+	 */
+	public static void warn(String message) {
+		getProvider().getLogger().warn(message);
 	}
 	
-	public static void error(Class<?> clazz, String message, Throwable throwable) {
-		getProvider().getLogger(clazz).error(message, throwable);
+	/**
+	 * @see DriverLogger#error(String, Throwable)
+	 */
+	public static void error(String message, Throwable throwable) {
+		getProvider().getLogger().error(message, throwable);
 	}
 	
 }

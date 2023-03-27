@@ -9,11 +9,11 @@ import lombok.Getter;
  * Superclass for driver logger implementations that delegate to a native framework logger
  */
 @Getter
-public abstract class BaseDelegatingDriverLogger<T> implements DriverLogger {
+public abstract class BaseDelegatingLogger<T> implements DriverLogger {
 	
 	private T nativeLogger;
 	
-	protected BaseDelegatingDriverLogger(T nativeLogger) {
+	protected BaseDelegatingLogger(T nativeLogger) {
 		this.nativeLogger = nativeLogger;
 	}
 	

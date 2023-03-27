@@ -3,8 +3,6 @@
  */
 package com.amiyul.phantom.api.logging;
 
-import java.util.logging.Logger;
-
 import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
@@ -18,8 +16,8 @@ public class JavaLoggerProvider implements LoggerProvider<JavaLogger> {
 	}
 	
 	@Override
-	public JavaLogger getLogger(String name) {
-		return new JavaLogger(Logger.getLogger(name));
+	public JavaLogger getLogger() {
+		return JavaLogger.getInstance();
 	}
 	
 }
