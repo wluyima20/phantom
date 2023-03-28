@@ -14,7 +14,6 @@ import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.SystemUtils;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.DriverLogger;
-import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
 
 /**
  * Contains config utilities
@@ -63,27 +62,14 @@ public class ConfigUtils {
 	 * Creates a {@link ConfigMetadata} instance
 	 * 
 	 * @param dbProviderClass the database provider class name
-	 * @param loggingApi the name of the logging api
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	public static ConfigMetadata createMetadata(String dbProviderClass, String loggingApi) throws Exception {
+	public static ConfigMetadata createMetadata(String dbProviderClass) throws Exception {
 		Class<DatabaseProvider> providerClass = (Class) Thread.currentThread().getContextClassLoader()
 		        .loadClass(dbProviderClass);
 		
-		return new ConfigMetadata() {
-			
-			@Override
-			public Class<DatabaseProvider> getDatabaseProviderClass() {
-				return providerClass;
-			}
-			
-			@Override
-			public String getLoggingApi() {
-				return loggingApi;
-			}
-			
-		};
+		return () -> providerClass;
 	}
 	
 	/**
@@ -103,21 +89,8 @@ public class ConfigUtils {
 			}
 			
 			final Database database = provider.get();
-			final LoggingApi loggingApi = LoggingApi.valueOf(getConfigMetadata().getLoggingApi().toUpperCase());
 			
-			return new Config() {
-				
-				@Override
-				public Database getDatabase() {
-					return database;
-				}
-				
-				@Override
-				public LoggingApi getLoggingApi() {
-					return loggingApi;
-				}
-				
-			};
+			return () -> database;
 		}
 		
 		return config;

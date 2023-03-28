@@ -6,10 +6,6 @@ package com.amiyul.phantom.api.logging;
 import java.util.Iterator;
 
 import com.amiyul.phantom.api.ServiceLoaderUtils;
-import com.amiyul.phantom.api.config.ConfigUtils;
-import com.amiyul.phantom.api.logging.DriverLogger.LoggingApi;
-
-import lombok.SneakyThrows;
 
 /**
  * Contains logging utilities
@@ -22,25 +18,21 @@ public final class LoggerUtils {
 	 * Gets the {@link LoggerProvider}
 	 *
 	 * @return LoggerProvider instance
-	 * @throws Exception
 	 */
-	@SneakyThrows(Exception.class)
 	protected synchronized static LoggerProvider getProvider() {
 		if (provider == null) {
 			Iterator<LoggerProvider> providers = ServiceLoaderUtils.getProviders(LoggerProvider.class);
-			LoggingApi api = ConfigUtils.getConfig().getLoggingApi();
 			while (providers.hasNext()) {
-				LoggerProvider candidate = providers.next();
-				if (api == candidate.getSupportedLoggingApi()) {
-					provider = candidate;
-				}
+				provider = providers.next();
+				break;
 			}
 			
 			if (provider == null) {
-				throw new RuntimeException("No appropriate provider found for the configured logging api");
+				provider = new JavaLoggerProvider();
+				debug("No logging api provider found, using java logging provider as the default");
+			} else {
+				debug("Found logging api provider -> " + provider.getClass());
 			}
-			
-			debug("Found logging api provider -> " + provider.getClass());
 		}
 		
 		return provider;

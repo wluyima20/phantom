@@ -8,10 +8,10 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 import com.amiyul.phantom.api.Utils;
+import com.amiyul.phantom.api.config.BaseExtensionConfigFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
 import com.amiyul.phantom.api.config.ConfigMetadata;
 import com.amiyul.phantom.api.config.ConfigUtils;
-import com.amiyul.phantom.api.config.BaseExtensionConfigFileParser;
 
 /**
  * {@link ConfigFileParser} for a properties file
@@ -32,9 +32,7 @@ public class PropertiesFileParser extends BaseExtensionConfigFileParser {
 			throw new RuntimeException(ConfigMetadata.PROP_DB_PROVIDER_CLASS + " is required");
 		}
 		
-		String loggingApi = props.getProperty(ConfigMetadata.PROP_LOGGING_API);
-		
-		return ConfigUtils.createMetadata(providerClassName, loggingApi);
+		return ConfigUtils.createMetadata(providerClassName);
 	}
 	
 }

@@ -12,20 +12,11 @@ public interface ConfigMetadata {
 	
 	String PROP_DB_PROVIDER_CLASS = "databaseProviderClass";
 	
-	String PROP_LOGGING_API = "loggingApi";
-	
 	/**
 	 * Gets the {@link DatabaseProvider} class object
 	 *
-	 * @return
+	 * @return class
 	 */
 	Class<DatabaseProvider> getDatabaseProviderClass();
-	
-	/**
-	 * Gets the loggingApi name
-	 *
-	 * @return the loggingApi name
-	 */
-	String getLoggingApi();
 	
 }

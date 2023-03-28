@@ -9,12 +9,6 @@ package com.amiyul.phantom.api.logging;
  */
 public interface DriverLogger {
 	
-	enum LoggingApi {
-		
-		SLF4J, JAVA;
-		
-	}
-	
 	/**
 	 * Logs a debug message
 	 *
