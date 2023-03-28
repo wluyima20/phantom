@@ -73,15 +73,14 @@ public class ConfigUtils {
 	 * Gets the {@link Config} instance
 	 *
 	 * @return Config
-	 * @throws Exception
 	 */
-	public synchronized static Config getConfig() throws Exception {
+	public synchronized static Config getConfig() {
 		if (config == null) {
 			DatabaseProvider provider;
 			try {
 				provider = getConfigMetadata(getConfigFile()).getDatabaseProviderClass().newInstance();
 			}
-			catch (ReflectiveOperationException e) {
+			catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 			

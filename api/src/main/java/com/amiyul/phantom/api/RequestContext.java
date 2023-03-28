@@ -3,14 +3,14 @@
  */
 package com.amiyul.phantom.api;
 
-public interface RequestContext<TR, T extends Request<TR>, SR, S extends Response<SR>> {
+public interface RequestContext<R, REQ extends Request<R>, RESP extends Response<R>> {
 	
-	T getRequest();
+	REQ getRequest();
 	
-	S getResponse();
+	RESP getResponse();
 	
-	TR read();
+	R readResult();
 	
-	void write(SR result);
+	void writeResult(R result);
 	
 }
