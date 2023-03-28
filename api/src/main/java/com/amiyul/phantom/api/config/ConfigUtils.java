@@ -21,7 +21,7 @@ public class ConfigUtils {
 	
 	protected static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".driver.config.location";
 	
-	private static String configFilePath;
+	private static String configFile;
 	
 	private static ConfigFileParser parser;
 	
@@ -79,7 +79,7 @@ public class ConfigUtils {
 		if (config == null) {
 			DatabaseProvider provider;
 			try {
-				provider = getConfigMetadata().getDatabaseProviderClass().newInstance();
+				provider = getConfigMetadata(getConfigFile()).getDatabaseProviderClass().newInstance();
 			}
 			catch (ReflectiveOperationException e) {
 				throw new RuntimeException(e);
@@ -92,28 +92,38 @@ public class ConfigUtils {
 	}
 	
 	/**
-	 * Gets the {@link ConfigMetadata} instance
+	 * Gets the path to the config file
 	 *
+	 * @return config file path
+	 */
+	protected synchronized static String getConfigFile() {
+		if (configFile == null) {
+			configFile = System.getProperty(PROP_CONFIG_LOCATION);
+			
+			if (Utils.isBlank(configFile)) {
+				configFile = SystemUtils.getEnv(PROP_CONFIG_LOCATION);
+			}
+			
+			if (Utils.isBlank(configFile)) {
+				throw new RuntimeException("Found no defined location for the driver config file");
+			}
+			
+			LoggerUtils.debug("Using driver config file located at -> " + configFile);
+		}
+		
+		return configFile;
+	}
+	
+	/**
+	 * Gets the {@link ConfigMetadata} instance
+	 * 
+	 * @param configFilePath path to config file
 	 * @return ConfigMetadata
 	 * @throws Exception
 	 */
-	private synchronized static ConfigMetadata getConfigMetadata() throws Exception {
+	protected synchronized static ConfigMetadata getConfigMetadata(String configFilePath) throws Exception {
 		if (configMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
-			
-			if (configFilePath == null) {
-				configFilePath = System.getProperty(PROP_CONFIG_LOCATION);
-				
-				if (Utils.isBlank(configFilePath)) {
-					configFilePath = SystemUtils.getEnv(PROP_CONFIG_LOCATION);
-				}
-				
-				if (Utils.isBlank(configFilePath)) {
-					throw new RuntimeException("Found no defined location for the driver config file");
-				}
-				
-				LoggerUtils.debug("Using driver config file located at -> " + configFilePath);
-			}
 			
 			File configFile = new File(configFilePath);
 			
