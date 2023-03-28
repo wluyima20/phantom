@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.util.Iterator;
 
 import com.amiyul.phantom.api.Constants;
-import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.SystemUtils;
@@ -88,9 +87,7 @@ public class ConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			final Database database = provider.get();
-			
-			return () -> database;
+			config = () -> provider.get();
 		}
 		
 		return config;

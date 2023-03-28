@@ -8,10 +8,12 @@ import java.util.logging.Logger;
 /**
  * {@link DriverLogger} implementation that delegates to the java logging api logger
  */
-public final class JavaLogger extends BaseDelegatingLogger<Logger> {
+public final class JavaLogger implements DriverLogger {
+	
+	private final Logger nativeLogger;
 	
 	private JavaLogger() {
-		super(Logger.getLogger(JavaLogger.class.getName()));
+		nativeLogger = Logger.getLogger(getClass().getName());
 	}
 	
 	public static JavaLogger getInstance() {
@@ -20,22 +22,22 @@ public final class JavaLogger extends BaseDelegatingLogger<Logger> {
 	
 	@Override
 	public void debug(String message) {
-		getNativeLogger().config(message);
+		nativeLogger.config(message);
 	}
 	
 	@Override
 	public void info(String message) {
-		getNativeLogger().info(message);
+		nativeLogger.info(message);
 	}
 	
 	@Override
 	public void warn(String message) {
-		getNativeLogger().warning(message);
+		nativeLogger.warning(message);
 	}
 	
 	@Override
 	public void error(String message, Throwable throwable) {
-		getNativeLogger().severe(message);
+		nativeLogger.severe(message);
 		throwable.printStackTrace();
 	}
 	
