@@ -12,14 +12,12 @@ import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.SystemUtils;
 import com.amiyul.phantom.api.Utils;
-import com.amiyul.phantom.api.logging.DriverLogger;
+import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
  * Contains config utilities
  */
 public class ConfigUtils {
-	
-	private static DriverLogger LOGGER;
 	
 	protected static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".driver.config.location";
 	
@@ -51,7 +49,7 @@ public class ConfigUtils {
 				throw new RuntimeException("No appropriate parser found for specified driver config file");
 			}
 			
-			LOGGER.debug("Found driver config file parser -> " + parser.getClass());
+			LoggerUtils.debug("Found driver config file parser -> " + parser.getClass());
 		}
 		
 		return parser;
@@ -101,7 +99,7 @@ public class ConfigUtils {
 	 */
 	private synchronized static ConfigMetadata getConfigMetadata() throws Exception {
 		if (configMetadata == null) {
-			LOGGER.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
+			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			
 			if (configFilePath == null) {
 				configFilePath = System.getProperty(PROP_CONFIG_LOCATION);
@@ -114,7 +112,7 @@ public class ConfigUtils {
 					throw new RuntimeException("Found no defined location for the driver config file");
 				}
 				
-				LOGGER.debug("Using driver config file located at -> " + configFilePath);
+				LoggerUtils.debug("Using driver config file located at -> " + configFilePath);
 			}
 			
 			File configFile = new File(configFilePath);

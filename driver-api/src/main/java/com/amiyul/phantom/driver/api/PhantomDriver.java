@@ -14,11 +14,10 @@ import java.util.logging.Logger;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
-import com.amiyul.phantom.api.logging.DriverLogger;
+import com.amiyul.phantom.api.logging.JavaLogger;
+import com.amiyul.phantom.api.logging.LoggerUtils;
 
 public final class PhantomDriver implements Driver {
-	
-	private static DriverLogger LOGGER;
 	
 	protected static final String URL_PREFIX = "jdbc:" + Constants.DATABASE_NAME + "://";
 	
@@ -41,7 +40,7 @@ public final class PhantomDriver implements Driver {
 		try {
 			String dbKey = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
 			
-			LOGGER.debug("Extracted database key: " + dbKey);
+			LoggerUtils.debug("Extracted database key: " + dbKey);
 			
 			return DriverUtils.getClient().connect(dbKey);
 		}
@@ -83,6 +82,10 @@ public final class PhantomDriver implements Driver {
 	
 	@Override
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		if (LoggerUtils.isUsingJavaLogger()) {
+			return JavaLogger.getInstance().getNativeLogger();
+		}
+		
 		throw new SQLFeatureNotSupportedException();
 	}
 	

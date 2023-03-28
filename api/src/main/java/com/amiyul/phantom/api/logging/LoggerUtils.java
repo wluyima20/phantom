@@ -90,4 +90,13 @@ public final class LoggerUtils {
 		return false;
 	}
 	
+	/**
+	 * Checks if java logging is the api in use
+	 * 
+	 * @return true if java logging is in use otherwise false
+	 */
+	public static boolean isUsingJavaLogger() {
+		return getProvider() instanceof JavaLoggerProvider;
+	}
+	
 }

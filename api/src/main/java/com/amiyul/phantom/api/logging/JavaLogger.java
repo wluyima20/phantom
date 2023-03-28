@@ -5,11 +5,14 @@ package com.amiyul.phantom.api.logging;
 
 import java.util.logging.Logger;
 
+import lombok.Getter;
+
 /**
  * {@link DriverLogger} implementation that delegates to the java logging api logger
  */
 public final class JavaLogger implements DriverLogger {
 	
+	@Getter
 	private final Logger nativeLogger;
 	
 	private JavaLogger() {
