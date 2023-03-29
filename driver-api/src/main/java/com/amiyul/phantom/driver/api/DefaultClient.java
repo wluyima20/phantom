@@ -7,8 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.amiyul.phantom.api.ConnectionRequest;
-import com.amiyul.phantom.api.DefaultRequestContext;
+import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
+import com.amiyul.phantom.api.Response;
 import com.amiyul.phantom.api.config.ConfigUtils;
 
 /**
@@ -31,6 +32,48 @@ public class DefaultClient implements Client {
 	 */
 	protected void sendRequest(RequestContext context) throws SQLException {
 		ConfigUtils.getConfig().getDatabase().process(context);
+	}
+	
+	private static class DefaultResponse implements Response {
+		
+		private final Object result;
+		
+		private DefaultResponse(Object result) {
+			this.result = result;
+		}
+		
+		@Override
+		public <T> T getResult() {
+			return (T) result;
+		}
+		
+	}
+	
+	private static class DefaultRequestContext implements RequestContext {
+		
+		private final Request request;
+		
+		private Response response;
+		
+		private DefaultRequestContext(Request request) {
+			this.request = request;
+		}
+		
+		@Override
+		public Request getRequest() {
+			return request;
+		}
+		
+		@Override
+		public <T> T readResult() {
+			return response == null ? null : response.getResult();
+		}
+		
+		@Override
+		public void writeResult(Object result) {
+			this.response = new DefaultResponse(result);
+		}
+		
 	}
 	
 }

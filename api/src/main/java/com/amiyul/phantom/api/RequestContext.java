@@ -16,13 +16,6 @@ public interface RequestContext {
 	Request getRequest();
 	
 	/**
-	 * Gets response object
-	 * 
-	 * @return response
-	 */
-	Response getResponse();
-	
-	/**
 	 * Reads the result from the response
 	 * 
 	 * @return result
