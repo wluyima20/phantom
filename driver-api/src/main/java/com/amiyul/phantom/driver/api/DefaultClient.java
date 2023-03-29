@@ -17,6 +17,13 @@ import com.amiyul.phantom.api.config.ConfigUtils;
  */
 public class DefaultClient implements Client {
 	
+	private DefaultClient() {
+	}
+	
+	protected static DefaultClient getInstance() {
+		return DefaultClientHolder.INSTANCE;
+	}
+	
 	@Override
 	public Connection connect(String targetDatabaseKey) throws SQLException {
 		RequestContext requestContext = new DefaultRequestContext(new ConnectionRequest(targetDatabaseKey));
@@ -32,6 +39,12 @@ public class DefaultClient implements Client {
 	 */
 	protected void sendRequest(RequestContext context) throws SQLException {
 		ConfigUtils.getConfig().getDatabase().process(context);
+	}
+	
+	private static class DefaultClientHolder {
+		
+		private static final DefaultClient INSTANCE = new DefaultClient();
+		
 	}
 	
 	private static class DefaultResponse implements Response {

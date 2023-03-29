@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public interface Client {
 	
 	/**
-	 * Requests connection from the server
+	 * Requests connection from the database server
 	 *
 	 * @param targetDatabaseKey the unique key for the target database
 	 * @return Connection object

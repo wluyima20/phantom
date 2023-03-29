@@ -35,7 +35,7 @@ public class ConfigUtils {
 	 * @param configFile the driver config file
 	 * @return ConfigFileParser instance
 	 */
-	public synchronized static ConfigFileParser getParser(File configFile) {
+	protected synchronized static ConfigFileParser getParser(File configFile) {
 		if (parser == null) {
 			Iterator<ConfigFileParser> parsers = ServiceLoaderUtils.getProviders(ConfigFileParser.class);
 			while (parsers.hasNext()) {
