@@ -16,7 +16,6 @@ public interface Database extends Disableable {
 	 * @param context {@link RequestContext} object
 	 * @throws SQLException
 	 */
-	<R, REQ extends Request<R>, RESP extends Response<R>> void process(RequestContext<R, REQ, RESP> context)
-	    throws SQLException;
+	void process(RequestContext context) throws SQLException;
 	
 }

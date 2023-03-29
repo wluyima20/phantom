@@ -10,7 +10,7 @@ import com.amiyul.phantom.api.PhantomProtocol.Command;
 /**
  * Simulation of a request sent by the database client to the {@link Database} server
  */
-public interface Request<R> {
+public interface Request {
 	
 	/**
 	 * Gets the command to be executed by the database

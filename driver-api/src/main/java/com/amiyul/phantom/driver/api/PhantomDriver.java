@@ -38,11 +38,11 @@ public final class PhantomDriver implements Driver {
 		}
 		
 		try {
-			String dbKey = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
+			String targetDbKey = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
 			
-			LoggerUtils.debug("Extracted database key: " + dbKey);
+			LoggerUtils.debug("Extracted target database key: " + targetDbKey);
 			
-			return DriverUtils.getClient().connect(dbKey);
+			return DriverUtils.connect(targetDbKey);
 		}
 		catch (Exception e) {
 			throw new SQLException(e);

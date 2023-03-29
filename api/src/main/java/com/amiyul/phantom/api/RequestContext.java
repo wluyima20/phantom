@@ -3,14 +3,39 @@
  */
 package com.amiyul.phantom.api;
 
-public interface RequestContext<R, REQ extends Request<R>, RESP extends Response<R>> {
+/**
+ * Holds contextual data about a single request sent by the client to the database
+ * 
+ * @param <R> The result type
+ */
+public interface RequestContext<R> {
 	
-	REQ getRequest();
+	/**
+	 * Gets request object
+	 * 
+	 * @return request
+	 */
+	Request getRequest();
 	
-	RESP getResponse();
+	/**
+	 * Gets response object
+	 * 
+	 * @return response
+	 */
+	Response<R> getResponse();
 	
+	/**
+	 * Reads the result from the response object
+	 * 
+	 * @return result
+	 */
 	R readResult();
 	
+	/**
+	 * Writes the result to the response object
+	 * 
+	 * @param result to write
+	 */
 	void writeResult(R result);
 	
 }
