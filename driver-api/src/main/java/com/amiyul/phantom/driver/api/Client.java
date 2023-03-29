@@ -15,10 +15,10 @@ public interface Client {
 	/**
 	 * Requests connection from the server
 	 *
-	 * @param databaseKey the unique key for the target database
+	 * @param targetDatabaseKey the unique key for the target database
 	 * @return Connection object
 	 * @throws SQLException
 	 */
-	Connection connect(String databaseKey) throws SQLException;
+	Connection connect(String targetDatabaseKey) throws SQLException;
 	
 }

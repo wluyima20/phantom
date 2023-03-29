@@ -3,8 +3,6 @@
  */
 package com.amiyul.phantom.api;
 
-import java.util.Map;
-
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 
 /**
@@ -18,12 +16,5 @@ public interface Request {
 	 * @return the command
 	 */
 	Command getCommand();
-	
-	/**
-	 * Gets the request attributes to send to the database
-	 * 
-	 * @return map
-	 */
-	Map<Object, Object> getAttributes();
 	
 }
