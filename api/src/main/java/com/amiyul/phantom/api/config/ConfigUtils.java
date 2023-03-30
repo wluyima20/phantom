@@ -21,7 +21,7 @@ public class ConfigUtils {
 	
 	protected static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".driver.config.location";
 	
-	private static String configFile;
+	private static String driverConfigFilePath;
 	
 	private static DriverConfigFileParser parser;
 	
@@ -30,7 +30,7 @@ public class ConfigUtils {
 	private static Config config;
 	
 	/**
-	 * Creates and returns a {@link DriverConfigFileParser} for the specified config file
+	 * Creates and returns a {@link DriverConfigFileParser} for the specified driver config file
 	 *
 	 * @param configFile the driver config file
 	 * @return DriverConfigFileParser instance
@@ -78,7 +78,7 @@ public class ConfigUtils {
 		if (config == null) {
 			DatabaseProvider provider;
 			try {
-				provider = getConfigMetadata(getConfigFile()).getDatabaseProviderClass().newInstance();
+				provider = getConfigMetadata(getDriverConfigFile()).getDatabaseProviderClass().newInstance();
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
@@ -91,6 +91,22 @@ public class ConfigUtils {
 	}
 	
 	/**
+	 * Gets the path to a config file set via the specified system or environmental property name
+	 *
+	 * @param propertyName the system or environmental property name
+	 * @return path to the config file
+	 */
+	public synchronized static String getConfigFile(String propertyName) {
+		String configFile = System.getProperty(propertyName);
+		
+		if (Utils.isBlank(configFile)) {
+			configFile = SystemUtils.getEnv(propertyName);
+		}
+		
+		return configFile;
+	}
+	
+	/**
 	 * Discards the cached driver config
 	 */
 	public synchronized static void discardConfig() {
@@ -99,26 +115,22 @@ public class ConfigUtils {
 	}
 	
 	/**
-	 * Gets the path to the config file
+	 * Gets the path to the driver config file
 	 *
 	 * @return config file path
 	 */
-	protected synchronized static String getConfigFile() {
-		if (configFile == null) {
-			configFile = System.getProperty(PROP_CONFIG_LOCATION);
+	protected synchronized static String getDriverConfigFile() {
+		if (driverConfigFilePath == null) {
+			driverConfigFilePath = getConfigFile(PROP_CONFIG_LOCATION);
 			
-			if (Utils.isBlank(configFile)) {
-				configFile = SystemUtils.getEnv(PROP_CONFIG_LOCATION);
-			}
-			
-			if (Utils.isBlank(configFile)) {
+			if (Utils.isBlank(driverConfigFilePath)) {
 				throw new RuntimeException("Found no defined location for the driver config file");
 			}
 			
-			LoggerUtils.debug("Using driver config file located at -> " + configFile);
+			LoggerUtils.debug("Using driver config file located at -> " + driverConfigFilePath);
 		}
 		
-		return configFile;
+		return driverConfigFilePath;
 	}
 	
 	/**

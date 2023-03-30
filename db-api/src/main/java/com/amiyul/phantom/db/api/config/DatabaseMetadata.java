@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Encapsulates metadata for a single database instance
+ * Encapsulates metadata for a single target database instance
  */
 @Getter
 @Setter
