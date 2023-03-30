@@ -10,7 +10,6 @@ import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Response;
-import com.amiyul.phantom.api.config.DriverConfigUtils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**

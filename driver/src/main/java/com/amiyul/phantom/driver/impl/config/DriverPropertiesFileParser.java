@@ -10,7 +10,7 @@ import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
 import com.amiyul.phantom.api.config.ConfigMetadata;
 import com.amiyul.phantom.api.config.DriverConfigFileParser;
-import com.amiyul.phantom.api.config.DriverConfigUtils;
+import com.amiyul.phantom.driver.api.DriverConfigUtils;
 
 /**
  * {@link ConfigFileParser} for a driver properties file
