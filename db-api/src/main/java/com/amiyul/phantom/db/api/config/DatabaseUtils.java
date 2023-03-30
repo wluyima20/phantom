@@ -5,10 +5,8 @@ package com.amiyul.phantom.db.api.config;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Iterator;
 
 import com.amiyul.phantom.api.Constants;
-import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
@@ -28,21 +26,15 @@ public class DatabaseUtils {
 	private static DatabaseConfig config;
 	
 	/**
-	 * Creates and returns a {@link DatabaseConfigFileParser} for the specified database config file
+	 * Gets a {@link DatabaseConfigFileParser} via the service loader mechanism that can parse the
+	 * specified database config file.
 	 *
 	 * @param configFile the database config file
 	 * @return DatabaseConfigFileParser instance
 	 */
 	protected synchronized static DatabaseConfigFileParser getParser(File configFile) {
 		if (parser == null) {
-			Iterator<DatabaseConfigFileParser> parsers = ServiceLoaderUtils.getProviders(DatabaseConfigFileParser.class);
-			while (parsers.hasNext()) {
-				DatabaseConfigFileParser candidate = parsers.next();
-				if (candidate.canParse(configFile)) {
-					parser = candidate;
-				}
-			}
-			
+			parser = Utils.getParser(DatabaseConfigFileParser.class, configFile);
 			if (parser == null) {
 				throw new RuntimeException("No appropriate parser found for specified database config file");
 			}
@@ -79,7 +71,7 @@ public class DatabaseUtils {
 	 *
 	 * @return config file path
 	 */
-	protected synchronized static String getDatabaseConfigFile() {
+	protected synchronized static String getConfigFile() {
 		if (configFilePath == null) {
 			configFilePath = Utils.getFilePath(PROP_CONFIG_LOCATION);
 			

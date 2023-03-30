@@ -3,6 +3,11 @@
  */
 package com.amiyul.phantom.api;
 
+import java.io.File;
+import java.util.Iterator;
+
+import com.amiyul.phantom.api.config.ConfigFileParser;
+
 public class Utils {
 	
 	/**
@@ -21,7 +26,7 @@ public class Utils {
 	 * @param propertyName the system or environmental property name
 	 * @return path to the config file
 	 */
-	public synchronized static String getFilePath(String propertyName) {
+	public static String getFilePath(String propertyName) {
 		String configFile = System.getProperty(propertyName);
 		
 		if (isBlank(configFile)) {
@@ -29,6 +34,26 @@ public class Utils {
 		}
 		
 		return configFile;
+	}
+	
+	/**
+	 * Gets a {@link ConfigFileParser} via the service loader mechanism that can parse the specified
+	 * file
+	 * 
+	 * @param clazz The parser class
+	 * @param file the file to parse
+	 * @return ConfigFileParser instance
+	 */
+	public static <T extends ConfigFileParser> T getParser(Class<T> clazz, File file) {
+		Iterator<T> parsers = ServiceLoaderUtils.getProviders(clazz);
+		while (parsers.hasNext()) {
+			T parser = parsers.next();
+			if (parser.canParse(file)) {
+				return parser;
+			}
+		}
+		
+		return null;
 	}
 	
 }

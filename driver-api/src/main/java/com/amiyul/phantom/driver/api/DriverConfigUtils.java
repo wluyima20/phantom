@@ -5,11 +5,9 @@ package com.amiyul.phantom.driver.api;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Iterator;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.DatabaseProvider;
-import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.ConfigMetadata;
 import com.amiyul.phantom.api.config.DriverConfig;
@@ -32,21 +30,15 @@ public class DriverConfigUtils {
 	private static DriverConfig config;
 	
 	/**
-	 * Creates and returns a {@link DriverConfigFileParser} for the specified driver config file
+	 * Gets {@link DriverConfigFileParser} via the service loader mechanism that can parse the specified
+	 * driver config file.
 	 *
 	 * @param configFile the driver config file
 	 * @return DriverConfigFileParser instance
 	 */
 	protected synchronized static DriverConfigFileParser getParser(File configFile) {
 		if (parser == null) {
-			Iterator<DriverConfigFileParser> parsers = ServiceLoaderUtils.getProviders(DriverConfigFileParser.class);
-			while (parsers.hasNext()) {
-				DriverConfigFileParser candidate = parsers.next();
-				if (candidate.canParse(configFile)) {
-					parser = candidate;
-				}
-			}
-			
+			parser = Utils.getParser(DriverConfigFileParser.class, configFile);
 			if (parser == null) {
 				throw new RuntimeException("No appropriate parser found for specified driver config file");
 			}
