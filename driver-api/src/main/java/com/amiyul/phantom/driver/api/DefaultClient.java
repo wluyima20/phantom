@@ -11,6 +11,7 @@ import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Response;
 import com.amiyul.phantom.api.config.ConfigUtils;
+import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
  * Default implementation of a {@link Client}
@@ -26,6 +27,8 @@ public class DefaultClient implements Client {
 	
 	@Override
 	public Connection connect(String targetDatabaseKey) throws SQLException {
+		LoggerUtils.debug("Obtaining connection to database with key: " + targetDatabaseKey);
+		
 		RequestContext requestContext = new DefaultRequestContext(new ConnectionRequest(targetDatabaseKey));
 		sendRequest(requestContext);
 		return requestContext.readResult();

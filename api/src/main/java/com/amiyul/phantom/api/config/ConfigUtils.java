@@ -91,6 +91,14 @@ public class ConfigUtils {
 	}
 	
 	/**
+	 * Discards the cached driver config
+	 */
+	public synchronized static void discardConfig() {
+		configMetadata = null;
+		config = null;
+	}
+	
+	/**
 	 * Gets the path to the config file
 	 *
 	 * @return config file path
