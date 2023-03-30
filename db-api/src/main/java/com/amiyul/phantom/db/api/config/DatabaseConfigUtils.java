@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
-import com.amiyul.phantom.db.api.DatabaseMetadata;
 
 /**
  * Contains database utilities
@@ -22,7 +21,7 @@ public class DatabaseConfigUtils {
 	
 	private static DatabaseConfigFileParser parser;
 	
-	private static DatabaseMetadata dbMetadata;
+	private static DatabaseConfigMetadata dbConfigMetadata;
 	
 	private static DatabaseConfig config;
 	
@@ -87,22 +86,22 @@ public class DatabaseConfigUtils {
 	}
 	
 	/**
-	 * Gets the {@link DatabaseMetadata} instance
+	 * Gets the {@link DatabaseConfigMetadata} instance
 	 *
 	 * @param configFilePath path to database config file
-	 * @return DatabaseMetadata
+	 * @return DatabaseConfigMetadata
 	 * @throws Exception
 	 */
-	protected synchronized static DatabaseMetadata getDatabaseMetadata(String configFilePath) throws Exception {
-		if (dbMetadata == null) {
+	protected synchronized static DatabaseConfigMetadata getDatabaseConfigMetadata(String configFilePath) throws Exception {
+		if (dbConfigMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " database configuration");
 			
 			File configFile = new File(configFilePath);
 			
-			dbMetadata = DatabaseConfigUtils.getParser(configFile).parse(new FileInputStream(configFile));
+			dbConfigMetadata = DatabaseConfigUtils.getParser(configFile).parse(new FileInputStream(configFile));
 		}
 		
-		return dbMetadata;
+		return dbConfigMetadata;
 	}
 	
 }

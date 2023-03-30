@@ -10,7 +10,7 @@ import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
-import com.amiyul.phantom.driver.api.config.ConfigMetadata;
+import com.amiyul.phantom.driver.api.config.DriverConfigMetadata;
 import com.amiyul.phantom.driver.api.config.DriverConfig;
 import com.amiyul.phantom.driver.api.config.DriverConfigFileParser;
 
@@ -25,7 +25,7 @@ public class DriverConfigUtils {
 	
 	private static DriverConfigFileParser parser;
 	
-	private static ConfigMetadata configMetadata;
+	private static DriverConfigMetadata configMetadata;
 	
 	private static DriverConfig config;
 	
@@ -50,13 +50,13 @@ public class DriverConfigUtils {
 	}
 	
 	/**
-	 * Creates a {@link ConfigMetadata} instance
+	 * Creates a {@link DriverConfigMetadata} instance
 	 *
 	 * @param dbProviderClass the database provider class name
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	public static ConfigMetadata createMetadata(String dbProviderClass) throws Exception {
+	public static DriverConfigMetadata createMetadata(String dbProviderClass) throws Exception {
 		Class<DatabaseProvider> providerClass = (Class) Thread.currentThread().getContextClassLoader()
 		        .loadClass(dbProviderClass);
 		
@@ -112,13 +112,13 @@ public class DriverConfigUtils {
 	}
 	
 	/**
-	 * Gets the {@link ConfigMetadata} instance
+	 * Gets the {@link DriverConfigMetadata} instance
 	 *
 	 * @param configFilePath path to config file
 	 * @return ConfigMetadata
 	 * @throws Exception
 	 */
-	protected synchronized static ConfigMetadata getConfigMetadata(String configFilePath) throws Exception {
+	protected synchronized static DriverConfigMetadata getConfigMetadata(String configFilePath) throws Exception {
 		if (configMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			

@@ -7,6 +7,6 @@ import com.amiyul.phantom.api.config.ConfigFileParser;
 
 /**
  * Classes that implement this interface parse the contents of a driver config file and generate a
- * {@link ConfigMetadata} instance
+ * {@link DriverConfigMetadata} instance
  */
-public interface DriverConfigFileParser extends ConfigFileParser<ConfigMetadata> {}
+public interface DriverConfigFileParser extends ConfigFileParser<DriverConfigMetadata> {}

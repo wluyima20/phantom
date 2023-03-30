@@ -4,12 +4,12 @@
 package com.amiyul.phantom.driver.api.config;
 
 import com.amiyul.phantom.api.DatabaseProvider;
+import com.amiyul.phantom.api.config.ConfigMetadata;
 
 /**
- * Holds the raw metadata read from a config file and can be used to build a {@link DriverConfig}
- * instance
+ * Holds the metadata used to build a {@link DriverConfig} instance
  */
-public interface ConfigMetadata {
+public interface DriverConfigMetadata extends ConfigMetadata {
 	
 	String PROP_DB_PROVIDER_CLASS = "databaseProviderClass";
 	
