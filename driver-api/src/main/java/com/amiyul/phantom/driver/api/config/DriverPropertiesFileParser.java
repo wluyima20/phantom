@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.impl.config;
+package com.amiyul.phantom.driver.api.config;
 
 import java.util.Properties;
 
@@ -9,8 +9,6 @@ import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
 import com.amiyul.phantom.driver.api.DriverConfigUtils;
-import com.amiyul.phantom.driver.api.config.DriverConfigMetadata;
-import com.amiyul.phantom.driver.api.config.DriverConfigFileParser;
 
 /**
  * {@link ConfigFileParser} for a driver properties file
