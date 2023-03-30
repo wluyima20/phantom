@@ -10,7 +10,6 @@ import java.util.Iterator;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.Utils;
-import com.amiyul.phantom.api.config.ConfigUtils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
@@ -82,7 +81,7 @@ public class DatabaseUtils {
 	 */
 	protected synchronized static String getDatabaseConfigFile() {
 		if (configFilePath == null) {
-			configFilePath = ConfigUtils.getConfigFile(PROP_CONFIG_LOCATION);
+			configFilePath = Utils.getConfigFile(PROP_CONFIG_LOCATION);
 			
 			if (Utils.isBlank(configFilePath)) {
 				throw new RuntimeException("Found no defined location for the database config file");

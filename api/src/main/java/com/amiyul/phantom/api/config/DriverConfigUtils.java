@@ -104,7 +104,7 @@ public class DriverConfigUtils {
 	 */
 	protected synchronized static String getDriverConfigFile() {
 		if (configFilePath == null) {
-			configFilePath = ConfigUtils.getConfigFile(PROP_CONFIG_LOCATION);
+			configFilePath = Utils.getConfigFile(PROP_CONFIG_LOCATION);
 			
 			if (Utils.isBlank(configFilePath)) {
 				throw new RuntimeException("Found no defined location for the driver config file");
