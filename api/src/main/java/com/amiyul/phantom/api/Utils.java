@@ -16,12 +16,12 @@ public class Utils {
 	}
 	
 	/**
-	 * Gets the path to a config file set via the specified system or environmental property name
+	 * Gets the path to a file configured via the specified system or environmental property name
 	 *
 	 * @param propertyName the system or environmental property name
 	 * @return path to the config file
 	 */
-	public synchronized static String getConfigFile(String propertyName) {
+	public synchronized static String getFilePath(String propertyName) {
 		String configFile = System.getProperty(propertyName);
 		
 		if (isBlank(configFile)) {

@@ -81,7 +81,7 @@ public class DatabaseUtils {
 	 */
 	protected synchronized static String getDatabaseConfigFile() {
 		if (configFilePath == null) {
-			configFilePath = Utils.getConfigFile(PROP_CONFIG_LOCATION);
+			configFilePath = Utils.getFilePath(PROP_CONFIG_LOCATION);
 			
 			if (Utils.isBlank(configFilePath)) {
 				throw new RuntimeException("Found no defined location for the database config file");
