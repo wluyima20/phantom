@@ -9,8 +9,8 @@ import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
 import com.amiyul.phantom.api.config.ConfigMetadata;
-import com.amiyul.phantom.api.config.ConfigUtils;
 import com.amiyul.phantom.api.config.DriverConfigFileParser;
+import com.amiyul.phantom.api.config.DriverConfigUtils;
 
 /**
  * {@link ConfigFileParser} for a driver properties file
@@ -24,7 +24,7 @@ public class DriverPropertiesFileParser extends BasePropertiesFileParser<ConfigM
 			throw new RuntimeException(ConfigMetadata.PROP_DB_PROVIDER_CLASS + " is required");
 		}
 		
-		return ConfigUtils.createMetadata(providerClassName);
+		return DriverConfigUtils.createMetadata(providerClassName);
 	}
 	
 }

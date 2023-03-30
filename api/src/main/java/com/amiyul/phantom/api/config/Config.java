@@ -3,13 +3,7 @@
  */
 package com.amiyul.phantom.api.config;
 
-import com.amiyul.phantom.api.Database;
-
 /**
- * Marker interface for the driver configuration
+ * Marker interface for classes encapsulating configuration data
  */
-public interface Config {
-	
-	Database getDatabase();
-	
-}
+public interface Config {}

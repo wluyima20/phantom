@@ -10,7 +10,7 @@ import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Response;
-import com.amiyul.phantom.api.config.ConfigUtils;
+import com.amiyul.phantom.api.config.DriverConfigUtils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
@@ -41,7 +41,7 @@ public class DefaultClient implements Client {
 	 * @throws SQLException
 	 */
 	protected void sendRequest(RequestContext context) throws SQLException {
-		ConfigUtils.getConfig().getDatabase().process(context);
+		DriverConfigUtils.getConfig().getDatabase().process(context);
 	}
 	
 	private static class DefaultClientHolder {

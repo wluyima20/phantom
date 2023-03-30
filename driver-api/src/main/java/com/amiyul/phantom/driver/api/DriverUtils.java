@@ -6,7 +6,7 @@ package com.amiyul.phantom.driver.api;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.amiyul.phantom.api.config.ConfigUtils;
+import com.amiyul.phantom.api.config.DriverConfigUtils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
@@ -29,7 +29,7 @@ public class DriverUtils {
 			LoggerUtils.debug(
 			    "Reloading config after failed attempt to obtain a connection to database with key: " + targetDatabaseKey);
 			
-			ConfigUtils.discardConfig();
+			DriverConfigUtils.discardConfig();
 			
 			return DefaultClient.getInstance().connect(targetDatabaseKey);
 		}
