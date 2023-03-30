@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 
 /**
- * Classes that implement this interface parse the contents of a driver config file and generate a
+ * Classes that implement this interface parse the contents of a config file and generate a
  * {@link ConfigMetadata} instance
  */
-public interface ConfigFileParser {
+public interface ConfigFileParser<T> {
 	
 	/**
 	 * Checks whether this parser can parse the specified file
@@ -21,12 +21,13 @@ public interface ConfigFileParser {
 	boolean canParse(File configFile);
 	
 	/**
-	 * Parses the specified file input stream and generates a {@link ConfigMetadata} instance
+	 * Parses the specified file input stream and generates an instance encapsulating info read from the
+	 * input stream
 	 * 
 	 * @param configInputStream the input stream for the config file to parse
 	 * @return {@link ConfigMetadata}
 	 * @throws Exception
 	 */
-	ConfigMetadata parse(FileInputStream configInputStream) throws Exception;
+	T parse(FileInputStream configInputStream) throws Exception;
 	
 }

@@ -23,23 +23,23 @@ public class ConfigUtils {
 	
 	private static String configFile;
 	
-	private static ConfigFileParser parser;
+	private static DriverConfigFileParser parser;
 	
 	private static ConfigMetadata configMetadata;
 	
 	private static Config config;
 	
 	/**
-	 * Creates and returns a {@link ConfigFileParser} for the specified config file
+	 * Creates and returns a {@link DriverConfigFileParser} for the specified config file
 	 *
 	 * @param configFile the driver config file
-	 * @return ConfigFileParser instance
+	 * @return DriverConfigFileParser instance
 	 */
-	protected synchronized static ConfigFileParser getParser(File configFile) {
+	protected synchronized static DriverConfigFileParser getParser(File configFile) {
 		if (parser == null) {
-			Iterator<ConfigFileParser> parsers = ServiceLoaderUtils.getProviders(ConfigFileParser.class);
+			Iterator<DriverConfigFileParser> parsers = ServiceLoaderUtils.getProviders(DriverConfigFileParser.class);
 			while (parsers.hasNext()) {
-				ConfigFileParser candidate = parsers.next();
+				DriverConfigFileParser candidate = parsers.next();
 				if (candidate.canParse(configFile)) {
 					parser = candidate;
 				}
