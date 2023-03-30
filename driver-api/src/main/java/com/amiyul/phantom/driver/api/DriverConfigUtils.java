@@ -9,10 +9,10 @@ import java.io.FileInputStream;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
-import com.amiyul.phantom.api.config.ConfigMetadata;
-import com.amiyul.phantom.api.config.DriverConfig;
-import com.amiyul.phantom.api.config.DriverConfigFileParser;
 import com.amiyul.phantom.api.logging.LoggerUtils;
+import com.amiyul.phantom.driver.api.config.ConfigMetadata;
+import com.amiyul.phantom.driver.api.config.DriverConfig;
+import com.amiyul.phantom.driver.api.config.DriverConfigFileParser;
 
 /**
  * Contains driver config utilities
