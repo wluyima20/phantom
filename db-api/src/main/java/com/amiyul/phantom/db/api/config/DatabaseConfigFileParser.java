@@ -4,6 +4,7 @@
 package com.amiyul.phantom.db.api.config;
 
 import com.amiyul.phantom.api.config.ConfigFileParser;
+import com.amiyul.phantom.db.api.DatabaseMetadata;
 
 /**
  * Classes that implement this interface parse the contents of a database config file and generate a

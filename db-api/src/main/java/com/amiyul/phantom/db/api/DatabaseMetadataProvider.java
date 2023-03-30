@@ -1,12 +1,13 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api.config;
+package com.amiyul.phantom.db.api;
 
 import java.sql.SQLException;
 import java.util.Map;
 
 import com.amiyul.phantom.api.Disableable;
+import com.amiyul.phantom.db.api.DatabaseMetadata;
 
 /**
  * Super interface for {@link DatabaseMetadata} providers

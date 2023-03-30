@@ -9,11 +9,12 @@ import java.io.FileInputStream;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
+import com.amiyul.phantom.db.api.DatabaseMetadata;
 
 /**
  * Contains database utilities
  */
-public class DatabaseUtils {
+public class DatabaseConfigUtils {
 	
 	protected static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".db.config.location";
 	
@@ -24,26 +25,6 @@ public class DatabaseUtils {
 	private static DatabaseMetadata dbMetadata;
 	
 	private static DatabaseConfig config;
-	
-	/**
-	 * Gets a {@link DatabaseConfigFileParser} via the service loader mechanism that can parse the
-	 * specified database config file.
-	 *
-	 * @param configFile the database config file
-	 * @return DatabaseConfigFileParser instance
-	 */
-	protected synchronized static DatabaseConfigFileParser getParser(File configFile) {
-		if (parser == null) {
-			parser = Utils.getParser(DatabaseConfigFileParser.class, configFile);
-			if (parser == null) {
-				throw new RuntimeException("No appropriate parser found for specified database config file");
-			}
-			
-			LoggerUtils.debug("Found database config file parser -> " + parser.getClass());
-		}
-		
-		return parser;
-	}
 	
 	/**
 	 * Gets the {@link DatabaseConfig} instance
@@ -64,6 +45,26 @@ public class DatabaseUtils {
 		}
 		
 		return config;
+	}
+	
+	/**
+	 * Gets a {@link DatabaseConfigFileParser} via the service loader mechanism that can parse the
+	 * specified database config file.
+	 *
+	 * @param configFile the database config file
+	 * @return DatabaseConfigFileParser instance
+	 */
+	protected synchronized static DatabaseConfigFileParser getParser(File configFile) {
+		if (parser == null) {
+			parser = Utils.getParser(DatabaseConfigFileParser.class, configFile);
+			if (parser == null) {
+				throw new RuntimeException("No appropriate parser found for specified database config file");
+			}
+			
+			LoggerUtils.debug("Found database config file parser -> " + parser.getClass());
+		}
+		
+		return parser;
 	}
 	
 	/**
@@ -98,7 +99,7 @@ public class DatabaseUtils {
 			
 			File configFile = new File(configFilePath);
 			
-			dbMetadata = DatabaseUtils.getParser(configFile).parse(new FileInputStream(configFile));
+			dbMetadata = DatabaseConfigUtils.getParser(configFile).parse(new FileInputStream(configFile));
 		}
 		
 		return dbMetadata;
