@@ -3,9 +3,10 @@
  */
 package com.amiyul.phantom.driver.config;
 
+import static com.amiyul.phantom.driver.config.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
+
 import java.util.Properties;
 
-import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
 import com.amiyul.phantom.driver.DriverConfigUtils;
@@ -17,12 +18,7 @@ public class DriverPropertiesFileParser extends BasePropertiesFileParser<DriverC
 	
 	@Override
 	public DriverConfigMetadata createInstance(Properties properties) throws Exception {
-		String providerClassName = properties.getProperty(DriverConfigMetadata.PROP_DB_PROVIDER_CLASS);
-		if (Utils.isBlank(providerClassName)) {
-			throw new RuntimeException(DriverConfigMetadata.PROP_DB_PROVIDER_CLASS + " is required");
-		}
-		
-		return DriverConfigUtils.createMetadata(providerClassName);
+		return DriverConfigUtils.createMetadata(properties.getProperty(PROP_DB_PROVIDER_CLASS));
 	}
 	
 }

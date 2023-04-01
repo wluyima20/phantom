@@ -11,6 +11,7 @@ import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
+import com.amiyul.phantom.db.FileDatabaseProvider;
 import com.amiyul.phantom.driver.config.DriverConfig;
 import com.amiyul.phantom.driver.config.DriverConfigFileParser;
 import com.amiyul.phantom.driver.config.DriverConfigMetadata;
@@ -20,7 +21,7 @@ import com.amiyul.phantom.driver.config.DriverConfigMetadata;
  */
 public class DriverConfigUtils {
 	
-	protected static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".driver.config.location";
+	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".driver.config.location";
 	
 	private static String configFilePath;
 	
@@ -58,10 +59,14 @@ public class DriverConfigUtils {
 	 * @throws Exception
 	 */
 	public static DriverConfigMetadata createMetadata(String dbProviderClass) throws Exception {
-		Class<DatabaseProvider> providerClass = (Class) Thread.currentThread().getContextClassLoader()
-		        .loadClass(dbProviderClass);
+		Class<DatabaseProvider> clazz = null;
+		if (!Utils.isBlank(dbProviderClass)) {
+			clazz = (Class) Thread.currentThread().getContextClassLoader().loadClass(dbProviderClass);
+		}
 		
-		return () -> providerClass;
+		final Class<DatabaseProvider> providerClazz = clazz;
+		
+		return () -> providerClazz;
 	}
 	
 	/**
@@ -73,7 +78,15 @@ public class DriverConfigUtils {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
 			try {
-				provider = getConfigMetadata(getDriverConfigFile()).getDatabaseProviderClass().newInstance();
+				Class<? extends DatabaseProvider> clazz = getConfigMetadata(getDriverConfigFile())
+				        .getDatabaseProviderClass();
+				
+				if (clazz == null) {
+					clazz = FileDatabaseProvider.class;
+					LoggerUtils.info("No configured database provider, defaulting to file database provider");
+				}
+				
+				provider = clazz.newInstance();
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);

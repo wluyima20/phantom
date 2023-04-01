@@ -22,7 +22,7 @@ import com.amiyul.phantom.db.config.DatabaseConfigMetadata;
  */
 public class DatabaseConfigUtils {
 	
-	protected static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".db.config.location";
+	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".db.config.location";
 	
 	private static String configFilePath;
 	
