@@ -31,9 +31,7 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 	public DatabaseConfigMetadata createInstance(Properties properties) throws Exception {
 		Map<String, String> props = cleanEntries(new HashMap(properties));
 		List<DatabaseMetadata> dbMetadataList = new ArrayList(props.size());
-		String[] dbNames = props.get(PROP_DATABASES).split(",");
-		Arrays.stream(dbNames).forEach(dbName -> {
-			dbName = dbName.trim();
+		Arrays.stream(props.get(PROP_DATABASES).split(",")).map(dbName -> dbName.trim()).forEach(dbName -> {
 			Map<String, String> dbMetadata = getPropsWithPrefix(props, dbName);
 			Map<String, String> dbConnProps = getPropsWithPrefix(dbMetadata, PROP_PROPS);
 			Properties dbProps = new Properties();
@@ -44,6 +42,13 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 		return () -> dbMetadataList;
 	}
 	
+	/**
+	 * Gets the map entries with keys that start with the specified prefix
+	 * 
+	 * @param map the map to search
+	 * @param prefix the prefix to match
+	 * @return Map
+	 */
 	private Map<String, String> getPropsWithPrefix(Map<String, String> map, String prefix) {
 		return map.entrySet().stream().filter(e -> e.getKey().startsWith(prefix + ".")).collect(Collectors.toMap(e -> {
 			int propStartIndex = e.getKey().indexOf(prefix) + prefix.length() + 1;
@@ -51,6 +56,12 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 		}, Map.Entry::getValue));
 	}
 	
+	/**
+	 * Removes blank values and trims all values in the specified map
+	 * 
+	 * @param map the map to clean
+	 * @return Map
+	 */
 	private Map<String, String> cleanEntries(Map<String, String> map) {
 		Map<String, String> cleanedMap = new HashMap(map.size());
 		map.forEach((k, v) -> {
