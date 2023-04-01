@@ -23,7 +23,7 @@ public class DatabaseUtils {
 	 * @throws SQLException
 	 */
 	protected static Connection getConnection(ConnectionRequest connectionRequest) throws SQLException {
-		final String dbName = connectionRequest.getTargetDatabaseKey();
+		final String dbName = connectionRequest.getTargetDatabaseName();
 		DatabaseMetadata dbMetadata = DatabaseConfigUtils.getConfig().getDatabaseMetadata().get(dbName);
 		if (dbMetadata == null) {
 			throw new SQLException("No target database found matching the name: " + dbName);

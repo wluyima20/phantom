@@ -13,11 +13,11 @@ import lombok.Getter;
 public class ConnectionRequest extends BaseRequest {
 	
 	@Getter
-	private final String targetDatabaseKey;
+	private final String targetDatabaseName;
 	
-	public ConnectionRequest(String targetDatabaseKey) {
+	public ConnectionRequest(String targetDatabaseName) {
 		super(Command.CONNECT);
-		this.targetDatabaseKey = targetDatabaseKey;
+		this.targetDatabaseName = targetDatabaseName;
 	}
 	
 }

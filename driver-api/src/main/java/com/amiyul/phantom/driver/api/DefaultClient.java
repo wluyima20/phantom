@@ -25,10 +25,10 @@ public class DefaultClient implements Client {
 	}
 	
 	@Override
-	public Connection connect(String targetDatabaseKey) throws SQLException {
-		LoggerUtils.debug("Obtaining connection to database with key: " + targetDatabaseKey);
+	public Connection connect(String targetDatabaseName) throws SQLException {
+		LoggerUtils.debug("Obtaining connection to the database named: " + targetDatabaseName);
 		
-		RequestContext requestContext = new DefaultRequestContext(new ConnectionRequest(targetDatabaseKey));
+		RequestContext requestContext = new DefaultRequestContext(new ConnectionRequest(targetDatabaseName));
 		sendRequest(requestContext);
 		return requestContext.readResult();
 	}

@@ -31,7 +31,7 @@ public class DriverUtils {
 		}
 		catch (SQLException e) {
 			LoggerUtils.debug(
-			    "Reloading config after failed attempt to obtain a connection to database with key: " + targetDbName);
+			    "Reloading config after failed attempt to obtain a connection to the database named: " + targetDbName);
 			
 			DriverConfigUtils.discardConfig();
 			
