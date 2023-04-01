@@ -31,13 +31,13 @@ public final class LoggerUtils {
 			}
 			
 			if (provider == null && isSlf4jPresent()) {
-				provider = new Slf4jLoggerProvider();
+				provider = Slf4jLoggerProvider.getInstance();
 				
 				debug("No registered logging api provider found, defaulting to slf4j provider");
 			}
 			
 			if (provider == null) {
-				provider = new JavaLoggerProvider();
+				provider = JavaLoggerProvider.getInstance();
 				debug("No logging api provider found, using java logging provider as the default");
 			}
 		}
