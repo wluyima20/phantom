@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.api;
+package com.amiyul.phantom.driver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,9 +11,9 @@ import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
-import com.amiyul.phantom.driver.api.config.DriverConfig;
-import com.amiyul.phantom.driver.api.config.DriverConfigFileParser;
-import com.amiyul.phantom.driver.api.config.DriverConfigMetadata;
+import com.amiyul.phantom.driver.config.DriverConfig;
+import com.amiyul.phantom.driver.config.DriverConfigFileParser;
+import com.amiyul.phantom.driver.config.DriverConfigMetadata;
 
 /**
  * Contains driver config utilities

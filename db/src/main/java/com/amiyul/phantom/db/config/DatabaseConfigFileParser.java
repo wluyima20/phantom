@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api.config;
+package com.amiyul.phantom.db.config;
 
 import com.amiyul.phantom.api.config.ConfigFileParser;
 

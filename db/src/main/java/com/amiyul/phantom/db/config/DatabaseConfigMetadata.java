@@ -1,12 +1,12 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api.config;
+package com.amiyul.phantom.db.config;
 
 import java.util.List;
 
 import com.amiyul.phantom.api.config.ConfigMetadata;
-import com.amiyul.phantom.db.api.DatabaseMetadata;
+import com.amiyul.phantom.db.DatabaseMetadata;
 
 /**
  * Holds the metadata used to build a {@link DatabaseConfig} instance

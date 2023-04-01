@@ -1,10 +1,10 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api.config;
+package com.amiyul.phantom.db.config;
 
-import static com.amiyul.phantom.db.api.config.DatabasePropertiesFileParser.PROP_PROPS;
-import static com.amiyul.phantom.db.api.config.DatabasePropertiesFileParser.PROP_URL;
+import static com.amiyul.phantom.db.config.DatabasePropertiesFileParser.PROP_PROPS;
+import static com.amiyul.phantom.db.config.DatabasePropertiesFileParser.PROP_URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 

@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api;
+package com.amiyul.phantom.db;
 
 import com.amiyul.phantom.api.DatabaseProvider;
 

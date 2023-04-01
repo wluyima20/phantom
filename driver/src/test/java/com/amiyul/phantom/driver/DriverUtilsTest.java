@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.api;
+package com.amiyul.phantom.driver;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -25,7 +25,7 @@ import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.ServiceLoaderUtils;
 import com.amiyul.phantom.api.config.ConfigFileParser;
-import com.amiyul.phantom.driver.api.config.DriverConfig;
+import com.amiyul.phantom.driver.config.DriverConfig;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DriverConfigUtils.class, ServiceLoaderUtils.class })

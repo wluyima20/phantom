@@ -1,12 +1,12 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api.config;
+package com.amiyul.phantom.db.config;
 
 import java.util.Map;
 
 import com.amiyul.phantom.api.config.Config;
-import com.amiyul.phantom.db.api.DatabaseMetadata;
+import com.amiyul.phantom.db.DatabaseMetadata;
 
 /**
  * Marker interface for the database configuration

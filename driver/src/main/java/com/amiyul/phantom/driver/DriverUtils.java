@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.api;
+package com.amiyul.phantom.driver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
