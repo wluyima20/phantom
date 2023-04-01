@@ -6,11 +6,14 @@ package com.amiyul.phantom.db.api;
 import java.sql.SQLException;
 
 import com.amiyul.phantom.api.BaseDatabase;
+import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Database;
+import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.RequestContext;
 
 /**
- * Base class for {@link Database} implementations backed by a file
+ * Base class for {@link Database} implementations where the target database metadata is configured
+ * in a file
  */
 public class FileDatabase extends BaseDatabase {
 	
@@ -23,7 +26,14 @@ public class FileDatabase extends BaseDatabase {
 	
 	@Override
 	public void process(RequestContext context) throws SQLException {
-
+		Command command = context.getRequest().getCommand();
+		switch (command) {
+			case CONNECT:
+				DatabaseUtils.getConnection((ConnectionRequest) context.getRequest());
+				break;
+			default:
+				throw new SQLException("Don't know how to process protocol command: " + command);
+		}
 	}
 	
 	private static class FileDatabaseHolder {

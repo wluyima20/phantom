@@ -6,6 +6,7 @@ package com.amiyul.phantom.driver.api;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
@@ -14,23 +15,27 @@ import com.amiyul.phantom.api.logging.LoggerUtils;
 public class DriverUtils {
 	
 	/**
-	 * Obtains a connection object to a target database matching the specified key
+	 * Obtains a connection object to a target database matching the specified name
 	 * 
-	 * @param targetDatabaseKey the target database key
+	 * @param targetDbName the target database name
 	 * @return Connection
 	 * @throws SQLException
 	 */
-	protected static Connection connect(String targetDatabaseKey) throws SQLException {
+	protected static Connection connect(String targetDbName) throws SQLException {
+		if (Utils.isBlank(targetDbName)) {
+			throw new SQLException("No target database name defined in the database URL");
+		}
+		
 		try {
-			return DefaultClient.getInstance().connect(targetDatabaseKey);
+			return DefaultClient.getInstance().connect(targetDbName);
 		}
 		catch (SQLException e) {
 			LoggerUtils.debug(
-			    "Reloading config after failed attempt to obtain a connection to database with key: " + targetDatabaseKey);
+			    "Reloading config after failed attempt to obtain a connection to database with key: " + targetDbName);
 			
 			DriverConfigUtils.discardConfig();
 			
-			return DefaultClient.getInstance().connect(targetDatabaseKey);
+			return DefaultClient.getInstance().connect(targetDbName);
 		}
 	}
 	
