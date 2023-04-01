@@ -19,13 +19,16 @@ public interface Disableable {
 	 *
 	 * @return the disabledUntil
 	 */
-	LocalDateTime getDisabledUntil();
+	default LocalDateTime getDisabledUntil() {
+		return null;
+	}
 	
 	/**
 	 * Sets the disabledUntil
 	 *
 	 * @param disabledUntil the disabledUntil to set
 	 */
-	void setDisabledUntil(LocalDateTime disabledUntil);
+	default void setDisabledUntil(LocalDateTime disabledUntil) {
+	}
 	
 }

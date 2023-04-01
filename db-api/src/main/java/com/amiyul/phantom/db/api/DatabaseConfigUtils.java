@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.api.config;
+package com.amiyul.phantom.db.api;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
-import com.amiyul.phantom.db.api.DatabaseMetadata;
+import com.amiyul.phantom.db.api.config.DatabaseConfig;
+import com.amiyul.phantom.db.api.config.DatabaseConfigFileParser;
+import com.amiyul.phantom.db.api.config.DatabaseConfigMetadata;
 
 /**
  * Contains database utilities

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import com.amiyul.phantom.api.Constants;
+import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
@@ -68,9 +69,9 @@ public class DriverConfigUtils {
 	 *
 	 * @return Config
 	 */
-    protected synchronized static DriverConfig getConfig() {
+	protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
-			DatabaseProvider provider;
+			DatabaseProvider<Database> provider;
 			try {
 				provider = getConfigMetadata(getDriverConfigFile()).getDatabaseProviderClass().newInstance();
 			}

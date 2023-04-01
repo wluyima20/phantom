@@ -3,7 +3,6 @@
  */
 package com.amiyul.phantom.db.api;
 
-import java.time.LocalDateTime;
 import java.util.Properties;
 
 import com.amiyul.phantom.api.Disableable;
@@ -15,19 +14,23 @@ import lombok.Setter;
 /**
  * Encapsulates metadata for a single target database instance
  */
-@Getter
-@Setter
 public class DatabaseMetadata implements Named, Disableable {
 	
 	private String name;
 	
+	@Getter
+	@Setter
 	private String url;
 	
-	private LocalDateTime disabledUntil;
-	
+	@Getter
+	@Setter
 	private Properties properties;
 	
-	private DatabaseMetadataProvider provider;
+	public DatabaseMetadata(String name, String url, Properties properties) {
+		this.name = name;
+		this.url = url;
+		this.properties = properties;
+	}
 	
 	/**
 	 * @see Named#getName()
@@ -43,22 +46,6 @@ public class DatabaseMetadata implements Named, Disableable {
 	@Override
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	/**
-	 * @see Disableable#getDisabledUntil()
-	 */
-	@Override
-	public LocalDateTime getDisabledUntil() {
-		return disabledUntil;
-	}
-	
-	/**
-	 * @see Disableable#setDisabledUntil(LocalDateTime)
-	 */
-	@Override
-	public void setDisabledUntil(LocalDateTime disabledUntil) {
-		this.disabledUntil = disabledUntil;
 	}
 	
 }
