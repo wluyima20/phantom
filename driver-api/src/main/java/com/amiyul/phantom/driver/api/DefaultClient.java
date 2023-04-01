@@ -49,21 +49,6 @@ public class DefaultClient implements Client {
 		
 	}
 	
-	private static class DefaultResponse implements Response {
-		
-		private final Object result;
-		
-		private DefaultResponse(Object result) {
-			this.result = result;
-		}
-		
-		@Override
-		public <T> T getResult() {
-			return (T) result;
-		}
-		
-	}
-	
 	private static class DefaultRequestContext implements RequestContext {
 		
 		private final Request request;
@@ -86,7 +71,13 @@ public class DefaultClient implements Client {
 		
 		@Override
 		public void writeResult(Object result) {
-			this.response = new DefaultResponse(result);
+			this.response = new Response() {
+				
+				@Override
+				public <T> T getResult() {
+					return (T) result;
+				}
+			};
 		}
 		
 	}

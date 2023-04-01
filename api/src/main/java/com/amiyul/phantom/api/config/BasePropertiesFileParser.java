@@ -1,3 +1,6 @@
+/*
+ * Add Copyright
+ */
 package com.amiyul.phantom.api.config;
 
 import java.io.File;
