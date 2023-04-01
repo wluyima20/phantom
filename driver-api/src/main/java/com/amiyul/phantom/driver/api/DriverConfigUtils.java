@@ -10,9 +10,9 @@ import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
-import com.amiyul.phantom.driver.api.config.DriverConfigMetadata;
 import com.amiyul.phantom.driver.api.config.DriverConfig;
 import com.amiyul.phantom.driver.api.config.DriverConfigFileParser;
+import com.amiyul.phantom.driver.api.config.DriverConfigMetadata;
 
 /**
  * Contains driver config utilities
@@ -68,7 +68,7 @@ public class DriverConfigUtils {
 	 *
 	 * @return Config
 	 */
-	public synchronized static DriverConfig getConfig() {
+    protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
 			DatabaseProvider provider;
 			try {
@@ -87,7 +87,7 @@ public class DriverConfigUtils {
 	/**
 	 * Discards the cached driver config
 	 */
-	public synchronized static void discardConfig() {
+	protected synchronized static void discardConfig() {
 		configMetadata = null;
 		config = null;
 	}

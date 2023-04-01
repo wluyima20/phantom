@@ -5,10 +5,15 @@ package com.amiyul.phantom.db.api.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
+import com.amiyul.phantom.db.api.DatabaseMetadata;
 
 /**
  * Contains database utilities
@@ -28,19 +33,22 @@ public class DatabaseConfigUtils {
 	/**
 	 * Gets the {@link DatabaseConfig} instance
 	 *
-	 * @return Config
+	 * @return DatabaseConfig
 	 */
-	public synchronized static DatabaseConfig getConfig() {
+	protected synchronized static DatabaseConfig getConfig() {
 		if (config == null) {
-			/*DatabaseProvider provider;
+			List<DatabaseMetadata> dbs;
 			try {
-			    provider = getDatabaseMetadata(getDatabaseConfigFile()).getDatabaseProviderClass().newInstance();
+				dbs = getConfigMetadata(getConfigFile()).getDatabaseMetadata();
 			}
 			catch (Exception e) {
-			    throw new RuntimeException(e);
+				throw new RuntimeException(e);
 			}
 			
-			config = () -> provider.get();*/
+			Map<String, DatabaseMetadata> nameAndDbMap = dbs.stream()
+			        .collect(Collectors.toMap(metadata -> metadata.getName(), Function.identity()));
+			
+			config = () -> nameAndDbMap;
 		}
 		
 		return config;
@@ -92,7 +100,7 @@ public class DatabaseConfigUtils {
 	 * @return DatabaseConfigMetadata
 	 * @throws Exception
 	 */
-	protected synchronized static DatabaseConfigMetadata getDatabaseConfigMetadata(String configFilePath) throws Exception {
+	protected synchronized static DatabaseConfigMetadata getConfigMetadata(String configFilePath) throws Exception {
 		if (dbConfigMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " database configuration");
 			
