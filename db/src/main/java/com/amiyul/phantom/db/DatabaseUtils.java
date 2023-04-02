@@ -24,12 +24,12 @@ public class DatabaseUtils {
 	 */
 	protected static Connection getConnection(ConnectionRequest connectionRequest) throws SQLException {
 		final String dbName = connectionRequest.getTargetDatabaseName();
-		DatabaseMetadata dbMetadata = DatabaseConfigUtils.getConfig().getDatabaseMetadata().get(dbName);
-		if (dbMetadata == null) {
+		DatabaseDefinition dbDef = DatabaseConfigUtils.getConfig().getDatabaseMetadata().get(dbName);
+		if (dbDef == null) {
 			throw new SQLException("No target database found matching the name: " + dbName);
 		}
 		
-		return DriverManager.getConnection(dbMetadata.getUrl(), dbMetadata.getProperties());
+		return DriverManager.getConnection(dbDef.getUrl(), dbDef.getProperties());
 	}
 	
 }

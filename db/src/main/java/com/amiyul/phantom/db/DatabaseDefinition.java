@@ -12,9 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Encapsulates metadata for a single target database instance
+ * Encapsulates information for a single target database instance
  */
-public class DatabaseMetadata implements Named, Disableable {
+public class DatabaseDefinition implements Named, Disableable {
 	
 	private String name;
 	
@@ -26,7 +26,7 @@ public class DatabaseMetadata implements Named, Disableable {
 	@Setter
 	private Properties properties;
 	
-	public DatabaseMetadata(String name, String url, Properties properties) {
+	public DatabaseDefinition(String name, String url, Properties properties) {
 		this.name = name;
 		this.url = url;
 		this.properties = properties;

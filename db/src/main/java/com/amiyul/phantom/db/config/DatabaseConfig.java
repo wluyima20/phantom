@@ -6,7 +6,7 @@ package com.amiyul.phantom.db.config;
 import java.util.Map;
 
 import com.amiyul.phantom.api.config.Config;
-import com.amiyul.phantom.db.DatabaseMetadata;
+import com.amiyul.phantom.db.DatabaseDefinition;
 
 /**
  * Marker interface for the database configuration
@@ -14,10 +14,10 @@ import com.amiyul.phantom.db.DatabaseMetadata;
 public interface DatabaseConfig extends Config {
 	
 	/**
-	 * Gets the map of name and {@link DatabaseMetadata} for the target databases
+	 * Gets the map of name and {@link DatabaseDefinition} for the target databases
 	 * 
 	 * @return Map
 	 */
-	Map<String, DatabaseMetadata> getDatabaseMetadata();
+	Map<String, DatabaseDefinition> getDatabaseMetadata();
 	
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
-import com.amiyul.phantom.db.DatabaseMetadata;
+import com.amiyul.phantom.db.DatabaseDefinition;
 
 /**
  * {@link ConfigFileParser} for a database properties file
@@ -30,16 +30,16 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 	@Override
 	public DatabaseConfigMetadata createInstance(Properties properties) throws Exception {
 		Map<String, String> props = cleanEntries(new HashMap(properties));
-		List<DatabaseMetadata> dbMetadataList = new ArrayList(props.size());
+		List<DatabaseDefinition> dbDefs = new ArrayList(props.size());
 		Arrays.stream(props.get(PROP_DATABASES).split(",")).map(dbName -> dbName.trim()).forEach(dbName -> {
 			Map<String, String> dbMetadata = getPropsWithPrefix(props, dbName);
 			Map<String, String> dbConnProps = getPropsWithPrefix(dbMetadata, PROP_PROPS);
 			Properties dbProps = new Properties();
 			dbProps.putAll(dbConnProps);
-			dbMetadataList.add(new DatabaseMetadata(dbName, dbMetadata.get(PROP_URL), dbProps));
+			dbDefs.add(new DatabaseDefinition(dbName, dbMetadata.get(PROP_URL), dbProps));
 		});
 		
-		return () -> dbMetadataList;
+		return () -> dbDefs;
 	}
 	
 	/**

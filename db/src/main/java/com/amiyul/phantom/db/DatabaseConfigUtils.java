@@ -39,7 +39,7 @@ public class DatabaseConfigUtils {
 	 */
 	protected synchronized static DatabaseConfig getConfig() {
 		if (config == null) {
-			List<DatabaseMetadata> dbs;
+			List<DatabaseDefinition> dbs;
 			try {
 				dbs = getConfigMetadata(getConfigFile()).getDatabaseMetadata();
 			}
@@ -47,7 +47,7 @@ public class DatabaseConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			Map<String, DatabaseMetadata> nameAndDbMap = dbs.stream()
+			Map<String, DatabaseDefinition> nameAndDbMap = dbs.stream()
 			        .collect(Collectors.toMap(metadata -> metadata.getName(), Function.identity()));
 			
 			config = () -> nameAndDbMap;
