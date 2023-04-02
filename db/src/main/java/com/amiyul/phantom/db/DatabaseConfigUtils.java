@@ -41,16 +41,16 @@ public class DatabaseConfigUtils {
 		if (config == null) {
 			List<DatabaseDefinition> dbs;
 			try {
-				dbs = getConfigMetadata(getConfigFile()).getDatabaseMetadata();
+				dbs = getConfigMetadata(getConfigFile()).getDatabaseDefinitions();
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 			
-			Map<String, DatabaseDefinition> nameAndDbMap = dbs.stream()
-			        .collect(Collectors.toMap(metadata -> metadata.getName(), Function.identity()));
+			Map<String, DatabaseDefinition> dbNameAndDefMap = dbs.stream()
+			        .collect(Collectors.toMap(def -> def.getName(), Function.identity()));
 			
-			config = () -> nameAndDbMap;
+			config = () -> dbNameAndDefMap;
 		}
 		
 		return config;

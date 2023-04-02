@@ -16,8 +16,8 @@ public interface DatabaseConfigMetadata extends ConfigMetadata {
 	/**
 	 * Gets the {@link DatabaseDefinition} list for all configured target databases
 	 * 
-	 * @return list
+	 * @return list of database definitions
 	 */
-	List<DatabaseDefinition> getDatabaseMetadata();
+	List<DatabaseDefinition> getDatabaseDefinitions();
 	
 }

@@ -18,6 +18,6 @@ public interface DatabaseConfig extends Config {
 	 * 
 	 * @return Map
 	 */
-	Map<String, DatabaseDefinition> getDatabaseMetadata();
+	Map<String, DatabaseDefinition> getDatabaseDefinitions();
 	
 }

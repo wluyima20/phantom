@@ -12,8 +12,8 @@ import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.RequestContext;
 
 /**
- * Base class for {@link Database} implementations where the target database metadata is configured
- * in a file
+ * Base class for {@link Database} implementations where the target database definitions are
+ * configured in a file
  */
 public class FileDatabase extends BaseDatabase {
 	

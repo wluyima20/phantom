@@ -49,15 +49,15 @@ public class DatabasePropertiesFileParserTest {
 		
 		DatabaseConfigMetadata metadata = parser.createInstance(props);
 		
-		assertEquals(2, metadata.getDatabaseMetadata().size());
-		assertEquals("mysql-prod", metadata.getDatabaseMetadata().get(0).getName());
-		assertEquals(DB_URL_PROD, metadata.getDatabaseMetadata().get(0).getUrl());
-		assertEquals(DB_USER_PROD, metadata.getDatabaseMetadata().get(0).getProperties().getProperty(PROP_USER));
-		assertEquals("prod-pass", metadata.getDatabaseMetadata().get(0).getProperties().getProperty(PROP_PASSWORD));
-		assertEquals("mysql-research", metadata.getDatabaseMetadata().get(1).getName());
-		assertEquals("jdbc:mysql://localhost:3307/research", metadata.getDatabaseMetadata().get(1).getUrl());
-		assertEquals("research-user", metadata.getDatabaseMetadata().get(1).getProperties().getProperty(PROP_USER));
-		assertEquals("research-pass", metadata.getDatabaseMetadata().get(1).getProperties().getProperty(PROP_PASSWORD));
+		assertEquals(2, metadata.getDatabaseDefinitions().size());
+		assertEquals("mysql-prod", metadata.getDatabaseDefinitions().get(0).getName());
+		assertEquals(DB_URL_PROD, metadata.getDatabaseDefinitions().get(0).getUrl());
+		assertEquals(DB_USER_PROD, metadata.getDatabaseDefinitions().get(0).getProperties().getProperty(PROP_USER));
+		assertEquals("prod-pass", metadata.getDatabaseDefinitions().get(0).getProperties().getProperty(PROP_PASSWORD));
+		assertEquals("mysql-research", metadata.getDatabaseDefinitions().get(1).getName());
+		assertEquals("jdbc:mysql://localhost:3307/research", metadata.getDatabaseDefinitions().get(1).getUrl());
+		assertEquals("research-user", metadata.getDatabaseDefinitions().get(1).getProperties().getProperty(PROP_USER));
+		assertEquals("research-pass", metadata.getDatabaseDefinitions().get(1).getProperties().getProperty(PROP_PASSWORD));
 	}
 	
 	@Test
@@ -72,15 +72,15 @@ public class DatabasePropertiesFileParserTest {
 		
 		DatabaseConfigMetadata metadata = parser.createInstance(props);
 		
-		assertEquals(2, metadata.getDatabaseMetadata().size());
-		assertEquals("mysql-prod", metadata.getDatabaseMetadata().get(0).getName());
-		assertEquals(DB_URL_PROD, metadata.getDatabaseMetadata().get(0).getUrl());
-		assertEquals(DB_USER_PROD, metadata.getDatabaseMetadata().get(0).getProperties().getProperty(PROP_USER));
-		assertEquals("prod-pass", metadata.getDatabaseMetadata().get(0).getProperties().getProperty(PROP_PASSWORD));
-		assertEquals("mysql-research", metadata.getDatabaseMetadata().get(1).getName());
-		assertNull(metadata.getDatabaseMetadata().get(1).getUrl());
-		assertNull(metadata.getDatabaseMetadata().get(1).getProperties().getProperty(PROP_USER));
-		assertNull(metadata.getDatabaseMetadata().get(1).getProperties().getProperty(PROP_PASSWORD));
+		assertEquals(2, metadata.getDatabaseDefinitions().size());
+		assertEquals("mysql-prod", metadata.getDatabaseDefinitions().get(0).getName());
+		assertEquals(DB_URL_PROD, metadata.getDatabaseDefinitions().get(0).getUrl());
+		assertEquals(DB_USER_PROD, metadata.getDatabaseDefinitions().get(0).getProperties().getProperty(PROP_USER));
+		assertEquals("prod-pass", metadata.getDatabaseDefinitions().get(0).getProperties().getProperty(PROP_PASSWORD));
+		assertEquals("mysql-research", metadata.getDatabaseDefinitions().get(1).getName());
+		assertNull(metadata.getDatabaseDefinitions().get(1).getUrl());
+		assertNull(metadata.getDatabaseDefinitions().get(1).getProperties().getProperty(PROP_USER));
+		assertNull(metadata.getDatabaseDefinitions().get(1).getProperties().getProperty(PROP_PASSWORD));
 	}
 	
 }
