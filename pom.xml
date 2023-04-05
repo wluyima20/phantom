@@ -116,6 +116,8 @@
                         </mapping>
                         <excludes>
                             <exclude>eclipse.importorder</exclude>
+                            <exclude>*.env</exclude>
+                            <exclude>*.cnf</exclude>
                         </excludes>
                     </configuration>
                     <executions>

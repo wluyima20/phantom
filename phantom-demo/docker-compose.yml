@@ -1,0 +1,28 @@
+#
+# Add Copyright
+#
+
+version: "3.3"
+
+services:
+  phantom-prod:
+    image: mysql:5.7.40
+    container_name: prod
+    env_file:
+      - prod.env
+    ports:
+      - "3506:3306"
+    volumes:
+      - ./my.cnf:/etc/mysql/my.cnf
+      - ./initial-data-prod.sql:/docker-entrypoint-initdb.d/initial-data.sql
+
+  phantom-research:
+    image: mysql:5.7.40
+    container_name: research
+    env_file:
+      - research.env
+    ports:
+      - "3606:3306"
+    volumes:
+      - ./my.cnf:/etc/mysql/my.cnf
+      - ./initial-data-research.sql:/docker-entrypoint-initdb.d/initial-data.sql
