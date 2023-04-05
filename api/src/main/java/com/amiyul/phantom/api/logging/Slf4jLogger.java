@@ -48,7 +48,7 @@ public class Slf4jLogger implements DriverLogger {
 	@Override
 	public void debug(String message) {
 		if (isDebugEnabled()) {
-			invokeMethodSilently(debugMethod);
+			invokeMethodSilently(debugMethod, message);
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class Slf4jLogger implements DriverLogger {
 	
 	private <T> T invokeMethodSilently(Method method, Object... args) {
 		try {
-			return (T) method.invoke(null, args);
+			return (T) method.invoke(nativeLogger, args);
 		}
 		catch (IllegalAccessException | InvocationTargetException e) {
 			//Ignore

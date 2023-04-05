@@ -3,11 +3,11 @@
  */
 package com.amiyul.phantom.db;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.amiyul.phantom.api.ConnectionRequest;
+import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
  * Contains utilities used by the {@link FileDatabase}
@@ -16,20 +16,21 @@ public class DatabaseUtils {
 	
 	/**
 	 * Obtains a connection object to a target database defined on the specified
-	 * {@link ConnectionRequest} object
+	 * {@link ConnectionRequest} object and writes the obtained connection as the response result.
 	 *
-	 * @param connectionRequest {@link ConnectionRequest}
-	 * @return Connection
+	 * @param request {@link ConnectionRequest}
 	 * @throws SQLException
 	 */
-	protected static Connection getConnection(ConnectionRequest connectionRequest) throws SQLException {
-		final String dbName = connectionRequest.getTargetDatabaseName();
-		DatabaseDefinition dbDef = DatabaseConfigUtils.getConfig().getDatabaseDefinitions().get(dbName);
-		if (dbDef == null) {
+	protected static void getConnection(ConnectionRequest request) throws SQLException {
+		final String dbName = request.getTargetDatabaseName();
+		DatabaseDefinition ref = DatabaseConfigUtils.getConfig().getDatabaseDefinitions().get(dbName);
+		if (ref == null) {
 			throw new SQLException("No target database found matching the name: " + dbName);
 		}
 		
-		return DriverManager.getConnection(dbDef.getUrl(), dbDef.getProperties());
+		LoggerUtils.debug("Obtaining connection to target database at -> " + ref.getUrl());
+		
+		request.getContext().writeResult(DriverManager.getConnection(ref.getUrl(), ref.getProperties()));
 	}
 	
 }

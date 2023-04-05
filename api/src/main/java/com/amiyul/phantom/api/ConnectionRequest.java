@@ -15,8 +15,8 @@ public class ConnectionRequest extends BaseRequest {
 	@Getter
 	private final String targetDatabaseName;
 	
-	public ConnectionRequest(String targetDatabaseName) {
-		super(Command.CONNECT);
+	public ConnectionRequest(String targetDatabaseName, RequestContext context) {
+		super(Command.CONNECT, context);
 		this.targetDatabaseName = targetDatabaseName;
 	}
 	

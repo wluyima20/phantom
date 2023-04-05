@@ -78,8 +78,11 @@ public class DriverConfigUtils {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
 			try {
-				Class<? extends DatabaseProvider> clazz = getConfigMetadata(getDriverConfigFile())
-				        .getDatabaseProviderClass();
+				String configFile = getDriverConfigFile();
+				Class<? extends DatabaseProvider> clazz = null;
+				if (!Utils.isBlank(configFile)) {
+					clazz = getConfigMetadata(configFile).getDatabaseProviderClass();
+				}
 				
 				if (clazz == null) {
 					clazz = FileDatabaseProvider.class;
@@ -115,11 +118,11 @@ public class DriverConfigUtils {
 		if (configFilePath == null) {
 			configFilePath = Utils.getFilePath(PROP_CONFIG_LOCATION);
 			
-			if (Utils.isBlank(configFilePath)) {
-				throw new RuntimeException("Found no defined location for the driver config file");
+			if (!Utils.isBlank(configFilePath)) {
+				LoggerUtils.debug("Using driver config file located at -> " + configFilePath);
+			} else {
+				LoggerUtils.debug("Found no defined location for the driver config file");
 			}
-			
-			LoggerUtils.debug("Using driver config file located at -> " + configFilePath);
 		}
 		
 		return configFilePath;

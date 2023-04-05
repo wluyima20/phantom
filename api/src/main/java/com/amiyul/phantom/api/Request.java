@@ -17,4 +17,11 @@ public interface Request {
 	 */
 	Command getCommand();
 	
+	/**
+	 * Gets the request context object associated to this request
+	 * 
+	 * @return request context
+	 */
+	RequestContext getContext();
+	
 }

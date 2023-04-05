@@ -28,7 +28,8 @@ public class DefaultClient implements Client {
 	public Connection connect(String targetDatabaseName) throws SQLException {
 		LoggerUtils.debug("Obtaining connection to the database named: " + targetDatabaseName);
 		
-		RequestContext requestContext = new DefaultRequestContext(new ConnectionRequest(targetDatabaseName));
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new ConnectionRequest(targetDatabaseName, requestContext);
 		sendRequest(requestContext);
 		return requestContext.readResult();
 	}
@@ -51,13 +52,9 @@ public class DefaultClient implements Client {
 	
 	private static class DefaultRequestContext implements RequestContext {
 		
-		private final Request request;
+		private Request request;
 		
 		private Response response;
-		
-		private DefaultRequestContext(Request request) {
-			this.request = request;
-		}
 		
 		@Override
 		public Request getRequest() {
