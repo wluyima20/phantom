@@ -4,6 +4,8 @@
 package com.amiyul.phantom.api;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 
 import com.amiyul.phantom.api.config.ConfigFileParser;
@@ -54,6 +56,17 @@ public class Utils {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Gets the input stream for the specified file
+	 * 
+	 * @param file file to open
+	 * @return FileInputStream
+	 * @throws FileNotFoundException
+	 */
+	public static FileInputStream getInputStream(File file) throws FileNotFoundException {
+		return new FileInputStream(file);
 	}
 	
 }

@@ -4,7 +4,6 @@
 package com.amiyul.phantom.driver;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Database;
@@ -72,18 +71,13 @@ public class DriverConfigUtils {
 	/**
 	 * Gets the {@link DriverConfig} instance
 	 *
-	 * @return Config
+	 * @return DriverConfig
 	 */
 	protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
 			try {
-				String configFile = getDriverConfigFile();
-				Class<? extends DatabaseProvider> clazz = null;
-				if (!Utils.isBlank(configFile)) {
-					clazz = getConfigMetadata(configFile).getDatabaseProviderClass();
-				}
-				
+				Class<? extends DatabaseProvider> clazz = getConfigMetadata().getDatabaseProviderClass();
 				if (clazz == null) {
 					clazz = FileDatabaseProvider.class;
 					LoggerUtils.info("No configured database provider, defaulting to file database provider");
@@ -104,7 +98,7 @@ public class DriverConfigUtils {
 	/**
 	 * Discards the cached driver config
 	 */
-	protected synchronized static void discardConfig() {
+	protected static void discardConfig() {
 		configMetadata = null;
 		config = null;
 	}
@@ -131,17 +125,16 @@ public class DriverConfigUtils {
 	/**
 	 * Gets the {@link DriverConfigMetadata} instance
 	 *
-	 * @param configFilePath path to config file
-	 * @return ConfigMetadata
+	 * @return DriverConfigMetadata
 	 * @throws Exception
 	 */
-	protected synchronized static DriverConfigMetadata getConfigMetadata(String configFilePath) throws Exception {
+	protected synchronized static DriverConfigMetadata getConfigMetadata() throws Exception {
 		if (configMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			
-			File configFile = new File(configFilePath);
+			File configFile = new File(getDriverConfigFile());
 			
-			configMetadata = DriverConfigUtils.getParser(configFile).parse(new FileInputStream(configFile));
+			configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
 		}
 		
 		return configMetadata;

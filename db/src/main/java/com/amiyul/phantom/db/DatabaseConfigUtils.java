@@ -41,7 +41,7 @@ public class DatabaseConfigUtils {
 		if (config == null) {
 			List<DatabaseDefinition> dbs;
 			try {
-				dbs = getConfigMetadata(getConfigFile()).getDatabaseDefinitions();
+				dbs = getConfigMetadata().getDatabaseDefinitions();
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
@@ -98,17 +98,16 @@ public class DatabaseConfigUtils {
 	/**
 	 * Gets the {@link DatabaseConfigMetadata} instance
 	 *
-	 * @param configFilePath path to database config file
 	 * @return DatabaseConfigMetadata
 	 * @throws Exception
 	 */
-	protected synchronized static DatabaseConfigMetadata getConfigMetadata(String configFilePath) throws Exception {
+	protected synchronized static DatabaseConfigMetadata getConfigMetadata() throws Exception {
 		if (dbConfigMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " database configuration");
 			
-			File configFile = new File(configFilePath);
+			File configFile = new File(getConfigFile());
 			
-			dbConfigMetadata = DatabaseConfigUtils.getParser(configFile).parse(new FileInputStream(configFile));
+			dbConfigMetadata = getParser(configFile).parse(new FileInputStream(configFile));
 		}
 		
 		return dbConfigMetadata;
