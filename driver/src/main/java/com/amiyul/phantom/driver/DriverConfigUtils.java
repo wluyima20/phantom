@@ -77,7 +77,12 @@ public class DriverConfigUtils {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
 			try {
-				Class<? extends DatabaseProvider> clazz = getConfigMetadata().getDatabaseProviderClass();
+				DriverConfigMetadata metadata = getConfigMetadata();
+				Class<? extends DatabaseProvider> clazz = null;
+				if (metadata != null) {
+					clazz = metadata.getDatabaseProviderClass();
+				}
+				
 				if (clazz == null) {
 					clazz = FileDatabaseProvider.class;
 					LoggerUtils.info("No configured database provider, defaulting to file database provider");
@@ -132,9 +137,11 @@ public class DriverConfigUtils {
 		if (configMetadata == null) {
 			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			
-			File configFile = new File(getDriverConfigFile());
-			
-			configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
+			String filePath = getDriverConfigFile();
+			if (!Utils.isBlank(filePath)) {
+				File configFile = new File(filePath);
+				configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
+			}
 		}
 		
 		return configMetadata;
