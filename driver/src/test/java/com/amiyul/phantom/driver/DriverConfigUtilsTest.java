@@ -197,6 +197,13 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
+	public void getConfig_shouldDefaultToTheFileDatabaseProviderIfNoConfigMetadataExists() {
+		when(Utils.isBlank(any())).thenReturn(true);
+		
+		assertEquals(FileDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());
+	}
+	
+	@Test
 	public void getConfig_shouldReturnTheCachedConfig() {
 		Database mockDatabase = Mockito.mock(Database.class);
 		DriverConfig mockConfig = Mockito.mock(DriverConfig.class);
