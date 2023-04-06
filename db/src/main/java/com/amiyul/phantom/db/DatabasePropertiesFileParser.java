@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db.config;
+package com.amiyul.phantom.db;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
-import com.amiyul.phantom.db.DatabaseDefinition;
 
 /**
  * {@link ConfigFileParser} for a database properties file
