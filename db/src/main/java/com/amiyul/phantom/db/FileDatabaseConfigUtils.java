@@ -60,6 +60,8 @@ public class FileDatabaseConfigUtils {
 	 * Discards the cached database config
 	 */
 	protected static void discardConfig() {
+		LoggerUtils.debug("Discarding database config");
+		
 		configMetadata = null;
 		config = null;
 	}

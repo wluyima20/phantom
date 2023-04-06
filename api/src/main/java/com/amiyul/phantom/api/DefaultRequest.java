@@ -6,15 +6,15 @@ package com.amiyul.phantom.api;
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 
 /**
- * Base class for Requests
+ * Default {@link Request} implementation
  */
-public abstract class BaseRequest implements Request {
+public class DefaultRequest implements Request {
 	
 	private final Command command;
 	
 	private final RequestContext context;
 	
-	public BaseRequest(Command command, RequestContext context) {
+	public DefaultRequest(Command command, RequestContext context) {
 		this.command = command;
 		this.context = context;
 	}

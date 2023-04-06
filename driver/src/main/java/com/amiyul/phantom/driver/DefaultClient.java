@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.amiyul.phantom.api.ConnectionRequest;
+import com.amiyul.phantom.api.DefaultRequest;
+import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Response;
@@ -32,6 +34,15 @@ public class DefaultClient implements Client {
 		requestContext.request = new ConnectionRequest(targetDatabaseName, requestContext);
 		sendRequest(requestContext);
 		return requestContext.readResult();
+	}
+	
+	@Override
+	public void reload() throws SQLException {
+		LoggerUtils.debug("Sending reload signal");
+		
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
+		sendRequest(requestContext);
 	}
 	
 	/**

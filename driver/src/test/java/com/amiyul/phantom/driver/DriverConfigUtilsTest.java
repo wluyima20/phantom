@@ -6,6 +6,7 @@ package com.amiyul.phantom.driver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -37,7 +38,7 @@ import com.amiyul.phantom.driver.config.DriverConfigFileParser;
 import com.amiyul.phantom.driver.config.DriverConfigMetadata;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(Utils.class)
+@PrepareForTest({ Utils.class, DefaultClient.class })
 public class DriverConfigUtilsTest {
 	
 	private static class MockDatabase extends BaseDatabase {
@@ -63,9 +64,13 @@ public class DriverConfigUtilsTest {
 	@Mock
 	private File mockFile;
 	
+	@Mock
+	private DefaultClient mockClient;
+	
 	@Before
 	public void setup() {
 		PowerMockito.mockStatic(Utils.class);
+		PowerMockito.mockStatic(DefaultClient.class);
 	}
 	
 	@After
@@ -112,16 +117,18 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
-	public void discardConfig_shouldClearConfigAndMetadataCaches() {
+	public void reloadConfig_shouldClearConfigAndMetadataCachesAndSendReloadSignalToTheDatabase() throws Exception {
 		DriverConfigMetadata metadata = Mockito.mock(DriverConfigMetadata.class);
 		DriverConfig config = Mockito.mock(DriverConfig.class);
 		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", metadata);
 		Whitebox.setInternalState(DriverConfigUtils.class, "config", config);
+		when(DefaultClient.getInstance()).thenReturn(mockClient);
 		
-		DriverConfigUtils.discardConfig();
+		DriverConfigUtils.reloadConfig();
 		
 		assertNull(Whitebox.getInternalState(DriverConfigUtils.class, "configMetadata"));
 		assertNull(Whitebox.getInternalState(DriverConfigUtils.class, "config"));
+		verify(mockClient).reload();
 	}
 	
 	@Test

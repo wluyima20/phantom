@@ -31,6 +31,9 @@ public class FileDatabase extends BaseDatabase {
 			case CONNECT:
 				FileDatabaseUtils.getConnection((ConnectionRequest) context.getRequest());
 				break;
+			case RELOAD:
+				FileDatabaseConfigUtils.discardConfig();
+				break;
 			default:
 				throw new SQLException("Don't know how to process protocol command: " + command);
 		}

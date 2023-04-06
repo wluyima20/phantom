@@ -10,7 +10,7 @@ import lombok.Getter;
 /**
  * Encapsulates data for a request for a connection object
  */
-public class ConnectionRequest extends BaseRequest {
+public class ConnectionRequest extends DefaultRequest {
 	
 	@Getter
 	private final String targetDatabaseName;

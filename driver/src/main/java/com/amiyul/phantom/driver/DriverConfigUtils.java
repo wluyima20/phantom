@@ -4,6 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import java.io.File;
+import java.sql.SQLException;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Database;
@@ -101,11 +102,16 @@ public class DriverConfigUtils {
 	}
 	
 	/**
-	 * Discards the cached driver config
+	 * Reloads the driver and database configurations
+	 * 
+	 * @throws SQLException
 	 */
-	protected static void discardConfig() {
+	protected static void reloadConfig() throws SQLException {
+		LoggerUtils.debug("Discarding driver config");
+		
 		configMetadata = null;
 		config = null;
+		DefaultClient.getInstance().reload();
 	}
 	
 	/**

@@ -33,7 +33,7 @@ public class DriverUtils {
 			LoggerUtils.debug(
 			    "Reloading config after failed attempt to obtain a connection to the database named: " + targetDbName);
 			
-			DriverConfigUtils.discardConfig();
+			DriverConfigUtils.reloadConfig();
 			
 			return DefaultClient.getInstance().connect(targetDbName);
 		}

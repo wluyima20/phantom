@@ -13,12 +13,19 @@ import java.sql.SQLException;
 public interface Client {
 	
 	/**
-	 * Requests connection from the database server
+	 * Requests connection from the database
 	 *
 	 * @param targetDatabaseName the unique name for the target database
 	 * @return Connection object
 	 * @throws SQLException
 	 */
 	Connection connect(String targetDatabaseName) throws SQLException;
+	
+	/**
+	 * Sends a reload signal to the database
+	 * 
+	 * @throws SQLException
+	 */
+	void reload() throws SQLException;
 	
 }
