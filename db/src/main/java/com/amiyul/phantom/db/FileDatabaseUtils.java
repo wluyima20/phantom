@@ -12,7 +12,7 @@ import com.amiyul.phantom.api.logging.LoggerUtils;
 /**
  * Contains utilities used by the {@link FileDatabase}
  */
-public class DatabaseUtils {
+public class FileDatabaseUtils {
 	
 	/**
 	 * Obtains a connection object to a target database defined on the specified
@@ -23,7 +23,7 @@ public class DatabaseUtils {
 	 */
 	protected static void getConnection(ConnectionRequest request) throws SQLException {
 		final String dbName = request.getTargetDatabaseName();
-		DatabaseDefinition ref = DatabaseConfigUtils.getConfig().getDatabaseDefinitions().get(dbName);
+		DatabaseDefinition ref = FileDatabaseConfigUtils.getConfig().getDatabaseDefinitions().get(dbName);
 		if (ref == null) {
 			throw new SQLException("No target database found matching the name: " + dbName);
 		}

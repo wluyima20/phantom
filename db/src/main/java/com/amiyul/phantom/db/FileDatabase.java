@@ -29,7 +29,7 @@ public class FileDatabase extends BaseDatabase {
 		Command command = context.getRequest().getCommand();
 		switch (command) {
 			case CONNECT:
-				DatabaseUtils.getConnection((ConnectionRequest) context.getRequest());
+				FileDatabaseUtils.getConnection((ConnectionRequest) context.getRequest());
 				break;
 			default:
 				throw new SQLException("Don't know how to process protocol command: " + command);
