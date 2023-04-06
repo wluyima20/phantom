@@ -28,7 +28,7 @@ public class DatabaseConfigUtils {
 	
 	private static DatabaseConfigFileParser parser;
 	
-	private static DatabaseConfigMetadata dbConfigMetadata;
+	private static DatabaseConfigMetadata configMetadata;
 	
 	private static DatabaseConfig config;
 	
@@ -54,6 +54,14 @@ public class DatabaseConfigUtils {
 		}
 		
 		return config;
+	}
+	
+	/**
+	 * Discards the cached database config
+	 */
+	protected static void discardConfig() {
+		configMetadata = null;
+		config = null;
 	}
 	
 	/**
@@ -102,15 +110,15 @@ public class DatabaseConfigUtils {
 	 * @throws Exception
 	 */
 	protected synchronized static DatabaseConfigMetadata getConfigMetadata() throws Exception {
-		if (dbConfigMetadata == null) {
-			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " database configuration");
+		if (configMetadata == null) {
+			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " database configuration");
 			
 			File configFile = new File(getConfigFile());
 			
-			dbConfigMetadata = getParser(configFile).parse(new FileInputStream(configFile));
+			configMetadata = getParser(configFile).parse(new FileInputStream(configFile));
 		}
 		
-		return dbConfigMetadata;
+		return configMetadata;
 	}
 	
 }

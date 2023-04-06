@@ -135,7 +135,7 @@ public class DriverConfigUtils {
 	 */
 	protected synchronized static DriverConfigMetadata getConfigMetadata() throws Exception {
 		if (configMetadata == null) {
-			LoggerUtils.info("Loading " + Constants.DATABASE_NAME + " driver configuration");
+			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			
 			String filePath = getDriverConfigFile();
 			if (!Utils.isBlank(filePath)) {
