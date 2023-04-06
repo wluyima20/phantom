@@ -125,22 +125,22 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
-	public void getDriverConfigFile_shouldGetTheConfigFile() {
+	public void getConfigFile_shouldGetTheConfigFile() {
 		final String path = "/some/path";
 		when(Utils.getFilePath(DriverConfigUtils.PROP_CONFIG_LOCATION)).thenReturn(path);
-		assertEquals(path, DriverConfigUtils.getDriverConfigFile());
+		assertEquals(path, DriverConfigUtils.getConfigFile());
 	}
 	
 	@Test
-	public void getDriverConfigFile_shouldReturnTheCachedConfigFile() {
+	public void getConfigFile_shouldReturnTheCachedConfigFile() {
 		final String path = "/some/cached/path";
 		Whitebox.setInternalState(DriverConfigUtils.class, "configFilePath", path);
-		assertEquals(path, DriverConfigUtils.getDriverConfigFile());
+		assertEquals(path, DriverConfigUtils.getConfigFile());
 	}
 	
 	@Test
-	public void getDriverConfigFile_shouldReturnNullIfNoneIsConfigured() {
-		assertNull(DriverConfigUtils.getDriverConfigFile());
+	public void getConfigFile_shouldReturnNullIfNoneIsConfigured() {
+		assertNull(DriverConfigUtils.getConfigFile());
 	}
 	
 	@Test

@@ -113,7 +113,7 @@ public class DriverConfigUtils {
 	 *
 	 * @return config file path
 	 */
-	protected synchronized static String getDriverConfigFile() {
+	protected synchronized static String getConfigFile() {
 		if (configFilePath == null) {
 			configFilePath = Utils.getFilePath(PROP_CONFIG_LOCATION);
 			
@@ -137,7 +137,7 @@ public class DriverConfigUtils {
 		if (configMetadata == null) {
 			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			
-			String filePath = getDriverConfigFile();
+			String filePath = getConfigFile();
 			if (!Utils.isBlank(filePath)) {
 				File configFile = new File(filePath);
 				configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
