@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.config;
+package com.amiyul.phantom.driver;
 
 import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.config.Config;

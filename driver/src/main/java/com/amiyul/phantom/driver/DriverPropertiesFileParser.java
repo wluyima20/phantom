@@ -1,15 +1,14 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.config;
+package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.config.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
+import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
 
 import java.util.Properties;
 
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
-import com.amiyul.phantom.driver.DriverConfigUtils;
 
 /**
  * {@link ConfigFileParser} for a driver properties file

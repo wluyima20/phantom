@@ -12,9 +12,6 @@ import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 import com.amiyul.phantom.db.FileDatabaseProvider;
-import com.amiyul.phantom.driver.config.DriverConfig;
-import com.amiyul.phantom.driver.config.DriverConfigFileParser;
-import com.amiyul.phantom.driver.config.DriverConfigMetadata;
 
 /**
  * Contains driver config utilities
@@ -58,7 +55,7 @@ public class DriverConfigUtils {
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	public static DriverConfigMetadata createMetadata(String dbProviderClass) throws Exception {
+	protected static DriverConfigMetadata createMetadata(String dbProviderClass) throws Exception {
 		Class<DatabaseProvider> clazz = null;
 		if (!Utils.isBlank(dbProviderClass)) {
 			clazz = (Class) Thread.currentThread().getContextClassLoader().loadClass(dbProviderClass);
@@ -86,7 +83,7 @@ public class DriverConfigUtils {
 				
 				if (clazz == null) {
 					clazz = FileDatabaseProvider.class;
-					LoggerUtils.info("No configured database provider, defaulting to file database provider");
+					LoggerUtils.debug("No configured database provider, defaulting to file database provider");
 				}
 				
 				provider = clazz.newInstance();

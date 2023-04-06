@@ -1,9 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.driver.config;
+package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.config.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
+import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
 
 import java.util.Properties;
 
@@ -14,8 +14,6 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import com.amiyul.phantom.driver.DriverConfigUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DriverConfigUtils.class)

@@ -33,9 +33,6 @@ import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.db.FileDatabase;
-import com.amiyul.phantom.driver.config.DriverConfig;
-import com.amiyul.phantom.driver.config.DriverConfigFileParser;
-import com.amiyul.phantom.driver.config.DriverConfigMetadata;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utils.class, DefaultClient.class })
