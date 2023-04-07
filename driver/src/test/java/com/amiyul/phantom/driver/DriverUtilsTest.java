@@ -4,80 +4,71 @@
 package com.amiyul.phantom.driver;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
-
-import com.amiyul.phantom.api.Database;
-import com.amiyul.phantom.api.DatabaseProvider;
-import com.amiyul.phantom.api.ServiceLoaderUtils;
-import com.amiyul.phantom.api.config.ConfigFileParser;
-import com.amiyul.phantom.driver.config.DriverConfig;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DriverConfigUtils.class, ServiceLoaderUtils.class })
+@PrepareForTest({ DriverConfigUtils.class, DefaultClient.class })
 public class DriverUtilsTest {
 	
 	@Mock
-	private ConfigFileParser mockParser;
+	private DefaultClient mockClient;
 	
 	@Mock
-	private Database mockDatabase;
-	
-	@Mock
-	private DatabaseProvider mockDatabaseProvider;
-	
-	@Mock
-	private File mockFile;
+	private Connection mockConnection;
 	
 	@Before
 	public void setup() {
-		PowerMockito.mockStatic(ServiceLoaderUtils.class);
-		Whitebox.setInternalState(DriverConfigUtils.class, "parser", (Object) null);
+		PowerMockito.mockStatic(DefaultClient.class);
+		PowerMockito.mockStatic(DriverConfigUtils.class);
+		when(DefaultClient.getInstance()).thenReturn(mockClient);
 	}
 	
 	@Test
-	public void getParser_shouldReturnTheAppropriateParser() {
-		ConfigFileParser mockParser1 = mock(ConfigFileParser.class);
-		ConfigFileParser mockParser2 = mock(ConfigFileParser.class);
-		ConfigFileParser mockParser3 = mock(ConfigFileParser.class);
-		when(mockParser2.canParse(mockFile)).thenReturn(true);
-		Iterator iterator = Arrays.asList(mockParser1, mockParser2, mockParser3).iterator();
-		when(ServiceLoaderUtils.getProviders(ConfigFileParser.class)).thenReturn(iterator);
+	public void connect_shouldCallTheClientToConnectToTheTargetDb() throws Exception {
+		final String dbName = "db";
+		when(mockClient.connect(dbName)).thenReturn(mockConnection);
 		
-		assertEquals(mockParser2, DriverConfigUtils.getParser(mockFile));
+		assertEquals(mockConnection, DriverUtils.connect(dbName));
 	}
 	
 	@Test
-	public void getParser_shouldReturnTheCachedParser() {
-		ConfigFileParser mockParser = mock(ConfigFileParser.class);
-		Whitebox.setInternalState(DriverConfigUtils.class, "parser", mockParser);
+	public void connect_shouldReconnectToTheDbInCaseOfAnExceptionOnTheFirstAttempt() throws Exception {
+		final String dbName = "db";
+		final AtomicInteger callCount = new AtomicInteger();
+		when(mockClient.connect(dbName)).thenAnswer(invocation -> {
+			if (callCount.get() == 0) {
+				callCount.getAndDecrement();
+				throw new SQLException();
+			}
+			
+			return mockConnection;
+		});
 		
-		assertEquals(mockParser, DriverConfigUtils.getParser(mockFile));
-		
-		PowerMockito.verifyZeroInteractions(ServiceLoaderUtils.class);
+		assertEquals(mockConnection, DriverUtils.connect(dbName));
+		Mockito.verify(mockClient, Mockito.times(2)).connect(dbName);
+		PowerMockito.verifyStatic(DriverConfigUtils.class);
+		DriverConfigUtils.reloadConfig();
 	}
 	
 	@Test
-	public void getCnfig() throws Exception {
-		//System.setProperty(PROP_CONFIG_LOCATION, "/some/file");
+	public void connect_shouldFailIfNoTargetDbIsSpecified() {
+		Exception thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils.connect(""));
 		
-		DriverConfig config = DriverConfigUtils.getConfig();
-		
-		Assert.assertEquals(mockDatabase, config.getDatabase());
+		assertEquals("No target database name defined in the database URL", thrown.getMessage());
 	}
 	
 }
