@@ -85,6 +85,7 @@ public class DefaultClient implements Client {
 				public <T> T getResult() {
 					return (T) result;
 				}
+				
 			};
 		}
 		

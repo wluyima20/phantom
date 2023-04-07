@@ -4,7 +4,6 @@
 package com.amiyul.phantom.db;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -113,8 +112,7 @@ public class FileDatabaseConfigUtils {
 			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " database configuration");
 			
 			File configFile = new File(getConfigFile());
-			
-			configMetadata = getParser(configFile).parse(new FileInputStream(configFile));
+			configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
 		}
 		
 		return configMetadata;
