@@ -61,7 +61,7 @@ public class DefaultClient implements Client {
 		
 	}
 	
-	private static class DefaultRequestContext implements RequestContext {
+	protected static class DefaultRequestContext implements RequestContext {
 		
 		private Request request;
 		
