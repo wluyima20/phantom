@@ -71,4 +71,12 @@ public class DriverUtilsTest {
 		assertEquals("No target database name defined in the database URL", thrown.getMessage());
 	}
 	
+	@Test
+	public void connect_shouldFailIfNoConnectionIsObtained() {
+		final String dbName = "db";
+		SQLException thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils.connect(dbName));
+		
+		Assert.assertEquals("No connection obtained to the database named: " + dbName, thrown.getMessage());
+	}
+	
 }

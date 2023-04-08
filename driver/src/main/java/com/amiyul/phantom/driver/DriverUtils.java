@@ -26,8 +26,9 @@ public class DriverUtils {
 			throw new SQLException("No target database name defined in the database URL");
 		}
 		
+		Connection connection;
 		try {
-			return DefaultClient.getInstance().connect(targetDbName);
+			connection = DefaultClient.getInstance().connect(targetDbName);
 		}
 		catch (SQLException e) {
 			LoggerUtils.debug(
@@ -35,8 +36,14 @@ public class DriverUtils {
 			
 			DriverConfigUtils.reloadConfig();
 			
-			return DefaultClient.getInstance().connect(targetDbName);
+			connection = DefaultClient.getInstance().connect(targetDbName);
 		}
+		
+		if (connection == null) {
+			throw new SQLException("No connection obtained to the database named: " + targetDbName);
+		}
+		
+		return connection;
 	}
 	
 }
