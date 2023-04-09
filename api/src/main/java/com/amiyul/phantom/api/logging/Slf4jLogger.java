@@ -6,6 +6,8 @@ package com.amiyul.phantom.api.logging;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.amiyul.phantom.api.Utils;
+
 /**
  * {@link DriverLogger} implementation that delegates to slf4j
  */
@@ -27,7 +29,7 @@ public class Slf4jLogger implements DriverLogger {
 	
 	private Slf4jLogger() {
 		try {
-			Class<?> factoryClass = Thread.currentThread().getContextClassLoader().loadClass(CLASS_LOGGER_FACTORY);
+			Class<?> factoryClass = Utils.loadClass(CLASS_LOGGER_FACTORY);
 			Method getLoggerMethod = factoryClass.getDeclaredMethod("getLogger", Class.class);
 			nativeLogger = getLoggerMethod.invoke(null, getClass());
 			debugMethod = nativeLogger.getClass().getDeclaredMethod("debug", String.class);

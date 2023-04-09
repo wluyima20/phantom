@@ -6,11 +6,12 @@ package com.amiyul.phantom.api.logging;
 import java.util.Iterator;
 
 import com.amiyul.phantom.api.ServiceLoaderUtils;
+import com.amiyul.phantom.api.Utils;
 
 /**
  * Contains logging utilities
  */
-public final class LoggerUtils {
+public class LoggerUtils {
 	
 	private static LoggerProvider provider;
 	
@@ -78,9 +79,9 @@ public final class LoggerUtils {
 	 * 
 	 * @return true if slf4j is present otherwise false
 	 */
-	private static boolean isSlf4jPresent() {
+	protected static boolean isSlf4jPresent() {
 		try {
-			Thread.currentThread().getContextClassLoader().loadClass(Slf4jLogger.CLASS_LOGGER_FACTORY);
+			Utils.loadClass(Slf4jLogger.CLASS_LOGGER_FACTORY);
 			return true;
 		}
 		catch (ClassNotFoundException e) {

@@ -69,4 +69,15 @@ public class Utils {
 		return new FileInputStream(file);
 	}
 	
+	/**
+	 * Loads the class object matching the specified class name
+	 * 
+	 * @param className class name to load
+	 * @return Class object
+	 * @throws ClassNotFoundException
+	 */
+	public static Class<?> loadClass(String className) throws ClassNotFoundException {
+		return Thread.currentThread().getContextClassLoader().loadClass(className);
+	}
+	
 }
