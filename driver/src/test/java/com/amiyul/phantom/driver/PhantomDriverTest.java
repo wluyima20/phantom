@@ -13,16 +13,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.JavaLogger;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DriverUtils.class, LoggerUtils.class })
+@PrepareForTest({ DriverUtils.class, LoggerUtils.class, Utils.class })
 public class PhantomDriverTest {
 	
 	private PhantomDriver driver;
@@ -31,6 +33,8 @@ public class PhantomDriverTest {
 	public void setup() {
 		PowerMockito.mockStatic(DriverUtils.class);
 		PowerMockito.mockStatic(LoggerUtils.class);
+		PowerMockito.mockStatic(Utils.class);
+		Mockito.when(Utils.isBlank(ArgumentMatchers.any())).thenCallRealMethod();
 		driver = new PhantomDriver();
 	}
 	
@@ -88,8 +92,22 @@ public class PhantomDriverTest {
 	}
 	
 	@Test
-	public void getPropertyInfo_shouldReturnAnEMortyArray() {
+	public void getPropertyInfo_shouldReturnAnEmptyArray() {
 		assertEquals(0, driver.getPropertyInfo(null, null).length);
+	}
+	
+	@Test
+	public void getMajorVersion_shouldReturnTheMajor() {
+		final int majorVersion = 2;
+		Mockito.when(Utils.getVersion()).thenReturn(majorVersion + ".3");
+		assertEquals(majorVersion, driver.getMajorVersion());
+	}
+	
+	@Test
+	public void getMinorVersion_shouldReturnTheMinorVersion() {
+		final int minorVersion = 3;
+		Mockito.when(Utils.getVersion()).thenReturn("2." + minorVersion);
+		assertEquals(minorVersion, driver.getMinorVersion());
 	}
 	
 }

@@ -3,11 +3,13 @@
  */
 package com.amiyul.phantom.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -18,6 +20,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.amiyul.phantom.api.config.ConfigFileParser;
 
@@ -26,6 +29,8 @@ import com.amiyul.phantom.api.config.ConfigFileParser;
 public class UtilsTest {
 	
 	private static final String PROP_NAME = "test_prop";
+	
+	private static final String TEST_VERSION = "1.2.3";
 	
 	@Before
 	public void setup() {
@@ -94,6 +99,14 @@ public class UtilsTest {
 		when(ServiceLoaderUtils.getProviders(ConfigFileParser.class)).thenReturn(parsers);
 		
 		Assert.assertNull(Utils.getParser(ConfigFileParser.class, mockFile));
+	}
+	
+	@Test
+	public void getVersion_shouldReturnTheBuildVersion() {
+		Properties props = new Properties();
+		props.setProperty(Utils.BUILD_PROP_VERSION, TEST_VERSION);
+		Whitebox.setInternalState(Utils.class, "PROPERTIES", props);
+		assertEquals(TEST_VERSION, Utils.getVersion());
 	}
 	
 }

@@ -21,6 +21,10 @@ public final class PhantomDriver implements Driver {
 	
 	protected static final String URL_PREFIX = "jdbc:" + Constants.DATABASE_NAME + "://";
 	
+	private static Integer majorVersion;
+	
+	private static Integer minorVersion;
+	
 	static {
 		try {
 			DriverManager.registerDriver(new PhantomDriver());
@@ -65,14 +69,20 @@ public final class PhantomDriver implements Driver {
 	
 	@Override
 	public int getMajorVersion() {
-		//TODO read it from project version info
-		return 1;
+		if (majorVersion == null) {
+			majorVersion = Integer.valueOf(Utils.getVersion().split("\\.")[0]);
+		}
+		
+		return majorVersion;
 	}
 	
 	@Override
 	public int getMinorVersion() {
-		//TODO read it from project version info
-		return 0;
+		if (minorVersion == null) {
+			minorVersion = Integer.valueOf(Utils.getVersion().split("\\.")[1]);
+		}
+		
+		return minorVersion;
 	}
 	
 	@Override

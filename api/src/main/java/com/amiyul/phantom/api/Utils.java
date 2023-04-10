@@ -6,11 +6,30 @@ package com.amiyul.phantom.api;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Properties;
 
 import com.amiyul.phantom.api.config.ConfigFileParser;
 
 public class Utils {
+	
+	private static Properties PROPERTIES;
+	
+	protected static final String BUILD_PROP_FILE = "build.properties";
+	
+	protected static final String BUILD_PROP_VERSION = "version";
+	
+	static {
+		try (InputStream file = Utils.class.getClassLoader().getResourceAsStream(BUILD_PROP_FILE)) {
+			PROPERTIES = new Properties();
+			PROPERTIES.load(file);
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Failed to load the build properties file: ", e);
+		}
+	}
 	
 	/**
 	 * Checks if the specified string is null or an empty string or a white space character.
@@ -78,6 +97,20 @@ public class Utils {
 	 */
 	public static Class<?> loadClass(String className) throws ClassNotFoundException {
 		return Thread.currentThread().getContextClassLoader().loadClass(className);
+	}
+	
+	/**
+	 * Gets the build version
+	 *
+	 * @return build version
+	 */
+	public static String getVersion() {
+		String version = PROPERTIES.getProperty(BUILD_PROP_VERSION);
+		if (Utils.isBlank(version)) {
+			throw new RuntimeException("Failed to determine the build version");
+		}
+		
+		return version;
 	}
 	
 }
