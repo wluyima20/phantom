@@ -5,6 +5,7 @@ package com.amiyul.phantom.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -39,8 +40,9 @@ public class FileDatabaseConfigUtilsTest {
 	private File mockFile;
 	
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		PowerMockito.mockStatic(Utils.class);
+		Mockito.when(Utils.loadClass(anyString())).thenThrow(ClassNotFoundException.class);
 	}
 	
 	@After
