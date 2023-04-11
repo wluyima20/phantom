@@ -7,10 +7,10 @@ import java.sql.SQLException;
 
 /**
  * Simulation of a database to process connection requests from the client, it's highly recommended
- * to extend {@link BaseDatabase} instead of directly implementing this interface for better
- * compatibility in case the interface is changed.
+ * to extend {@link com.amiyul.phantom.api.BaseDatabase} instead of directly implementing this
+ * interface for better compatibility in case the interface is changed.
  */
-public interface Database extends Disableable {
+public interface Database extends Maintainable {
 	
 	/**
 	 * Processes a request from a client
