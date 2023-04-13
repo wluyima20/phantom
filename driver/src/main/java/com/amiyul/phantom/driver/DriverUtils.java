@@ -53,7 +53,7 @@ public class DriverUtils {
 	
 	private static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
 		//Example URL -> //jdbc:phantom://test?async=true;asyncConnectionListener=myClass
-		final int qnMarkIndex = URL_PREFIX.indexOf(DriverConstants.URL_DB_PARAM_SEPARATOR);
+		final int qnMarkIndex = url.indexOf(DriverConstants.URL_DB_PARAM_SEPARATOR);
 		String prefixAndName;
 		Boolean async = null;
 		if (props.contains(PROP_ASYNC)) {
@@ -62,19 +62,22 @@ public class DriverUtils {
 		
 		if (qnMarkIndex > -1) {
 			prefixAndName = url.substring(0, qnMarkIndex);
-			String[] params = url.substring(qnMarkIndex).split(DriverConstants.URL_PARAMS_SEPARATOR);
-			for (String pair : params) {
-				String[] keyAndValue = pair.split(DriverConstants.URL_PARAM_KEY_VALUE_SEPARATOR);
-				String key = keyAndValue[0];
-				if (!DriverConstants.PROP_NAMES.contains(key)) {
-					throw new SQLException("Connection URL contains unsupported parameter named: " + key);
-				}
-				
-				String value = keyAndValue[1];
-				if (async == null && PROP_ASYNC.equals(key)) {
-					async = Boolean.valueOf(value);
-				} else if (PROP_ASYNC_LISTENER.equals(key)) {
-					//TODO Set listener
+			String urlParams = url.substring(qnMarkIndex + 1);
+			if (!Utils.isBlank(urlParams)) {
+				String[] params = urlParams.split(DriverConstants.URL_PARAMS_SEPARATOR);
+				for (String pair : params) {
+					String[] keyAndValue = pair.split(DriverConstants.URL_PARAM_KEY_VALUE_SEPARATOR);
+					String key = keyAndValue[0];
+					if (!DriverConstants.PROP_NAMES.contains(key)) {
+						throw new SQLException("Connection URL contains unsupported parameter named: " + key);
+					}
+					
+					String value = keyAndValue[1];
+					if (async == null && PROP_ASYNC.equals(key)) {
+						async = Boolean.valueOf(value);
+					} else if (PROP_ASYNC_LISTENER.equals(key)) {
+						//TODO Set listener
+					}
 				}
 			}
 		} else {
