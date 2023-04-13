@@ -14,6 +14,8 @@ import java.util.Properties;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
+import lombok.SneakyThrows;
+
 /**
  * Contains utilities used by the driver
  */
@@ -29,6 +31,9 @@ public class DriverUtils {
 	 */
 	protected static Connection connect(String url, Properties props) throws SQLException {
 		ConnectionRequestData connReqData = createRequest(url.trim(), props);
+		
+		LoggerUtils.debug("Connection request data -> " + connReqData);
+		
 		final String targetDbName = connReqData.getTargetDatabaseName();
 		Connection connection;
 		
@@ -51,8 +56,8 @@ public class DriverUtils {
 		return connection;
 	}
 	
+	@SneakyThrows
 	private static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
-		//Example URL -> //jdbc:phantom://test?async=true;asyncConnectionListener=myClass
 		final int qnMarkIndex = url.indexOf(DriverConstants.URL_DB_PARAM_SEPARATOR);
 		String prefixAndName;
 		Boolean async = null;
@@ -60,6 +65,7 @@ public class DriverUtils {
 			async = "true".equalsIgnoreCase(props.getProperty(PROP_ASYNC));
 		}
 		
+		Listener<ConnectionListener> listener = null;
 		if (qnMarkIndex > -1) {
 			prefixAndName = url.substring(0, qnMarkIndex);
 			String urlParams = url.substring(qnMarkIndex + 1);
@@ -76,12 +82,17 @@ public class DriverUtils {
 					if (async == null && PROP_ASYNC.equals(key)) {
 						async = Boolean.valueOf(value);
 					} else if (PROP_ASYNC_LISTENER.equals(key)) {
-						//TODO Set listener
+						Class<Listener<ConnectionListener>> clazz = Utils.loadClass(value);
+						listener = clazz.newInstance();
 					}
 				}
 			}
 		} else {
 			prefixAndName = url;
+		}
+		
+		if (async && listener == null) {
+			throw new SQLException(PROP_ASYNC_LISTENER + " is required for asynchronous get connection calls");
 		}
 		
 		String targetDbName = prefixAndName.substring(prefixAndName.indexOf(URL_PREFIX) + URL_PREFIX.length());
@@ -92,7 +103,7 @@ public class DriverUtils {
 			throw new SQLException("No target database name defined in the database URL");
 		}
 		
-		return new ConnectionRequestData(targetDbName, async);
+		return new ConnectionRequestData(targetDbName, async, listener);
 	}
 	
 }

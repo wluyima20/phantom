@@ -16,9 +16,18 @@ public class ConnectionRequestData {
 	@Getter
 	private final Boolean async;
 	
-	public ConnectionRequestData(String targetDatabaseName, Boolean async) {
+	@Getter
+	private final Listener listener;
+	
+	public ConnectionRequestData(String targetDatabaseName, Boolean async, Listener listener) {
 		this.targetDatabaseName = targetDatabaseName;
 		this.async = async;
+		this.listener = listener;
+	}
+	
+	@Override
+	public String toString() {
+		return "{" + "targetDatabaseName=" + targetDatabaseName + ", async=" + async + ", listener=" + listener + "}";
 	}
 	
 }

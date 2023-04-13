@@ -58,7 +58,7 @@ public class DriverConfigUtils {
 	protected static DriverConfigMetadata createMetadata(String dbProviderClass) throws Exception {
 		Class<DatabaseProvider> clazz = null;
 		if (!Utils.isBlank(dbProviderClass)) {
-			clazz = (Class) Thread.currentThread().getContextClassLoader().loadClass(dbProviderClass);
+			clazz = Utils.loadClass(dbProviderClass);
 		}
 		
 		final Class<DatabaseProvider> providerClazz = clazz;

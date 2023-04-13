@@ -17,10 +17,10 @@ public final class DriverConstants {
 	protected static final String URL_PARAMS_SEPARATOR = ";";
 	
 	protected static final String URL_PARAM_KEY_VALUE_SEPARATOR = "=";
-	
-	protected static final String PROP_ASYNC = "async";
-	
-	protected static final String PROP_ASYNC_LISTENER = "asyncConnectionListener";
+
+    protected static final String PROP_ASYNC = "async";
+
+    protected static final String PROP_ASYNC_LISTENER = "asyncConnectionListener";
 	
 	protected static final List<String> PROP_NAMES = Arrays.asList(PROP_ASYNC, PROP_ASYNC_LISTENER);
 	

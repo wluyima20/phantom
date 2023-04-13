@@ -92,11 +92,12 @@ public class Utils {
 	 * Loads the class object matching the specified class name
 	 * 
 	 * @param className class name to load
+	 * @param <T>
 	 * @return Class object
 	 * @throws ClassNotFoundException
 	 */
-	public static Class<?> loadClass(String className) throws ClassNotFoundException {
-		return Thread.currentThread().getContextClassLoader().loadClass(className);
+	public static <T> Class<T> loadClass(String className) throws ClassNotFoundException {
+		return (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(className);
 	}
 	
 	/**
