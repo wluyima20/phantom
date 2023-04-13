@@ -15,11 +15,11 @@ public interface Client {
 	/**
 	 * Requests connection from the database
 	 *
-	 * @param targetDatabaseName the unique name for the target database
+	 * @param requestData the {@link ConnectionRequestData} instance
 	 * @return Connection object
 	 * @throws SQLException
 	 */
-	Connection connect(String targetDatabaseName) throws SQLException;
+	Connection connect(ConnectionRequestData requestData) throws SQLException;
 	
 	/**
 	 * Sends a reload signal to the database

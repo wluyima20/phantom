@@ -27,7 +27,9 @@ public class DefaultClient implements Client {
 	}
 	
 	@Override
-	public Connection connect(String targetDatabaseName) throws SQLException {
+	public Connection connect(ConnectionRequestData requestData) throws SQLException {
+		final String targetDatabaseName = requestData.getTargetDatabaseName();
+		
 		LoggerUtils.debug("Obtaining connection to the database named: " + targetDatabaseName);
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();

@@ -12,14 +12,11 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.JavaLogger;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 public final class PhantomDriver implements Driver {
-	
-	protected static final String URL_PREFIX = "jdbc:" + Constants.DATABASE_NAME + "://";
 	
 	private static Integer majorVersion;
 	
@@ -42,11 +39,7 @@ public final class PhantomDriver implements Driver {
 		}
 		
 		try {
-			String targetDbName = url.substring(url.indexOf(URL_PREFIX) + URL_PREFIX.length());
-			
-			LoggerUtils.debug("Extracted target database name: " + targetDbName);
-			
-			return DriverUtils.connect(targetDbName);
+			return DriverUtils.connect(url, info);
 		}
 		catch (Exception e) {
 			throw new SQLException(e);
@@ -59,7 +52,7 @@ public final class PhantomDriver implements Driver {
 			return false;
 		}
 		
-		return url.startsWith(URL_PREFIX);
+		return url.startsWith(DriverConstants.URL_PREFIX);
 	}
 	
 	@Override
