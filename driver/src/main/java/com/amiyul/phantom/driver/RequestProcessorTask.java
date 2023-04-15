@@ -28,7 +28,7 @@ public class RequestProcessorTask implements Runnable {
 			DriverConfigUtils.getConfig().getDatabase().process(requestContext);
 			
 			if (listener != null) {
-				LoggerUtils.debug("Done processing async request, notifying the listener -> " + listener);
+				LoggerUtils.debug("Done processing async request, notifying listener -> " + listener);
 				
 				try {
 					listener.onSuccess(requestContext.readResult());
@@ -39,7 +39,7 @@ public class RequestProcessorTask implements Runnable {
 			}
 		}
 		catch (Throwable throwable) {
-			LoggerUtils.debug("Failed to process async request, notifying the listener -> " + listener);
+			LoggerUtils.debug("Failed to process async request, notifying listener -> " + listener);
 			
 			if (listener != null) {
 				try {
