@@ -14,12 +14,12 @@ public class ConnectionRequestData {
 	private final String targetDatabaseName;
 	
 	@Getter
-	private final Boolean async;
+	private final boolean async;
 	
 	@Getter
-	private final Listener listener;
+	private final ConnectionListener listener;
 	
-	public ConnectionRequestData(String targetDatabaseName, Boolean async, Listener listener) {
+	public ConnectionRequestData(String targetDatabaseName, boolean async, ConnectionListener listener) {
 		this.targetDatabaseName = targetDatabaseName;
 		this.async = async;
 		this.listener = listener;

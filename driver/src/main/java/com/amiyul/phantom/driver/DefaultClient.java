@@ -36,8 +36,8 @@ public class DefaultClient implements Client {
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
 		requestContext.request = new ConnectionRequest(targetDatabaseName, requestContext);
-		if (requestData.getAsync()) {
-			CompletableFuture.runAsync(new RequestProcessorTask(requestContext, requestData.getListener()));
+		if (requestData.isAsync()) {
+			CompletableFuture.runAsync(new ConnectionTask(requestContext, requestData.getListener()));
 			//TODO Keep references to all futures for clean up during shutdown
 			//TODO include the future on the proxy
 			return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),

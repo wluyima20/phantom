@@ -60,12 +60,12 @@ public class DriverUtils {
 	private static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
 		final int qnMarkIndex = url.indexOf(DriverConstants.URL_DB_PARAM_SEPARATOR);
 		String prefixAndName;
-		Boolean async = null;
+		String asyncStr = null;
 		if (props.contains(PROP_ASYNC)) {
-			async = "true".equalsIgnoreCase(props.getProperty(PROP_ASYNC));
+			asyncStr = props.getProperty(PROP_ASYNC);
 		}
 		
-		Listener<ConnectionListener> listener = null;
+		ConnectionListener listener = null;
 		if (qnMarkIndex > -1) {
 			prefixAndName = url.substring(0, qnMarkIndex);
 			String urlParams = url.substring(qnMarkIndex + 1);
@@ -79,10 +79,10 @@ public class DriverUtils {
 					}
 					
 					String value = keyAndValue[1];
-					if (async == null && PROP_ASYNC.equals(key)) {
-						async = Boolean.valueOf(value);
+					if (asyncStr == null && PROP_ASYNC.equals(key)) {
+						asyncStr = value;
 					} else if (PROP_ASYNC_LISTENER.equals(key)) {
-						Class<Listener<ConnectionListener>> clazz = Utils.loadClass(value);
+						Class<ConnectionListener> clazz = Utils.loadClass(value);
 						listener = clazz.newInstance();
 					}
 				}
@@ -91,6 +91,9 @@ public class DriverUtils {
 			prefixAndName = url;
 		}
 		
+		//TODO read async and listener from the driver config if configured
+		
+		boolean async = Boolean.valueOf(asyncStr);
 		if (async && listener == null) {
 			throw new SQLException(PROP_ASYNC_LISTENER + " is required for asynchronous get connection calls");
 		}
