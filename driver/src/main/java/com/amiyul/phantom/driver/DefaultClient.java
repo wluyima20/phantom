@@ -3,6 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
+import static com.amiyul.phantom.api.logging.LoggerUtils.debug;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -12,7 +14,6 @@ import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Response;
-import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
  * Default implementation of a {@link Client}
@@ -28,20 +29,30 @@ public class DefaultClient implements Client {
 	
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
-		final String targetDatabaseName = requestData.getTargetDatabaseName();
+		final String targetDbName = requestData.getTargetDatabaseName();
 		
-		LoggerUtils.debug("Obtaining connection to the database named: " + targetDatabaseName);
+		debug("Obtaining connection to database: " + targetDbName);
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new ConnectionRequest(targetDatabaseName, requestContext);
-		sendRequest(requestContext);
+		requestContext.request = new ConnectionRequest(targetDbName, requestContext);
+		
+		try {
+			sendRequest(requestContext);
+		}
+		catch (SQLException e) {
+			debug("Failed to obtain a connection to database: " + targetDbName + ", reloading config");
+			
+			DriverConfigUtils.reloadConfig();
+			
+			sendRequest(requestContext);
+		}
 		
 		return requestContext.readResult();
 	}
 	
 	@Override
 	public void reload() throws SQLException {
-		LoggerUtils.debug("Sending reload signal");
+		debug("Sending reload signal");
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
 		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);

@@ -37,7 +37,7 @@ public class DriverUtils {
 		LoggerUtils.debug("Connection request data -> " + requestData);
 		
 		if (!requestData.isAsync()) {
-			return doConnect(requestData);
+			return DefaultClient.getInstance().connect(requestData);
 		}
 		
 		CompletableFuture.runAsync(new ConnectTask(requestData));
@@ -45,38 +45,6 @@ public class DriverUtils {
 		//TODO include the future on the proxy
 		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
 		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
-	}
-	
-	/**
-	 * Connects to a database using information set on the specified {@link ConnectionRequestData}
-	 * instance.
-	 * 
-	 * @param requestData {@link ConnectionRequestData} instance
-	 * @return Connection object
-	 */
-	protected static Connection doConnect(ConnectionRequestData requestData) throws SQLException {
-		final String targetDbName = requestData.getTargetDatabaseName();
-		Connection connection;
-		
-		try {
-			connection = DefaultClient.getInstance().connect(requestData);
-		}
-		catch (SQLException e) {
-			LoggerUtils.debug(
-			    "Reloading config after failed attempt to obtain a connection to the database named: " + targetDbName);
-			
-			DriverConfigUtils.reloadConfig();
-			
-			connection = DefaultClient.getInstance().connect(requestData);
-		}
-		
-		if (connection == null) {
-			throw new SQLException("No connection obtained to the database named: " + targetDbName);
-		}
-		
-		LoggerUtils.debug("Connection obtained");
-		
-		return connection;
 	}
 	
 	@SneakyThrows
@@ -122,8 +90,6 @@ public class DriverUtils {
 		}
 		
 		String targetDbName = prefixAndName.substring(prefixAndName.indexOf(URL_PREFIX) + URL_PREFIX.length());
-		
-		LoggerUtils.debug("Extracted target database name: " + targetDbName);
 		
 		if (Utils.isBlank(targetDbName)) {
 			throw new SQLException("No target database name defined in the database URL");
