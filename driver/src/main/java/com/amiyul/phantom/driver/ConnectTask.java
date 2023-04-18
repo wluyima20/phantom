@@ -14,7 +14,7 @@ public class ConnectTask extends BaseNotifyingTask<Connection> {
 	private ConnectionRequestData requestData;
 	
 	public ConnectTask(ConnectionRequestData requestData) {
-		super("connect task", requestData.getListener());
+		super("connect-task:" + requestData.getTargetDatabaseName(), requestData.getListener());
 		this.requestData = requestData;
 	}
 	
