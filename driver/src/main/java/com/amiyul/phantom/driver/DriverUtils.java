@@ -7,9 +7,11 @@ import static com.amiyul.phantom.driver.DriverConstants.PROP_ASYNC;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_ASYNC_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
@@ -30,15 +32,34 @@ public class DriverUtils {
 	 * @throws SQLException
 	 */
 	protected static Connection connect(String url, Properties props) throws SQLException {
-		ConnectionRequestData connReqData = createRequest(url.trim(), props);
+		ConnectionRequestData requestData = createRequest(url.trim(), props);
 		
-		LoggerUtils.debug("Connection request data -> " + connReqData);
+		LoggerUtils.debug("Connection request data -> " + requestData);
 		
-		final String targetDbName = connReqData.getTargetDatabaseName();
+		if (!requestData.isAsync()) {
+			return doConnect(requestData);
+		}
+		
+		CompletableFuture.runAsync(new ConnectTask(requestData));
+		//TODO Keep references to all futures for clean up during shutdown
+		//TODO include the future on the proxy
+		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
+	}
+	
+	/**
+	 * Connects to a database using information set on the specified {@link ConnectionRequestData}
+	 * instance.
+	 * 
+	 * @param requestData {@link ConnectionRequestData} instance
+	 * @return Connection object
+	 */
+	protected static Connection doConnect(ConnectionRequestData requestData) throws SQLException {
+		final String targetDbName = requestData.getTargetDatabaseName();
 		Connection connection;
 		
 		try {
-			connection = DefaultClient.getInstance().connect(connReqData);
+			connection = DefaultClient.getInstance().connect(requestData);
 		}
 		catch (SQLException e) {
 			LoggerUtils.debug(
@@ -46,12 +67,14 @@ public class DriverUtils {
 			
 			DriverConfigUtils.reloadConfig();
 			
-			connection = DefaultClient.getInstance().connect(connReqData);
+			connection = DefaultClient.getInstance().connect(requestData);
 		}
 		
 		if (connection == null) {
 			throw new SQLException("No connection obtained to the database named: " + targetDbName);
 		}
+		
+		LoggerUtils.debug("Connection obtained");
 		
 		return connection;
 	}

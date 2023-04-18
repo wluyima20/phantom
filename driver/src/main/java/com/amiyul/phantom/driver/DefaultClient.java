@@ -3,10 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.CompletableFuture;
 
 import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.DefaultRequest;
@@ -36,15 +34,7 @@ public class DefaultClient implements Client {
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
 		requestContext.request = new ConnectionRequest(targetDatabaseName, requestContext);
-		if (requestData.isAsync()) {
-			CompletableFuture.runAsync(new ConnectionTask(requestContext, requestData.getListener()));
-			//TODO Keep references to all futures for clean up during shutdown
-			//TODO include the future on the proxy
-			return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-			    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
-		} else {
-			sendRequest(requestContext);
-		}
+		sendRequest(requestContext);
 		
 		return requestContext.readResult();
 	}
