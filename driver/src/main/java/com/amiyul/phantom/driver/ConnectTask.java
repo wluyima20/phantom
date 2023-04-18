@@ -20,7 +20,7 @@ public class ConnectTask extends BaseNotifyingTask<Connection> {
 	
 	@Override
 	public Connection doRun() throws Exception {
-		return DefaultClient.getInstance().connect(requestData);
+		return DefaultClient.getInstance().doConnect(requestData);
 	}
 	
 }

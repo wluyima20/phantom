@@ -5,8 +5,10 @@ package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.api.logging.LoggerUtils.debug;
 
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.DefaultRequest;
@@ -29,6 +31,34 @@ public class DefaultClient implements Client {
 	
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
+		if (!requestData.isAsync()) {
+			return doConnect(requestData);
+		}
+		
+		CompletableFuture.runAsync(new ConnectTask(requestData));
+		
+		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
+	}
+	
+	@Override
+	public void reload() throws SQLException {
+		debug("Sending reload signal");
+		
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
+		sendRequest(requestContext);
+	}
+	
+	/**
+	 * Processes a connection request using the information on the specified
+	 * {@link ConnectionRequestData}
+	 *
+	 * @param requestData {@link ConnectionRequestData}
+	 * @return Connection
+	 * @throws SQLException
+	 */
+	protected Connection doConnect(ConnectionRequestData requestData) throws SQLException {
 		final String targetDbName = requestData.getTargetDatabaseName();
 		
 		debug("Obtaining connection to database: " + targetDbName);
@@ -47,16 +77,9 @@ public class DefaultClient implements Client {
 			sendRequest(requestContext);
 		}
 		
-		return requestContext.readResult();
-	}
-	
-	@Override
-	public void reload() throws SQLException {
-		debug("Sending reload signal");
+		debug("Connection obtained");
 		
-		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
-		sendRequest(requestContext);
+		return requestContext.readResult();
 	}
 	
 	/**

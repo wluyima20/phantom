@@ -7,11 +7,9 @@ import static com.amiyul.phantom.driver.DriverConstants.PROP_ASYNC;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_ASYNC_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.concurrent.CompletableFuture;
 
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
@@ -36,15 +34,7 @@ public class DriverUtils {
 		
 		LoggerUtils.debug("Connection request data -> " + requestData);
 		
-		if (!requestData.isAsync()) {
-			return DefaultClient.getInstance().connect(requestData);
-		}
-		
-		CompletableFuture.runAsync(new ConnectTask(requestData));
-		//TODO Keep references to all futures for clean up during shutdown
-		//TODO include the future on the proxy
-		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
+		return DefaultClient.getInstance().connect(requestData);
 	}
 	
 	@SneakyThrows
