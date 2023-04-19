@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
  */
 public interface Maintainable {
 	
-	default boolean isUnderMaintenanceAsOf(LocalDateTime dateTime) {
-		return getUnderMaintenanceUntil() != null && dateTime.isBefore(getUnderMaintenanceUntil());
+	default boolean isUnderMaintenance(LocalDateTime asOfDateTime) {
+		return getUnderMaintenanceUntil() != null && asOfDateTime.isBefore(getUnderMaintenanceUntil());
 	}
 	
 	/**

@@ -31,29 +31,29 @@ public class MaintainableTest {
 	}
 	
 	@Test
-	public void isInMaintenanceAsOf_shouldReturnTrueIfTheSpecifiedDateTimeIsBeforeunderMaintenanceUntil() {
+	public void isUnderMaintenance_shouldReturnTrueIfTheSpecifiedDateTimeIsBeforeunderMaintenanceUntil() {
 		LocalDateTime dateTime = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555555);
 		LocalDateTime until = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555556);
-		Assert.assertTrue(new MockMaintainable(until).isUnderMaintenanceAsOf(dateTime));
+		Assert.assertTrue(new MockMaintainable(until).isUnderMaintenance(dateTime));
 	}
 	
 	@Test
-	public void isInMaintenanceAsOf_shouldReturnFalseIfTheSpecifiedDateTimeIsTheSameAsUnderMaintenanceUntil() {
+	public void isUnderMaintenance_shouldReturnFalseIfTheSpecifiedDateTimeIsTheSameAsUnderMaintenanceUntil() {
 		LocalDateTime dateTime = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555555);
 		LocalDateTime until = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555555);
-		Assert.assertFalse(new MockMaintainable(until).isUnderMaintenanceAsOf(dateTime));
+		Assert.assertFalse(new MockMaintainable(until).isUnderMaintenance(dateTime));
 	}
 	
 	@Test
-	public void isInMaintenanceAsOf_shouldReturnFalseIfTheSpecifiedDateTimeIsAfterUnderMaintenanceUntil() {
+	public void isUnderMaintenance_shouldReturnFalseIfTheSpecifiedDateTimeIsAfterUnderMaintenanceUntil() {
 		LocalDateTime dateTime = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555556);
 		LocalDateTime until = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555555);
-		Assert.assertFalse(new MockMaintainable(until).isUnderMaintenanceAsOf(dateTime));
+		Assert.assertFalse(new MockMaintainable(until).isUnderMaintenance(dateTime));
 	}
 	
 	@Test
-	public void isInMaintenanceAsOf_shouldReturnFalseIfUnderMaintenanceUntilIsNull() {
-		Assert.assertFalse(new MockMaintainable(null).isUnderMaintenanceAsOf(null));
+	public void isUnderMaintenance_shouldReturnFalseIfUnderMaintenanceUntilIsNull() {
+		Assert.assertFalse(new MockMaintainable(null).isUnderMaintenance(null));
 	}
 	
 }
