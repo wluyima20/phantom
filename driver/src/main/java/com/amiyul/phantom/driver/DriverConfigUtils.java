@@ -52,25 +52,17 @@ public class DriverConfigUtils {
 	/**
 	 * Creates a {@link DriverConfigMetadata} instance
 	 *
-	 * @param dbProviderClass the database provider class name
+	 * @param dbProviderClassName the database provider class name
 	 * @param underMaintenanceUntil time when the database will be available
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	protected static DriverConfigMetadata createMetadata(String dbProviderClass, String underMaintenanceUntil)
-	    throws Exception {
-		Class<DatabaseProvider> clazz = null;
-		if (!Utils.isBlank(dbProviderClass)) {
-			clazz = Utils.loadClass(dbProviderClass);
-		}
-		
-		final Class<DatabaseProvider> providerClazz = clazz;
-		
+	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String underMaintenanceUntil) {
 		return new DriverConfigMetadata() {
 			
 			@Override
-			public Class<DatabaseProvider> getDatabaseProviderClass() {
-				return providerClazz;
+			public String getDatabaseProviderClassName() {
+				return dbProviderClassName;
 			}
 			
 			@Override
@@ -95,7 +87,10 @@ public class DriverConfigUtils {
 				DriverConfigMetadata metadata = getConfigMetadata();
 				Class<? extends DatabaseProvider> clazz = null;
 				if (metadata != null) {
-					clazz = metadata.getDatabaseProviderClass();
+					if (!Utils.isBlank(metadata.getDatabaseProviderClassName())) {
+						clazz = Utils.loadClass(metadata.getDatabaseProviderClassName());
+					}
+					
 					if (!Utils.isBlank(metadata.getUnderMaintenanceUntil())) {
 						underMaintenanceUntil = Utils.parseDateString(metadata.getUnderMaintenanceUntil());
 					}

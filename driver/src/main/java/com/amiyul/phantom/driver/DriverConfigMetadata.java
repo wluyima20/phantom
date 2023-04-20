@@ -10,13 +10,13 @@ import com.amiyul.phantom.api.config.ConfigMetadata;
  * Holds the metadata used to build a {@link DriverConfig} instance
  */
 public interface DriverConfigMetadata extends ConfigMetadata {
-
-    /**
-	 * Gets the {@link DatabaseProvider} class object
+	
+	/**
+	 * Gets the class name for the {@link DatabaseProvider}
 	 *
 	 * @return class
 	 */
-	Class<DatabaseProvider> getDatabaseProviderClass();
+	String getDatabaseProviderClassName();
 	
 	/**
 	 * @see com.amiyul.phantom.api.Maintainable
