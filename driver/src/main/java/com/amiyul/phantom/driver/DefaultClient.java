@@ -4,13 +4,22 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.api.logging.LoggerUtils.debug;
+import static com.amiyul.phantom.api.logging.LoggerUtils.warn;
+import static java.time.LocalDateTime.now;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.amiyul.phantom.api.ConnectionRequest;
+import com.amiyul.phantom.api.Constants;
+import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DefaultRequest;
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.Request;
@@ -21,6 +30,9 @@ import com.amiyul.phantom.api.Response;
  * Default implementation of a {@link Client}
  */
 public class DefaultClient implements Client {
+	
+	//TODO Limit queue capacity
+	private static final DelayQueue<DelayedConnectionRequest> DELAYED_CONN_REQUESTS = new DelayQueue<>();
 	
 	private DefaultClient() {
 	}
@@ -59,6 +71,57 @@ public class DefaultClient implements Client {
 	 * @throws SQLException
 	 */
 	protected Connection doConnect(ConnectionRequestData requestData) throws SQLException {
+		//TODO Also check if the target DB is under maintenance
+		Database db = DriverConfigUtils.getConfig().getDatabase();
+		if (!db.isUnderMaintenance(now())) {
+			return doConnectInternal(requestData);
+		}
+		
+		//Sanity check just in case the Db config has been updated to put the DB out of maintenance
+		DefaultClient.getInstance().reload();
+		db = DriverConfigUtils.getConfig().getDatabase();
+		if (!db.isUnderMaintenance(now())) {
+			return doConnectInternal(requestData);
+		}
+		
+		warn(Constants.DATABASE_NAME + " DB is not unavailable until -> " + db.getUnderMaintenanceUntil());
+		
+		//TODO Add support for a user to chose async processing in case if DB is under maintenance
+		DelayedConnectionRequest delayed = new DelayedConnectionRequest(requestData, db.getUnderMaintenanceUntil());
+		DELAYED_CONN_REQUESTS.add(delayed);
+		
+		long delay = delayed.getDelay(TimeUnit.SECONDS);
+		
+		debug("Waiting to connect for " + delay + " seconds");
+		
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		Future<Connection> cf = executor.schedule(() -> {
+			debug("Processing delayed connection request");
+			return doConnectInternal(requestData);
+		}, delay, TimeUnit.SECONDS);
+		
+		Connection connection;
+		try {
+			connection = cf.get();
+			executor.shutdownNow();
+			return connection;
+		}
+		catch (Exception e) {
+			throw new SQLException(e);
+		}
+	}
+	
+	/**
+	 * Sends a request to the database
+	 *
+	 * @param context {@link RequestContext} object
+	 * @throws SQLException
+	 */
+	protected void sendRequest(RequestContext context) throws SQLException {
+		DriverConfigUtils.getConfig().getDatabase().process(context);
+	}
+	
+	private Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
 		final String targetDbName = requestData.getTargetDatabaseName();
 		
 		debug("Obtaining connection to database: " + targetDbName);
@@ -80,16 +143,6 @@ public class DefaultClient implements Client {
 		debug("Connection obtained");
 		
 		return requestContext.readResult();
-	}
-	
-	/**
-	 * Sends a request to the database
-	 *
-	 * @param context {@link RequestContext} object
-	 * @throws SQLException
-	 */
-	protected void sendRequest(RequestContext context) throws SQLException {
-		DriverConfigUtils.getConfig().getDatabase().process(context);
 	}
 	
 	private static class DefaultClientHolder {

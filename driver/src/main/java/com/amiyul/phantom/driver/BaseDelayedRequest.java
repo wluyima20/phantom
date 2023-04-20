@@ -34,7 +34,7 @@ public abstract class BaseDelayedRequest<T, R> implements DelayedRequest<T, R> {
 	
 	@Override
 	public long getDelay(TimeUnit unit) {
-		return Duration.between(startTime, LocalDateTime.now()).toMillis();
+		return unit.convert(Duration.between(LocalDateTime.now(), startTime).toMillis(), TimeUnit.MILLISECONDS);
 	}
 	
 	@Override
