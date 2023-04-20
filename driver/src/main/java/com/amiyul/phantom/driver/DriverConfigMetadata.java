@@ -11,7 +11,11 @@ import com.amiyul.phantom.api.config.ConfigMetadata;
  */
 public interface DriverConfigMetadata extends ConfigMetadata {
 	
-	String PROP_DB_PROVIDER_CLASS = "databaseProviderClass";
+	String PREFIX_DB = "database.";
+	
+	String PROP_DB_PROVIDER_CLASS = PREFIX_DB + "providerClass";
+	
+	String PROP_DB_UNDER_MAINTENANCE_UNTIL = PREFIX_DB + "underMaintenanceUntil";
 	
 	/**
 	 * Gets the {@link DatabaseProvider} class object
@@ -19,5 +23,10 @@ public interface DriverConfigMetadata extends ConfigMetadata {
 	 * @return class
 	 */
 	Class<DatabaseProvider> getDatabaseProviderClass();
+	
+	/**
+	 * @see com.amiyul.phantom.api.Maintainable
+	 */
+	String getUnderMaintenanceUntil();
 	
 }

@@ -20,16 +20,13 @@ public interface Maintainable {
 	 *
 	 * @return the underMaintenanceUntil
 	 */
-	default LocalDateTime getUnderMaintenanceUntil() {
-		return null;
-	}
+	LocalDateTime getUnderMaintenanceUntil();
 	
 	/**
 	 * Sets the underMaintenanceUntil
 	 *
 	 * @param underMaintenanceUntil the underMaintenanceUntil to set
 	 */
-	default void setUnderMaintenanceUntil(LocalDateTime underMaintenanceUntil) {
-	}
+	void setUnderMaintenanceUntil(LocalDateTime underMaintenanceUntil);
 	
 }

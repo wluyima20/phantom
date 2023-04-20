@@ -5,7 +5,6 @@ package com.amiyul.phantom.db;
 
 import java.util.Properties;
 
-import com.amiyul.phantom.api.Maintainable;
 import com.amiyul.phantom.api.Named;
 
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.Setter;
 /**
  * Encapsulates information for a single target database instance
  */
-public class DatabaseDefinition implements Named, Maintainable {
+public class DatabaseDefinition implements Named {
 	
 	private String name;
 	

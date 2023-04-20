@@ -5,6 +5,7 @@ package com.amiyul.phantom.driver;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Database;
@@ -52,10 +53,12 @@ public class DriverConfigUtils {
 	 * Creates a {@link DriverConfigMetadata} instance
 	 *
 	 * @param dbProviderClass the database provider class name
+	 * @param underMaintenanceUntil time when the database will be available
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	protected static DriverConfigMetadata createMetadata(String dbProviderClass) throws Exception {
+	protected static DriverConfigMetadata createMetadata(String dbProviderClass, String underMaintenanceUntil)
+	    throws Exception {
 		Class<DatabaseProvider> clazz = null;
 		if (!Utils.isBlank(dbProviderClass)) {
 			clazz = Utils.loadClass(dbProviderClass);
@@ -63,7 +66,19 @@ public class DriverConfigUtils {
 		
 		final Class<DatabaseProvider> providerClazz = clazz;
 		
-		return () -> providerClazz;
+		return new DriverConfigMetadata() {
+			
+			@Override
+			public Class<DatabaseProvider> getDatabaseProviderClass() {
+				return providerClazz;
+			}
+			
+			@Override
+			public String getUnderMaintenanceUntil() {
+				return underMaintenanceUntil;
+			}
+			
+		};
 	}
 	
 	/**
@@ -74,11 +89,16 @@ public class DriverConfigUtils {
 	protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
+			LocalDateTime underMaintenanceUntil = null;
+			
 			try {
 				DriverConfigMetadata metadata = getConfigMetadata();
 				Class<? extends DatabaseProvider> clazz = null;
 				if (metadata != null) {
 					clazz = metadata.getDatabaseProviderClass();
+					if (!Utils.isBlank(metadata.getUnderMaintenanceUntil())) {
+						underMaintenanceUntil = Utils.parseDateString(metadata.getUnderMaintenanceUntil());
+					}
 				}
 				
 				if (clazz == null) {
@@ -92,7 +112,10 @@ public class DriverConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			config = () -> provider.get();
+			Database db = provider.get();
+			db.setUnderMaintenanceUntil(underMaintenanceUntil);
+			
+			config = () -> db;
 		}
 		
 		return config;

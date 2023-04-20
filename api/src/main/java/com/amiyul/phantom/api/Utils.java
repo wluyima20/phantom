@@ -3,11 +3,16 @@
  */
 package com.amiyul.phantom.api;
 
+import static java.time.ZoneId.systemDefault;
+import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -112,6 +117,16 @@ public class Utils {
 		}
 		
 		return version;
+	}
+	
+	/**
+	 * Parses the specified local date time string
+	 * 
+	 * @param date date string
+	 * @return LocalDateTime object
+	 */
+	public static LocalDateTime parseDateString(String date) {
+		return ZonedDateTime.parse(date, ISO_OFFSET_DATE_TIME).withZoneSameInstant(systemDefault()).toLocalDateTime();
 	}
 	
 }

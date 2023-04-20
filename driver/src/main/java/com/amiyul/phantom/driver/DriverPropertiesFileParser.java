@@ -4,6 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
+import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_UNDER_MAINTENANCE_UNTIL;
 
 import java.util.Properties;
 
@@ -17,7 +18,9 @@ public class DriverPropertiesFileParser extends BasePropertiesFileParser<DriverC
 	
 	@Override
 	public DriverConfigMetadata createInstance(Properties properties) throws Exception {
-		return DriverConfigUtils.createMetadata(properties.getProperty(PROP_DB_PROVIDER_CLASS));
+		final String providerClass = properties.getProperty(PROP_DB_PROVIDER_CLASS);
+		final String underMaintenanceUntil = properties.getProperty(PROP_DB_UNDER_MAINTENANCE_UNTIL);
+		return DriverConfigUtils.createMetadata(providerClass, underMaintenanceUntil);
 	}
 	
 }
