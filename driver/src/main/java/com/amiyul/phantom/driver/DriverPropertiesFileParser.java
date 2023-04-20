@@ -3,8 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
-import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_UNDER_MAINTENANCE_UNTIL;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_PROVIDER_CLASS;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_UNDER_MAINTENANCE_UNTIL;
 
 import java.util.Properties;
 

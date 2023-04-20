@@ -3,8 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.DriverConstants.PROP_ASYNC;
-import static com.amiyul.phantom.driver.DriverConstants.PROP_ASYNC_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC;
+import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 
 import java.sql.Connection;
@@ -39,11 +39,11 @@ public class DriverUtils {
 	
 	@SneakyThrows
 	private static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
-		final int qnMarkIndex = url.indexOf(DriverConstants.URL_DB_PARAM_SEPARATOR);
+		final int qnMarkIndex = url.indexOf(DriverConstants.URL_SEPARATOR_DB_PARAM);
 		String prefixAndName;
 		String asyncStr = null;
-		if (props.contains(PROP_ASYNC)) {
-			asyncStr = props.getProperty(PROP_ASYNC);
+		if (props.contains(URL_PARAM_ASYNC)) {
+			asyncStr = props.getProperty(URL_PARAM_ASYNC);
 		}
 		
 		ConnectionListener listener = null;
@@ -51,18 +51,18 @@ public class DriverUtils {
 			prefixAndName = url.substring(0, qnMarkIndex);
 			String urlParams = url.substring(qnMarkIndex + 1);
 			if (!Utils.isBlank(urlParams)) {
-				String[] params = urlParams.split(DriverConstants.URL_PARAMS_SEPARATOR);
+				String[] params = urlParams.split(DriverConstants.URL_SEPARATOR_PARAMS);
 				for (String pair : params) {
-					String[] keyAndValue = pair.split(DriverConstants.URL_PARAM_KEY_VALUE_SEPARATOR);
+					String[] keyAndValue = pair.split(DriverConstants.URL_SEPARATOR_PARAM_KEY_VALUE);
 					String key = keyAndValue[0];
 					if (!DriverConstants.PROP_NAMES.contains(key)) {
 						throw new SQLException("Connection URL contains unsupported parameter named: " + key);
 					}
 					
 					String value = keyAndValue[1];
-					if (asyncStr == null && PROP_ASYNC.equals(key)) {
+					if (asyncStr == null && URL_PARAM_ASYNC.equals(key)) {
 						asyncStr = value;
-					} else if (PROP_ASYNC_LISTENER.equals(key)) {
+					} else if (URL_PARAM_ASYNC_LISTENER.equals(key)) {
 						Class<ConnectionListener> clazz = Utils.loadClass(value);
 						listener = clazz.newInstance();
 					}
@@ -76,7 +76,7 @@ public class DriverUtils {
 		
 		boolean async = Boolean.valueOf(asyncStr);
 		if (async && listener == null) {
-			throw new SQLException(PROP_ASYNC_LISTENER + " is required for asynchronous get connection calls");
+			throw new SQLException(URL_PARAM_ASYNC_LISTENER + " is required for asynchronous get connection calls");
 		}
 		
 		String targetDbName = prefixAndName.substring(prefixAndName.indexOf(URL_PREFIX) + URL_PREFIX.length());
