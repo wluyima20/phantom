@@ -10,8 +10,9 @@ import static java.time.LocalDateTime.now;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,8 +32,8 @@ import com.amiyul.phantom.api.Response;
  */
 public class DefaultClient implements Client {
 	
-	//TODO Limit queue capacity
-	private static final DelayQueue<DelayedConnectionRequest> DELAYED_CONN_REQUESTS = new DelayQueue<>();
+	//TODO make the thread pool size configurable
+	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 	
 	private DefaultClient() {
 	}
@@ -87,24 +88,18 @@ public class DefaultClient implements Client {
 		warn(Constants.DATABASE_NAME + " DB is not unavailable until -> " + db.getUnderMaintenanceUntil());
 		
 		//TODO Add support for a user to chose async processing in case if DB is under maintenance
-		DelayedConnectionRequest delayed = new DelayedConnectionRequest(requestData, db.getUnderMaintenanceUntil());
-		DELAYED_CONN_REQUESTS.add(delayed);
-		
-		long delay = delayed.getDelay(TimeUnit.SECONDS);
+		long delay = Duration.between(LocalDateTime.now(), db.getUnderMaintenanceUntil()).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		Future<Connection> cf = executor.schedule(() -> {
 			debug("Processing delayed connection request");
+			
 			return doConnectInternal(requestData);
 		}, delay, TimeUnit.SECONDS);
 		
-		Connection connection;
 		try {
-			connection = cf.get();
-			executor.shutdownNow();
-			return connection;
+			return cf.get();
 		}
 		catch (Exception e) {
 			throw new SQLException(e);
