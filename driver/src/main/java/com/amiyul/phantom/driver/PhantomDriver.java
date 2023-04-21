@@ -25,6 +25,7 @@ public final class PhantomDriver implements Driver {
 	static {
 		try {
 			DriverManager.registerDriver(new PhantomDriver());
+			Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook()));
 		}
 		catch (SQLException e) {
 			throw new RuntimeException("Failed to register driver");

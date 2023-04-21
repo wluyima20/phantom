@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,8 +33,9 @@ import com.amiyul.phantom.api.Response;
  */
 public class DefaultClient implements Client {
 	
-	//TODO make the thread pool size configurable
-	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+	private static ScheduledExecutorService delayedExecutor;
+	
+	private static ExecutorService asyncExecutor;
 	
 	private DefaultClient() {
 	}
@@ -42,13 +44,35 @@ public class DefaultClient implements Client {
 		return DefaultClientHolder.INSTANCE;
 	}
 	
+	/**
+	 * Gracefully shuts down the client e.g. shutting down the delayed and async request executors.
+	 */
+	protected void shutdown() {
+		if (delayedExecutor != null) {
+			debug("Shutting down delayed request executor for the driver client");
+			
+			delayedExecutor.shutdownNow();
+		}
+		
+		if (asyncExecutor != null) {
+			debug("Shutting async request executor for the driver client");
+			
+			asyncExecutor.shutdownNow();
+		}
+	}
+	
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
 		if (!requestData.isAsync()) {
 			return doConnect(requestData);
 		}
 		
-		CompletableFuture.runAsync(new ConnectTask(requestData));
+		//TODO make the thread pool size configurable
+		if (asyncExecutor == null) {
+			asyncExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+		}
+		
+		CompletableFuture.runAsync(new ConnectTask(requestData), asyncExecutor);
 		
 		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
 		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
@@ -92,7 +116,12 @@ public class DefaultClient implements Client {
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		
-		Future<Connection> cf = executor.schedule(() -> {
+		//TODO make the thread pool size configurable
+		if (delayedExecutor == null) {
+			delayedExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+		}
+		
+		Future<Connection> cf = delayedExecutor.schedule(() -> {
 			debug("Processing delayed connection request");
 			
 			return doConnectInternal(requestData);
