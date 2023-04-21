@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -55,7 +54,7 @@ public class DefaultClient implements Client {
 			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
 		}
 		
-		CompletableFuture.runAsync(new ConnectTask(requestData), asyncExecutor);
+		asyncExecutor.execute(new ConnectTask(requestData));
 		
 		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
 		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
