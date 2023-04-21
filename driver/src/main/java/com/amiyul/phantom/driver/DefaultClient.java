@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +53,7 @@ public class DefaultClient implements Client {
 			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
 		}
 		
-		asyncExecutor.execute(new ConnectTask(requestData));
+		asyncExecutor.execute(new AsyncConnectTask(requestData));
 		
 		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
 		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
@@ -103,14 +102,8 @@ public class DefaultClient implements Client {
 			delayedExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultDelayedExecutorThreadCount());
 		}
 		
-		Future<Connection> cf = delayedExecutor.schedule(() -> {
-			debug("Processing delayed connection request");
-			
-			return doConnectInternal(requestData);
-		}, delay, TimeUnit.SECONDS);
-		
 		try {
-			return cf.get();
+			return delayedExecutor.schedule(new DelayedConnectTask(requestData), delay, TimeUnit.SECONDS).get();
 		}
 		catch (Exception e) {
 			throw new SQLException(e);
@@ -144,7 +137,14 @@ public class DefaultClient implements Client {
 		}
 	}
 	
-	private Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
+	/**
+	 * Sends a connection request to the database
+	 * 
+	 * @param requestData
+	 * @return Connection object
+	 * @throws SQLException
+	 */
+	protected Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
 		final String targetDbName = requestData.getTargetDatabaseName();
 		
 		debug("Obtaining connection to database: " + targetDbName);
