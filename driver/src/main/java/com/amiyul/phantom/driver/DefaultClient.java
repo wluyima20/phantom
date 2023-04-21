@@ -44,32 +44,15 @@ public class DefaultClient implements Client {
 		return DefaultClientHolder.INSTANCE;
 	}
 	
-	/**
-	 * Gracefully shuts down the client e.g. shutting down the delayed and async request executors.
-	 */
-	protected void shutdown() {
-		if (delayedExecutor != null) {
-			debug("Shutting down delayed request executor for the driver client");
-			
-			delayedExecutor.shutdownNow();
-		}
-		
-		if (asyncExecutor != null) {
-			debug("Shutting async request executor for the driver client");
-			
-			asyncExecutor.shutdownNow();
-		}
-	}
-	
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
 		if (!requestData.isAsync()) {
 			return doConnect(requestData);
 		}
 		
-		//TODO make the thread pool size configurable
+		//TODO use daemon threads make the thread pool size configurable i.e. min and max
 		if (asyncExecutor == null) {
-			asyncExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
 		}
 		
 		CompletableFuture.runAsync(new ConnectTask(requestData), asyncExecutor);
@@ -116,9 +99,9 @@ public class DefaultClient implements Client {
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		
-		//TODO make the thread pool size configurable
+		//TODO use daemon threads make the thread pool size configurable i.e. min and max
 		if (delayedExecutor == null) {
-			delayedExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+			delayedExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultDelayedExecutorThreadCount());
 		}
 		
 		Future<Connection> cf = delayedExecutor.schedule(() -> {
@@ -143,6 +126,23 @@ public class DefaultClient implements Client {
 	 */
 	protected void sendRequest(RequestContext context) throws SQLException {
 		DriverConfigUtils.getConfig().getDatabase().process(context);
+	}
+	
+	/**
+	 * Gracefully shuts down the client e.g. shutting down the delayed and async request executors.
+	 */
+	protected void shutdown() {
+		if (delayedExecutor != null) {
+			debug("Shutting down executor for delayed request processor threads");
+			
+			delayedExecutor.shutdownNow();
+		}
+		
+		if (asyncExecutor != null) {
+			debug("Shutting down executor for async request processor threads");
+			
+			asyncExecutor.shutdownNow();
+		}
 	}
 	
 	private Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {

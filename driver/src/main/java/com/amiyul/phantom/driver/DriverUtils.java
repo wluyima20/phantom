@@ -3,6 +3,7 @@
  */
 package com.amiyul.phantom.driver;
 
+import static com.amiyul.phantom.driver.DriverConstants.DEFAULT_THREAD_SIZE;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
@@ -35,6 +36,43 @@ public class DriverUtils {
 		LoggerUtils.debug("Connection request data -> " + requestData);
 		
 		return DefaultClient.getInstance().connect(requestData);
+	}
+	
+	/**
+	 * Gets the default thread count for the executor for async request processor
+	 *
+	 * @return thread count
+	 */
+	protected static int getDefaultAsyncExecutorThreadCount() {
+		int threadCount = getDefaultThreadCount();
+		if (threadCount > 50) {
+			threadCount = 50;
+		}
+		
+		return threadCount;
+	}
+	
+	/**
+	 * Gets the default thread count for the executor for delayed request processor
+	 * 
+	 * @return thread count
+	 */
+	protected static int getDefaultDelayedExecutorThreadCount() {
+		int threadCount = getDefaultThreadCount();
+		if (threadCount > 10) {
+			threadCount = 10;
+		}
+		
+		return threadCount;
+	}
+	
+	private static int getDefaultThreadCount() {
+		int threadCount = Runtime.getRuntime().availableProcessors();
+		if (threadCount == 1) {
+			threadCount = DEFAULT_THREAD_SIZE;
+		}
+		
+		return threadCount;
 	}
 	
 	@SneakyThrows

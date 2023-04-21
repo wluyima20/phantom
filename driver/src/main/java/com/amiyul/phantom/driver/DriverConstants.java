@@ -28,6 +28,8 @@ public final class DriverConstants {
 	
 	public static final String PROP_DB_PROVIDER_CLASS = PREFIX_DB + "provider.class";
 	
+	protected static final int DEFAULT_THREAD_SIZE = 5;
+	
 	protected static final List<String> PROP_NAMES = Arrays.asList(URL_PARAM_ASYNC, URL_PARAM_ASYNC_LISTENER);
 	
 }
