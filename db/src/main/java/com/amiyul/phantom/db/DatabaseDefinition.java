@@ -3,13 +3,13 @@
  */
 package com.amiyul.phantom.db;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 import com.amiyul.phantom.api.BaseMaintainable;
 import com.amiyul.phantom.api.Named;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Encapsulates information for a single target database instance
@@ -19,15 +19,13 @@ public class DatabaseDefinition extends BaseMaintainable implements Named {
 	private String name;
 	
 	@Getter
-	@Setter
 	private String url;
 	
 	@Getter
-	@Setter
 	private Properties properties;
 	
-	public DatabaseDefinition(String name, String url, Properties properties) {
-		super(null);
+	public DatabaseDefinition(String name, String url, Properties properties, LocalDateTime underMaintenanceUntil) {
+		super(underMaintenanceUntil);
 		this.name = name;
 		this.url = url;
 		this.properties = properties;

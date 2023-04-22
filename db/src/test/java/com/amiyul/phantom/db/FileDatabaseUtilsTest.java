@@ -40,8 +40,8 @@ public class FileDatabaseUtilsTest {
 		final String dbName1 = "db1";
 		final String dbUrl1 = "db-url-1";
 		Properties mockDbProps = Mockito.mock(Properties.class);
-		DatabaseDefinition dbDef1 = new DatabaseDefinition(dbName1, dbUrl1, mockDbProps);
-		DatabaseDefinition dbDef2 = new DatabaseDefinition("db2", null, null);
+		DatabaseDefinition dbDef1 = new DatabaseDefinition(dbName1, dbUrl1, mockDbProps, null);
+		DatabaseDefinition dbDef2 = new DatabaseDefinition("db2", null, null, null);
 		Map<String, DatabaseDefinition> nameDbDefMap = new HashMap();
 		nameDbDefMap.put(dbName1, dbDef1);
 		nameDbDefMap.put("db2", dbDef2);
@@ -60,7 +60,7 @@ public class FileDatabaseUtilsTest {
 	
 	@Test
 	public void getConnection_shouldFailIfNoTargetDbIsFoundMatchingTheDbName() {
-		DatabaseDefinition dbDef = new DatabaseDefinition("db2", null, null);
+		DatabaseDefinition dbDef = new DatabaseDefinition("db2", null, null, null);
 		Map<String, DatabaseDefinition> nameDbDefMap = Collections.singletonMap("db", dbDef);
 		DatabaseConfig mockConfig = Mockito.mock(DatabaseConfig.class);
 		when(FileDatabaseConfigUtils.getConfig()).thenReturn(mockConfig);

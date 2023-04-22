@@ -3,6 +3,7 @@
  */
 package com.amiyul.phantom.db;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +27,8 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 	
 	protected static final String PROP_PROPS = "properties";
 	
+	protected static final String PROP_UNDER_MAINTENANCE = "under.maintenance.until";
+	
 	@Override
 	public DatabaseConfigMetadata createInstance(Properties properties) throws Exception {
 		final Map<String, String> map = cleanEntries(new HashMap(properties));
@@ -34,7 +37,13 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 			Map<String, String> dbDefProps = getPropsWithPrefix(map, dbName);
 			Properties dbProps = new Properties();
 			dbProps.putAll(getPropsWithPrefix(dbDefProps, PROP_PROPS));
-			dbDefs.add(new DatabaseDefinition(dbName, dbDefProps.get(PROP_URL), dbProps));
+			LocalDateTime underMaintenanceUntil = null;
+			final String underMaintenanceUntilStr = dbDefProps.get(PROP_UNDER_MAINTENANCE);
+			if (!Utils.isBlank(underMaintenanceUntilStr)) {
+				underMaintenanceUntil = Utils.parseDateString(underMaintenanceUntilStr);
+			}
+			
+			dbDefs.add(new DatabaseDefinition(dbName, dbDefProps.get(PROP_URL), dbProps, underMaintenanceUntil));
 		});
 		
 		return () -> dbDefs;

@@ -145,8 +145,8 @@ public class FileDatabaseConfigUtilsTest {
 		DatabaseConfigMetadata mockMetadata = Mockito.mock(DatabaseConfigMetadata.class);
 		final String dbName1 = "db1";
 		final String dbName2 = "db2";
-		DatabaseDefinition dbDef1 = new DatabaseDefinition(dbName1, null, null);
-		DatabaseDefinition dbDef2 = new DatabaseDefinition(dbName2, null, null);
+		DatabaseDefinition dbDef1 = new DatabaseDefinition(dbName1, null, null, null);
+		DatabaseDefinition dbDef2 = new DatabaseDefinition(dbName2, null, null, null);
 		when(mockMetadata.getDatabaseDefinitions()).thenReturn(Arrays.asList(dbDef1, dbDef2));
 		Whitebox.setInternalState(FileDatabaseConfigUtils.class, "configMetadata", mockMetadata);
 		
