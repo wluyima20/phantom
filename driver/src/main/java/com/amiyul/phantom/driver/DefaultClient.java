@@ -77,15 +77,6 @@ public class DefaultClient implements Client {
 		}
 	}
 	
-	@Override
-	public void reload() throws SQLException {
-		debug("Sending reload signal");
-		
-		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
-		sendRequest(requestContext);
-	}
-	
 	/**
 	 * Processes a connection request using the information on the specified
 	 * {@link ConnectionRequestData}
@@ -139,6 +130,15 @@ public class DefaultClient implements Client {
 		debug("Connection obtained");
 		
 		return requestContext.readResult();
+	}
+	
+	@Override
+	public void reload() throws SQLException {
+		debug("Sending reload signal");
+		
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
+		sendRequest(requestContext);
 	}
 	
 	/**
