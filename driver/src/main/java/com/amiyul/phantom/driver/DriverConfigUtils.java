@@ -107,10 +107,7 @@ public class DriverConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			Database db = provider.get();
-			db.setUnderMaintenanceUntil(underMaintenanceUntil);
-			
-			config = () -> db;
+			config = new DefaultDriverConfig(provider.get(), underMaintenanceUntil);
 		}
 		
 		return config;

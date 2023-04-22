@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * to extend {@link com.amiyul.phantom.api.BaseDatabase} instead of directly implementing this
  * interface for better compatibility in case the interface is changed.
  */
-public interface Database extends Maintainable {
+public interface Database {
 	
 	/**
 	 * Processes a request from a client

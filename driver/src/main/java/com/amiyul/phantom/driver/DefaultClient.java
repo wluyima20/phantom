@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Constants;
-import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DefaultRequest;
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.Request;
@@ -45,26 +44,26 @@ public class DefaultClient implements Client {
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
 		//TODO Also check if the target DB is under maintenance
-		Database db = DriverConfigUtils.getConfig().getDatabase();
-		if (!db.isUnderMaintenance(now())) {
+		DriverConfig config = DriverConfigUtils.getConfig();
+		if (!config.isUnderMaintenance(now())) {
 			return doConnect(requestData);
 		}
 		
 		//Sanity check just in case the Db config has been updated to put the DB out of maintenance
 		DefaultClient.getInstance().reload();
-		db = DriverConfigUtils.getConfig().getDatabase();
-		if (!db.isUnderMaintenance(now())) {
+		config = DriverConfigUtils.getConfig();
+		if (!config.isUnderMaintenance(now())) {
 			return doConnect(requestData);
 		}
 		
-		warn(Constants.DATABASE_NAME + " DB is not unavailable until -> " + db.getUnderMaintenanceUntil());
+		warn(Constants.DATABASE_NAME + " DB is not unavailable until -> " + config.getUnderMaintenanceUntil());
 		
 		//TODO Add support for a user to chose async processing in case if DB is under maintenance
-		long delay = Duration.between(LocalDateTime.now(), db.getUnderMaintenanceUntil()).getSeconds();
+		long delay = Duration.between(LocalDateTime.now(), config.getUnderMaintenanceUntil()).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		
-		//TODO use daemon threads make the thread pool size configurable i.e. min and max
+		//TODO Make the thread pool size configurable i.e. min and max
 		if (delayedExecutor == null) {
 			delayedExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultDelayedExecutorThreadCount());
 		}
@@ -82,7 +81,7 @@ public class DefaultClient implements Client {
 	 * {@link ConnectionRequestData}
 	 *
 	 * @param requestData {@link ConnectionRequestData}
-	 * @return Connection
+	 * @return Connection object
 	 * @throws SQLException
 	 */
 	protected Connection doConnect(ConnectionRequestData requestData) throws SQLException {
@@ -90,7 +89,7 @@ public class DefaultClient implements Client {
 			return doConnectInternal(requestData);
 		}
 		
-		//TODO use daemon threads make the thread pool size configurable i.e. min and max
+		//TODO Make the thread pool size configurable i.e. min and max
 		if (asyncExecutor == null) {
 			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
 		}

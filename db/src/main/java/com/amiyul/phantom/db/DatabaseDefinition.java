@@ -27,6 +27,7 @@ public class DatabaseDefinition extends BaseMaintainable implements Named {
 	private Properties properties;
 	
 	public DatabaseDefinition(String name, String url, Properties properties) {
+		super(null);
 		this.name = name;
 		this.url = url;
 		this.properties = properties;

@@ -12,14 +12,13 @@ public abstract class BaseMaintainable implements Maintainable {
 	
 	private LocalDateTime underMaintenanceUntil;
 	
-	@Override
-	public LocalDateTime getUnderMaintenanceUntil() {
-		return underMaintenanceUntil;
+	public BaseMaintainable(LocalDateTime underMaintenanceUntil) {
+		this.underMaintenanceUntil = underMaintenanceUntil;
 	}
 	
 	@Override
-	public void setUnderMaintenanceUntil(LocalDateTime underMaintenanceUntil) {
-		this.underMaintenanceUntil = underMaintenanceUntil;
+	public LocalDateTime getUnderMaintenanceUntil() {
+		return underMaintenanceUntil;
 	}
 	
 }

@@ -6,4 +6,4 @@ package com.amiyul.phantom.api;
 /**
  * Base class for {@link Database} implementations.
  */
-public abstract class BaseDatabase extends BaseMaintainable implements Database {}
+public abstract class BaseDatabase implements Database {}

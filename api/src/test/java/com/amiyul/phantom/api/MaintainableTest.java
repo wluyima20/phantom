@@ -11,27 +11,15 @@ import org.junit.Test;
 
 public class MaintainableTest {
 	
-	class MockMaintainable implements Maintainable {
-		
-		LocalDateTime underMaintenanceUntil;
+	class MockMaintainable extends BaseMaintainable {
 		
 		MockMaintainable(LocalDateTime underMaintenanceUntil) {
-			this.underMaintenanceUntil = underMaintenanceUntil;
-		}
-		
-		@Override
-		public LocalDateTime getUnderMaintenanceUntil() {
-			return underMaintenanceUntil;
-		}
-		
-		@Override
-		public void setUnderMaintenanceUntil(LocalDateTime underMaintenanceUntil) {
-			this.underMaintenanceUntil = underMaintenanceUntil;
+			super(underMaintenanceUntil);
 		}
 	}
 	
 	@Test
-	public void isUnderMaintenance_shouldReturnTrueIfTheSpecifiedDateTimeIsBeforeunderMaintenanceUntil() {
+	public void isUnderMaintenance_shouldReturnTrueIfTheSpecifiedDateTimeIsBeforeUnderMaintenanceUntil() {
 		LocalDateTime dateTime = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555555);
 		LocalDateTime until = LocalDateTime.of(2023, Month.MARCH, 18, 17, 4, 8, 555555556);
 		Assert.assertTrue(new MockMaintainable(until).isUnderMaintenance(dateTime));

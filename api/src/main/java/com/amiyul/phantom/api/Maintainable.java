@@ -22,11 +22,4 @@ public interface Maintainable {
 	 */
 	LocalDateTime getUnderMaintenanceUntil();
 	
-	/**
-	 * Sets the underMaintenanceUntil
-	 *
-	 * @param underMaintenanceUntil the underMaintenanceUntil to set
-	 */
-	void setUnderMaintenanceUntil(LocalDateTime underMaintenanceUntil);
-	
 }
