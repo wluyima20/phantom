@@ -20,7 +20,7 @@ public class AsyncConnectTask extends BaseNotifyingTask<Connection> {
 	
 	@Override
 	public Connection getResult() throws Exception {
-		return DefaultClient.getInstance().doConnect(requestData);
+		return DefaultClient.getInstance().doConnectInternal(requestData);
 	}
 	
 }

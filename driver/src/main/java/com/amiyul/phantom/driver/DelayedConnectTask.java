@@ -3,6 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
+import static com.amiyul.phantom.api.logging.LoggerUtils.debug;
+
 import java.sql.Connection;
 
 /**
@@ -19,7 +21,9 @@ public class DelayedConnectTask extends BaseCallableTask<Connection> {
 	
 	@Override
 	public Connection doCall() throws Exception {
-		return DefaultClient.getInstance().doConnectInternal(requestData);
+		debug("Processing delayed connection request");
+		
+		return DefaultClient.getInstance().doConnect(requestData);
 	}
 	
 }

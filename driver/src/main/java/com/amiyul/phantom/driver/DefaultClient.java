@@ -44,50 +44,17 @@ public class DefaultClient implements Client {
 	
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
-		if (!requestData.isAsync()) {
-			return doConnect(requestData);
-		}
-		
-		//TODO use daemon threads make the thread pool size configurable i.e. min and max
-		if (asyncExecutor == null) {
-			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
-		}
-		
-		asyncExecutor.execute(new AsyncConnectTask(requestData));
-		
-		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
-	}
-	
-	@Override
-	public void reload() throws SQLException {
-		debug("Sending reload signal");
-		
-		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
-		sendRequest(requestContext);
-	}
-	
-	/**
-	 * Processes a connection request using the information on the specified
-	 * {@link ConnectionRequestData}
-	 *
-	 * @param requestData {@link ConnectionRequestData}
-	 * @return Connection
-	 * @throws SQLException
-	 */
-	protected Connection doConnect(ConnectionRequestData requestData) throws SQLException {
 		//TODO Also check if the target DB is under maintenance
 		Database db = DriverConfigUtils.getConfig().getDatabase();
 		if (!db.isUnderMaintenance(now())) {
-			return doConnectInternal(requestData);
+			return doConnect(requestData);
 		}
 		
 		//Sanity check just in case the Db config has been updated to put the DB out of maintenance
 		DefaultClient.getInstance().reload();
 		db = DriverConfigUtils.getConfig().getDatabase();
 		if (!db.isUnderMaintenance(now())) {
-			return doConnectInternal(requestData);
+			return doConnect(requestData);
 		}
 		
 		warn(Constants.DATABASE_NAME + " DB is not unavailable until -> " + db.getUnderMaintenanceUntil());
@@ -108,6 +75,70 @@ public class DefaultClient implements Client {
 		catch (Exception e) {
 			throw new SQLException(e);
 		}
+	}
+	
+	@Override
+	public void reload() throws SQLException {
+		debug("Sending reload signal");
+		
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
+		sendRequest(requestContext);
+	}
+	
+	/**
+	 * Processes a connection request using the information on the specified
+	 * {@link ConnectionRequestData}
+	 *
+	 * @param requestData {@link ConnectionRequestData}
+	 * @return Connection
+	 * @throws SQLException
+	 */
+	protected Connection doConnect(ConnectionRequestData requestData) throws SQLException {
+		if (!requestData.isAsync()) {
+			return doConnectInternal(requestData);
+		}
+		
+		//TODO use daemon threads make the thread pool size configurable i.e. min and max
+		if (asyncExecutor == null) {
+			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
+		}
+		
+		asyncExecutor.execute(new AsyncConnectTask(requestData));
+		
+		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
+	}
+	
+	/**
+	 * Sends a connection request to the database
+	 *
+	 * @param requestData
+	 * @return Connection object
+	 * @throws SQLException
+	 */
+	protected Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
+		final String targetDbName = requestData.getTargetDatabaseName();
+		
+		debug("Obtaining connection to database: " + targetDbName);
+		
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new ConnectionRequest(targetDbName, requestContext);
+		
+		try {
+			sendRequest(requestContext);
+		}
+		catch (SQLException e) {
+			debug("Failed to obtain a connection to database: " + targetDbName + ", reloading config");
+			
+			DriverConfigUtils.reloadConfig();
+			
+			sendRequest(requestContext);
+		}
+		
+		debug("Connection obtained");
+		
+		return requestContext.readResult();
 	}
 	
 	/**
@@ -135,37 +166,6 @@ public class DefaultClient implements Client {
 			
 			asyncExecutor.shutdownNow();
 		}
-	}
-	
-	/**
-	 * Sends a connection request to the database
-	 * 
-	 * @param requestData
-	 * @return Connection object
-	 * @throws SQLException
-	 */
-	protected Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
-		final String targetDbName = requestData.getTargetDatabaseName();
-		
-		debug("Obtaining connection to database: " + targetDbName);
-		
-		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new ConnectionRequest(targetDbName, requestContext);
-		
-		try {
-			sendRequest(requestContext);
-		}
-		catch (SQLException e) {
-			debug("Failed to obtain a connection to database: " + targetDbName + ", reloading config");
-			
-			DriverConfigUtils.reloadConfig();
-			
-			sendRequest(requestContext);
-		}
-		
-		debug("Connection obtained");
-		
-		return requestContext.readResult();
 	}
 	
 	private static class DefaultClientHolder {
