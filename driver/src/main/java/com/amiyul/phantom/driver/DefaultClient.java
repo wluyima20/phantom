@@ -21,9 +21,7 @@ import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.DefaultRequest;
 import com.amiyul.phantom.api.PhantomProtocol.Command;
-import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
-import com.amiyul.phantom.api.Response;
 import com.amiyul.phantom.api.StatusRequest;
 
 /**
@@ -130,7 +128,7 @@ public class DefaultClient implements Client {
 		debug("Requesting connection to database: " + targetDbName);
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new ConnectionRequest(targetDbName, requestContext);
+		requestContext.setRequest(new ConnectionRequest(targetDbName, requestContext));
 		
 		try {
 			sendRequest(requestContext);
@@ -153,7 +151,7 @@ public class DefaultClient implements Client {
 		debug("Sending reload signal");
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
+		requestContext.setRequest(new DefaultRequest(Command.RELOAD, requestContext));
 		sendRequest(requestContext);
 		
 		debug("Successfully reloaded " + Constants.DATABASE_NAME + " DB");
@@ -164,7 +162,7 @@ public class DefaultClient implements Client {
 		debug("Requesting the status for database: " + targetDatabaseName);
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
-		requestContext.request = new StatusRequest(targetDatabaseName, requestContext);
+		requestContext.setRequest(new StatusRequest(targetDatabaseName, requestContext));
 		
 		sendRequest(requestContext);
 		
@@ -203,36 +201,6 @@ public class DefaultClient implements Client {
 	private static class DefaultClientHolder {
 		
 		private static final DefaultClient INSTANCE = new DefaultClient();
-		
-	}
-	
-	protected static class DefaultRequestContext implements RequestContext {
-		
-		private Request request;
-		
-		private Response response;
-		
-		@Override
-		public Request getRequest() {
-			return request;
-		}
-		
-		@Override
-		public <T> T readResult() {
-			return response == null ? null : response.getResult();
-		}
-		
-		@Override
-		public void writeResult(Object result) {
-			this.response = new Response() {
-				
-				@Override
-				public <T> T getResult() {
-					return (T) result;
-				}
-				
-			};
-		}
 		
 	}
 	
