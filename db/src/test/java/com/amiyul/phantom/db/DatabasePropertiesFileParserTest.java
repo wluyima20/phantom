@@ -57,13 +57,13 @@ public class DatabasePropertiesFileParserTest {
 		assertEquals(DB_URL_PROD, metadata.getDatabaseDefinitions().get(0).getUrl());
 		assertEquals(DB_USER_PROD, metadata.getDatabaseDefinitions().get(0).getProperties().getProperty(PROP_USER));
 		assertEquals("prod-pass", metadata.getDatabaseDefinitions().get(0).getProperties().getProperty(PROP_PASSWORD));
-		assertNull(metadata.getDatabaseDefinitions().get(0).getUnderMaintenanceUntil());
+		assertNull(metadata.getDatabaseDefinitions().get(0).getDownUntil());
 		assertEquals("mysql-research", metadata.getDatabaseDefinitions().get(1).getName());
 		assertEquals("jdbc:mysql://localhost:3307/research", metadata.getDatabaseDefinitions().get(1).getUrl());
 		assertEquals("research-user", metadata.getDatabaseDefinitions().get(1).getProperties().getProperty(PROP_USER));
 		assertEquals("research-pass", metadata.getDatabaseDefinitions().get(1).getProperties().getProperty(PROP_PASSWORD));
 		LocalDateTime expectedDate = Utils.parseDateString("2023-04-22T08:00:45+03:00");
-		assertEquals(expectedDate, metadata.getDatabaseDefinitions().get(1).getUnderMaintenanceUntil());
+		assertEquals(expectedDate, metadata.getDatabaseDefinitions().get(1).getDownUntil());
 	}
 	
 	@Test
