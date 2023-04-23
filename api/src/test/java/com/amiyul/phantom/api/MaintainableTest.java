@@ -41,7 +41,7 @@ public class MaintainableTest {
 	
 	@Test
 	public void isUnderMaintenance_shouldReturnFalseIfUnderMaintenanceUntilIsNull() {
-		Assert.assertFalse(new MockMaintainable(null).isUnderMaintenance(null));
+		Assert.assertFalse(new MockMaintainable(null).isUnderMaintenance(LocalDateTime.now()));
 	}
 	
 }

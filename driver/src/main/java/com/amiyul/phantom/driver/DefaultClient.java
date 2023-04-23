@@ -3,8 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
+import static com.amiyul.phantom.api.Utils.isDateAfter;
 import static com.amiyul.phantom.api.logging.LoggerUtils.debug;
-import static com.amiyul.phantom.api.logging.LoggerUtils.warn;
 import static java.time.LocalDateTime.now;
 
 import java.lang.reflect.Proxy;
@@ -24,6 +24,7 @@ import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.Request;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Response;
+import com.amiyul.phantom.api.StatusRequest;
 
 /**
  * Default implementation of a {@link Client}
@@ -43,23 +44,39 @@ public class DefaultClient implements Client {
 	
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
-		//TODO Also check if the target DB is under maintenance
 		DriverConfig config = DriverConfigUtils.getConfig();
-		if (!config.isUnderMaintenance(now())) {
+		final String targetDbName = requestData.getTargetDatabaseName();
+		LocalDateTime targetDbMaintenanceEnd = getStatus(targetDbName);
+		LocalDateTime asOfDate = now();
+		if (!config.isUnderMaintenance(asOfDate) && !isDateAfter(targetDbMaintenanceEnd, asOfDate)) {
 			return doConnect(requestData);
 		}
 		
-		//Sanity check just in case the Db config has been updated to put the DB out of maintenance
+		//Sanity check just in case the configs have been updated to put the DB out of maintenance
 		DefaultClient.getInstance().reload();
 		config = DriverConfigUtils.getConfig();
-		if (!config.isUnderMaintenance(now())) {
+		targetDbMaintenanceEnd = getStatus(targetDbName);
+		if (!config.isUnderMaintenance(asOfDate) && !isDateAfter(targetDbMaintenanceEnd, asOfDate)) {
 			return doConnect(requestData);
 		}
 		
-		warn(Constants.DATABASE_NAME + " DB is not unavailable until -> " + config.getUnderMaintenanceUntil());
+		if (config.isUnderMaintenance(asOfDate)) {
+			debug(Constants.DATABASE_NAME + " DB is not unavailable until -> " + config.getUnderMaintenanceUntil());
+		}
+		
+		if (isDateAfter(targetDbMaintenanceEnd, asOfDate)) {
+			debug(targetDbName + " DB is not unavailable until -> " + targetDbMaintenanceEnd);
+		}
+		
+		LocalDateTime effectiveMaintenanceEnd = config.getUnderMaintenanceUntil();
+		if (targetDbMaintenanceEnd != null) {
+			if (effectiveMaintenanceEnd == null || isDateAfter(targetDbMaintenanceEnd, effectiveMaintenanceEnd)) {
+				effectiveMaintenanceEnd = targetDbMaintenanceEnd;
+			}
+		}
 		
 		//TODO Add support for a user to chose async processing in case if DB is under maintenance
-		long delay = Duration.between(LocalDateTime.now(), config.getUnderMaintenanceUntil()).getSeconds();
+		long delay = Duration.between(now(), effectiveMaintenanceEnd).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		
@@ -110,7 +127,7 @@ public class DefaultClient implements Client {
 	protected Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
 		final String targetDbName = requestData.getTargetDatabaseName();
 		
-		debug("Obtaining connection to database: " + targetDbName);
+		debug("Requesting connection to database: " + targetDbName);
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();
 		requestContext.request = new ConnectionRequest(targetDbName, requestContext);
@@ -126,7 +143,7 @@ public class DefaultClient implements Client {
 			sendRequest(requestContext);
 		}
 		
-		debug("Connection obtained");
+		debug("Successfully connected to database: " + targetDbName);
 		
 		return requestContext.readResult();
 	}
@@ -138,6 +155,22 @@ public class DefaultClient implements Client {
 		DefaultRequestContext requestContext = new DefaultRequestContext();
 		requestContext.request = new DefaultRequest(Command.RELOAD, requestContext);
 		sendRequest(requestContext);
+		
+		debug("Successfully reloaded " + Constants.DATABASE_NAME + " DB");
+	}
+	
+	@Override
+	public LocalDateTime getStatus(String targetDatabaseName) throws SQLException {
+		debug("Requesting the status for database: " + targetDatabaseName);
+		
+		DefaultRequestContext requestContext = new DefaultRequestContext();
+		requestContext.request = new StatusRequest(targetDatabaseName, requestContext);
+		
+		sendRequest(requestContext);
+		
+		debug("Successfully got the status for database: " + targetDatabaseName);
+		
+		return requestContext.readResult();
 	}
 	
 	/**

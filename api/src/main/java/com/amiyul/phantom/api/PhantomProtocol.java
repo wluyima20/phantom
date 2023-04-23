@@ -13,7 +13,7 @@ public final class PhantomProtocol {
 	 * Commands that a client send to the database for execution
 	 */
 	public enum Command {
-		CONNECT, RELOAD
+		CONNECT, RELOAD, STATUS
 	}
 	
 }

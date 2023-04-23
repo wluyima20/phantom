@@ -11,8 +11,14 @@ import java.time.LocalDateTime;
  */
 public interface Maintainable {
 	
+	/**
+	 * Checks if this instance is under maintenance as of the specified date and time.
+	 * 
+	 * @param asOfDateTime the reference date on the timeline
+	 * @return true if under maintenance otherwise false
+	 */
 	default boolean isUnderMaintenance(LocalDateTime asOfDateTime) {
-		return getUnderMaintenanceUntil() != null && asOfDateTime.isBefore(getUnderMaintenanceUntil());
+		return Utils.isDateAfter(getUnderMaintenanceUntil(), asOfDateTime);
 	}
 	
 	/**

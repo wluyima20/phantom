@@ -129,4 +129,20 @@ public class Utils {
 		return ZonedDateTime.parse(date, ISO_OFFSET_DATE_TIME).withZoneSameInstant(systemDefault()).toLocalDateTime();
 	}
 	
+	/**
+	 * Tests if a {@link LocalDateTime} object is after another {@link LocalDateTime} object with a null
+	 * being the latest date
+	 * 
+	 * @param date the date object
+	 * @param other the other date to compare to
+	 * @return true if the date is not null and is after other date otherwise false
+	 */
+	public static boolean isDateAfter(LocalDateTime date, LocalDateTime other) {
+		if (other == null) {
+			throw new RuntimeException("other date can't be null");
+		}
+		
+		return date != null && date.isAfter(other);
+	}
+	
 }

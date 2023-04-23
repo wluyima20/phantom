@@ -5,6 +5,7 @@ package com.amiyul.phantom.api;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 
@@ -22,6 +23,9 @@ public abstract class BaseDatabase implements Database {
 				break;
 			case RELOAD:
 				reload();
+				break;
+			case STATUS:
+				context.writeResult(getStatus(((StatusRequest) context.getRequest()).getTargetDatabaseName()));
 				break;
 			default:
 				throw new SQLException("Don't know how to process protocol command: " + command);
@@ -41,5 +45,14 @@ public abstract class BaseDatabase implements Database {
 	 * Processes a reload request
 	 */
 	public abstract void reload() throws SQLException;
+	
+	/**
+	 * Processes a status request for a database matching the specified name
+	 * 
+	 * @param targetDatabaseName the name of the target database
+	 * @return LocalDateTime object
+	 * @throws SQLException
+	 */
+	public abstract LocalDateTime getStatus(String targetDatabaseName) throws SQLException;
 	
 }

@@ -5,6 +5,7 @@ package com.amiyul.phantom.driver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 /**
  * Simulation of a database client to be used by the {@link PhantomDriver} to send requests to the
@@ -27,5 +28,15 @@ public interface Client {
 	 * @throws SQLException
 	 */
 	void reload() throws SQLException;
+	
+	/**
+	 * Gets the {@link LocalDateTime} when the database matching the specified name will be available if
+	 * it is temporarily unavailable otherwise should return null.
+	 * 
+	 * @param targetDatabaseName the name of the target database
+	 * @return the {@link LocalDateTime} when the database will become available otherwise null
+	 * @throws SQLException
+	 */
+	LocalDateTime getStatus(String targetDatabaseName) throws SQLException;
 	
 }
