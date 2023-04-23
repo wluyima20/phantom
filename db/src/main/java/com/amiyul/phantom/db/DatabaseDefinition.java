@@ -6,7 +6,6 @@ package com.amiyul.phantom.db;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
-import com.amiyul.phantom.api.BaseMaintainable;
 import com.amiyul.phantom.api.Named;
 
 import lombok.Getter;

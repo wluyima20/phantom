@@ -5,7 +5,7 @@ package com.amiyul.phantom.driver;
 
 import java.time.LocalDateTime;
 
-import com.amiyul.phantom.api.BaseMaintainable;
+import com.amiyul.phantom.db.BaseMaintainable;
 import com.amiyul.phantom.api.Database;
 
 import lombok.Getter;

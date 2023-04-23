@@ -1,9 +1,11 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api;
+package com.amiyul.phantom.db;
 
 import java.time.LocalDateTime;
+
+import com.amiyul.phantom.api.Utils;
 
 /**
  * Marker interface for objects that can go in under maintenance mode until a specified point in

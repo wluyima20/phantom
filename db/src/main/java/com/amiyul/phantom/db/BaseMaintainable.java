@@ -1,7 +1,7 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.api;
+package com.amiyul.phantom.db;
 
 import java.time.LocalDateTime;
 

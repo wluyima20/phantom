@@ -5,6 +5,7 @@ package com.amiyul.phantom.driver;
 
 import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.config.ConfigMetadata;
+import com.amiyul.phantom.db.Maintainable;
 
 /**
  * Holds the metadata used to build a {@link DriverConfig} instance
@@ -19,7 +20,7 @@ public interface DriverConfigMetadata extends ConfigMetadata {
 	String getDatabaseProviderClassName();
 	
 	/**
-	 * @see com.amiyul.phantom.api.Maintainable
+	 * @see Maintainable
 	 */
 	String getUnderMaintenanceUntil();
 	
