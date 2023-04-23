@@ -53,11 +53,11 @@ public class DriverConfigUtils {
 	 * Creates a {@link DriverConfigMetadata} instance
 	 *
 	 * @param dbProviderClassName the database provider class name
-	 * @param underMaintenanceUntil time when the database will be available
+	 * @param downUntil time when the database will be available
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String underMaintenanceUntil) {
+	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String downUntil) {
 		return new DriverConfigMetadata() {
 			
 			@Override
@@ -66,8 +66,8 @@ public class DriverConfigUtils {
 			}
 			
 			@Override
-			public String getUnderMaintenanceUntil() {
-				return underMaintenanceUntil;
+			public String getDownUntil() {
+				return downUntil;
 			}
 			
 		};
@@ -81,7 +81,7 @@ public class DriverConfigUtils {
 	protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
-			LocalDateTime underMaintenanceUntil = null;
+			LocalDateTime downUntil = null;
 			
 			try {
 				DriverConfigMetadata metadata = getConfigMetadata();
@@ -91,8 +91,8 @@ public class DriverConfigUtils {
 						clazz = Utils.loadClass(metadata.getDatabaseProviderClassName());
 					}
 					
-					if (!Utils.isBlank(metadata.getUnderMaintenanceUntil())) {
-						underMaintenanceUntil = Utils.parseDateString(metadata.getUnderMaintenanceUntil());
+					if (!Utils.isBlank(metadata.getDownUntil())) {
+						downUntil = Utils.parseDateString(metadata.getDownUntil());
 					}
 				}
 				
@@ -107,7 +107,7 @@ public class DriverConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			config = new DefaultDriverConfig(provider.get(), underMaintenanceUntil);
+			config = new DefaultDriverConfig(provider.get(), downUntil);
 		}
 		
 		return config;

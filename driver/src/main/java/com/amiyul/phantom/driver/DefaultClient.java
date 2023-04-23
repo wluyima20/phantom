@@ -44,37 +44,37 @@ public class DefaultClient implements Client {
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
 		DriverConfig config = DriverConfigUtils.getConfig();
 		final String targetDbName = requestData.getTargetDatabaseName();
-		LocalDateTime targetDbMaintenanceEnd = getStatus(targetDbName);
+		LocalDateTime targetDbDownUntil = getStatus(targetDbName);
 		LocalDateTime asOfDate = now();
-		if (!config.isUnderMaintenance(asOfDate) && !isDateAfter(targetDbMaintenanceEnd, asOfDate)) {
+		if (!config.isDown(asOfDate) && !isDateAfter(targetDbDownUntil, asOfDate)) {
 			return doConnect(requestData);
 		}
 		
-		//Sanity check just in case the configs have been updated to put the DB out of maintenance
+		//Sanity check just in case the configs have been updated to put the DB back up
 		DefaultClient.getInstance().reload();
 		config = DriverConfigUtils.getConfig();
-		targetDbMaintenanceEnd = getStatus(targetDbName);
-		if (!config.isUnderMaintenance(asOfDate) && !isDateAfter(targetDbMaintenanceEnd, asOfDate)) {
+		targetDbDownUntil = getStatus(targetDbName);
+		if (!config.isDown(asOfDate) && !isDateAfter(targetDbDownUntil, asOfDate)) {
 			return doConnect(requestData);
 		}
 		
-		if (config.isUnderMaintenance(asOfDate)) {
-			debug(Constants.DATABASE_NAME + " DB is not unavailable until -> " + config.getUnderMaintenanceUntil());
+		if (config.isDown(asOfDate)) {
+			debug(Constants.DATABASE_NAME + " DB is not unavailable until -> " + config.getDownUntil());
 		}
 		
-		if (isDateAfter(targetDbMaintenanceEnd, asOfDate)) {
-			debug(targetDbName + " DB is not unavailable until -> " + targetDbMaintenanceEnd);
+		if (isDateAfter(targetDbDownUntil, asOfDate)) {
+			debug(targetDbName + " DB is not unavailable until -> " + targetDbDownUntil);
 		}
 		
-		LocalDateTime effectiveMaintenanceEnd = config.getUnderMaintenanceUntil();
-		if (targetDbMaintenanceEnd != null) {
-			if (effectiveMaintenanceEnd == null || isDateAfter(targetDbMaintenanceEnd, effectiveMaintenanceEnd)) {
-				effectiveMaintenanceEnd = targetDbMaintenanceEnd;
+		LocalDateTime effectiveDownUntil = config.getDownUntil();
+		if (targetDbDownUntil != null) {
+			if (effectiveDownUntil == null || isDateAfter(targetDbDownUntil, effectiveDownUntil)) {
+				effectiveDownUntil = targetDbDownUntil;
 			}
 		}
 		
-		//TODO Add support for a user to chose async processing in case if DB is under maintenance
-		long delay = Duration.between(now(), effectiveMaintenanceEnd).getSeconds();
+		//TODO Add support for a user to chose async processing in case if DB is down
+		long delay = Duration.between(now(), effectiveDownUntil).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		

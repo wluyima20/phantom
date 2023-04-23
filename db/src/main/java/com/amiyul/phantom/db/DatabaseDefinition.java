@@ -13,7 +13,7 @@ import lombok.Getter;
 /**
  * Encapsulates information for a single target database instance
  */
-public class DatabaseDefinition extends BaseMaintainable implements Named {
+public class DatabaseDefinition extends BaseStateful implements Named {
 	
 	private String name;
 	
@@ -23,8 +23,8 @@ public class DatabaseDefinition extends BaseMaintainable implements Named {
 	@Getter
 	private Properties properties;
 	
-	public DatabaseDefinition(String name, String url, Properties properties, LocalDateTime underMaintenanceUntil) {
-		super(underMaintenanceUntil);
+	public DatabaseDefinition(String name, String url, Properties properties, LocalDateTime downUntil) {
+		super(downUntil);
 		this.name = name;
 		this.url = url;
 		this.properties = properties;

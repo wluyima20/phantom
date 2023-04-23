@@ -24,7 +24,7 @@ public final class DriverConstants {
 	
 	protected static final String URL_PARAM_ASYNC_LISTENER = "asyncConnectionListener";
 	
-	public static final String PROP_DB_UNDER_MAINTENANCE_UNTIL = PREFIX_DB + "under.maintenance.until";
+	public static final String PROP_DB_DOWN_UNTIL = PREFIX_DB + "down.until";
 	
 	public static final String PROP_DB_PROVIDER_CLASS = PREFIX_DB + "provider.class";
 	

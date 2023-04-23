@@ -27,7 +27,7 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 	
 	protected static final String PROP_PROPS = "properties";
 	
-	protected static final String PROP_UNDER_MAINTENANCE = "under.maintenance.until";
+	protected static final String PROP_UNDER_MAINTENANCE = "down.until";
 	
 	@Override
 	public DatabaseConfigMetadata createInstance(Properties properties) throws Exception {
@@ -37,13 +37,13 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 			Map<String, String> dbDefProps = getPropsWithPrefix(map, dbName);
 			Properties dbProps = new Properties();
 			dbProps.putAll(getPropsWithPrefix(dbDefProps, PROP_PROPS));
-			LocalDateTime underMaintenanceUntil = null;
-			final String underMaintenanceUntilStr = dbDefProps.get(PROP_UNDER_MAINTENANCE);
-			if (!Utils.isBlank(underMaintenanceUntilStr)) {
-				underMaintenanceUntil = Utils.parseDateString(underMaintenanceUntilStr);
+			LocalDateTime downUntil = null;
+			final String downUntilStr = dbDefProps.get(PROP_UNDER_MAINTENANCE);
+			if (!Utils.isBlank(downUntilStr)) {
+				downUntil = Utils.parseDateString(downUntilStr);
 			}
 			
-			dbDefs.add(new DatabaseDefinition(dbName, dbDefProps.get(PROP_URL), dbProps, underMaintenanceUntil));
+			dbDefs.add(new DatabaseDefinition(dbName, dbDefProps.get(PROP_URL), dbProps, downUntil));
 		});
 		
 		return () -> dbDefs;

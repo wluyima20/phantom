@@ -41,7 +41,7 @@ public class FileDatabase extends BaseDatabase {
 	
 	@Override
 	public LocalDateTime getStatus(String targetDatabaseName) throws SQLException {
-		return getTargetDb(targetDatabaseName).getUnderMaintenanceUntil();
+		return getTargetDb(targetDatabaseName).getDownUntil();
 	}
 	
 	private DatabaseDefinition getTargetDb(String targetDatabaseName) throws SQLException {
