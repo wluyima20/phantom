@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import com.amiyul.phantom.api.Utils;
 
 /**
- * Implemented by any class for objects that can temporarily be unavailable for a specific duration
- * of time.
+ * Implemented by any class for objects that can temporarily be down for a specific duration of
+ * time.
  */
 public interface Stateful {
 	

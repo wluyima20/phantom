@@ -31,10 +31,10 @@ public interface Client {
 	
 	/**
 	 * Gets the {@link LocalDateTime} when the database matching the specified name will be available if
-	 * it is temporarily unavailable otherwise should return null.
+	 * it is temporarily down otherwise should return null.
 	 * 
 	 * @param targetDatabaseName the name of the target database
-	 * @return the {@link LocalDateTime} when the database will become available otherwise null
+	 * @return the {@link LocalDateTime} object
 	 * @throws SQLException
 	 */
 	LocalDateTime getStatus(String targetDatabaseName) throws SQLException;

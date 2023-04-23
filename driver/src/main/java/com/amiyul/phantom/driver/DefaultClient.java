@@ -59,11 +59,11 @@ public class DefaultClient implements Client {
 		}
 		
 		if (config.isDown(asOfDate)) {
-			debug(Constants.DATABASE_NAME + " DB is not unavailable until -> " + config.getDownUntil());
+			debug(Constants.DATABASE_NAME + " DB is down until -> " + config.getDownUntil());
 		}
 		
 		if (isDateAfter(targetDbDownUntil, asOfDate)) {
-			debug(targetDbName + " DB is not unavailable until -> " + targetDbDownUntil);
+			debug(targetDbName + " DB is down until -> " + targetDbDownUntil);
 		}
 		
 		LocalDateTime effectiveDownUntil = config.getDownUntil();
