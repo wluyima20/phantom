@@ -109,7 +109,7 @@ public class FileDatabaseConfigUtils {
 	 */
 	protected synchronized static DatabaseConfigMetadata getConfigMetadata() throws Exception {
 		if (configMetadata == null) {
-			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " database configuration");
+			LoggerUtils.debug("Loading database configuration");
 			
 			File configFile = new File(getConfigFile());
 			configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));

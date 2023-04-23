@@ -3,13 +3,13 @@
  */
 package com.amiyul.phantom.db;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.amiyul.phantom.api.BaseDatabase;
-import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Database;
-import com.amiyul.phantom.api.PhantomProtocol.Command;
-import com.amiyul.phantom.api.RequestContext;
+import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
  * Base class for {@link Database} implementations where the target database definitions are
@@ -25,18 +25,20 @@ public class FileDatabase extends BaseDatabase {
 	}
 	
 	@Override
-	public void process(RequestContext context) throws SQLException {
-		Command command = context.getRequest().getCommand();
-		switch (command) {
-			case CONNECT:
-				FileDatabaseUtils.getConnection((ConnectionRequest) context.getRequest());
-				break;
-			case RELOAD:
-				FileDatabaseConfigUtils.discardConfig();
-				break;
-			default:
-				throw new SQLException("Don't know how to process protocol command: " + command);
+	public Connection getConnection(String targetDatabaseName) throws SQLException {
+		DatabaseDefinition ref = FileDatabaseConfigUtils.getConfig().getDatabaseDefinitions().get(targetDatabaseName);
+		if (ref == null) {
+			throw new SQLException("No target database found matching the name: " + targetDatabaseName);
 		}
+		
+		LoggerUtils.debug("Obtaining connection to target database at -> " + ref.getUrl());
+		
+		return DriverManager.getConnection(ref.getUrl(), ref.getProperties());
+	}
+	
+	@Override
+	public void reload() throws SQLException {
+		FileDatabaseConfigUtils.discardConfig();
 	}
 	
 	private static class FileDatabaseHolder {
