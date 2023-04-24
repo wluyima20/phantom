@@ -1,11 +1,9 @@
 /*
  * Add Copyright
  */
-package com.amiyul.phantom.db;
+package com.amiyul.phantom.api;
 
 import java.time.LocalDateTime;
-
-import com.amiyul.phantom.api.Utils;
 
 /**
  * Implemented by any class for objects that can temporarily be down for a specific duration of

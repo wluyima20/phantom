@@ -4,7 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import com.amiyul.phantom.api.Database;
-import com.amiyul.phantom.db.Stateful;
+import com.amiyul.phantom.api.Stateful;
 import com.amiyul.phantom.api.config.Config;
 
 /**
