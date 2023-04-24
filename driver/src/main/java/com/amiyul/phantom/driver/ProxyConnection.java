@@ -13,7 +13,7 @@ import com.amiyul.phantom.api.Utils;
  * {@link InvocationHandler} for a proxy connection returned by the driver which always, it fails
  * for any calls on methods defined on the {@link Connection} interface.
  */
-public class ProxyConnectionInvocationHandler implements InvocationHandler {
+public class ProxyConnection implements InvocationHandler {
 	
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

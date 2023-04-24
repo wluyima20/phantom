@@ -113,7 +113,7 @@ public class DefaultClient implements Client {
 		asyncExecutor.execute(new AsyncConnectTask(requestData));
 		
 		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-		    new Class[] { Connection.class }, new ProxyConnectionInvocationHandler());
+		    new Class[] { Connection.class }, new ProxyConnection());
 	}
 	
 	/**
