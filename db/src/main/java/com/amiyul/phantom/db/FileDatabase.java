@@ -6,10 +6,10 @@ package com.amiyul.phantom.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 import com.amiyul.phantom.api.BaseDatabase;
 import com.amiyul.phantom.api.Database;
+import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 /**
@@ -40,8 +40,8 @@ public class FileDatabase extends BaseDatabase {
 	}
 	
 	@Override
-	public LocalDateTime getStatus(String targetDatabaseName) throws SQLException {
-		return getTargetDb(targetDatabaseName).getDownUntil();
+	public Status getStatus(String targetDatabaseName) throws SQLException {
+		return getTargetDb(targetDatabaseName).getStatus();
 	}
 	
 	private DatabaseDefinition getTargetDb(String targetDatabaseName) throws SQLException {

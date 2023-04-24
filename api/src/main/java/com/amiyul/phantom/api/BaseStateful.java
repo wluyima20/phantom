@@ -3,22 +3,20 @@
  */
 package com.amiyul.phantom.api;
 
-import java.time.LocalDateTime;
-
 /**
  * Base class for {@link Stateful} implementations
  */
 public abstract class BaseStateful implements Stateful {
 	
-	private LocalDateTime downUntil;
+	private Status status;
 	
-	public BaseStateful(LocalDateTime downUntil) {
-		this.downUntil = downUntil;
+	public BaseStateful(Status status) {
+		this.status = status;
 	}
 	
 	@Override
-	public LocalDateTime getDownUntil() {
-		return downUntil;
+	public Status getStatus() {
+		return status;
 	}
 	
 }

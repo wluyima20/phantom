@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
+import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 import com.amiyul.phantom.db.FileDatabaseProvider;
@@ -53,11 +54,11 @@ public class DriverConfigUtils {
 	 * Creates a {@link DriverConfigMetadata} instance
 	 *
 	 * @param dbProviderClassName the database provider class name
-	 * @param downUntil time when the database will be available
+	 * @param unavailableUntil time when the database will be available
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String downUntil) {
+	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String unavailableUntil) {
 		return new DriverConfigMetadata() {
 			
 			@Override
@@ -66,8 +67,8 @@ public class DriverConfigUtils {
 			}
 			
 			@Override
-			public String getDownUntil() {
-				return downUntil;
+			public String getUnavailableUntil() {
+				return unavailableUntil;
 			}
 			
 		};
@@ -81,7 +82,7 @@ public class DriverConfigUtils {
 	protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
 			DatabaseProvider<Database> provider;
-			LocalDateTime downUntil = null;
+			LocalDateTime unavailableUntil = null;
 			
 			try {
 				DriverConfigMetadata metadata = getConfigMetadata();
@@ -91,8 +92,8 @@ public class DriverConfigUtils {
 						clazz = Utils.loadClass(metadata.getDatabaseProviderClassName());
 					}
 					
-					if (!Utils.isBlank(metadata.getDownUntil())) {
-						downUntil = Utils.parseDateString(metadata.getDownUntil());
+					if (!Utils.isBlank(metadata.getUnavailableUntil())) {
+						unavailableUntil = Utils.parseDateString(metadata.getUnavailableUntil());
 					}
 				}
 				
@@ -107,7 +108,7 @@ public class DriverConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			config = new DefaultDriverConfig(provider.get(), downUntil);
+			config = new DefaultDriverConfig(provider.get(), new Status(unavailableUntil));
 		}
 		
 		return config;

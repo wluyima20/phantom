@@ -3,11 +3,11 @@
  */
 package com.amiyul.phantom.db;
 
-import java.time.LocalDateTime;
 import java.util.Properties;
 
 import com.amiyul.phantom.api.BaseStateful;
 import com.amiyul.phantom.api.Named;
+import com.amiyul.phantom.api.Status;
 
 import lombok.Getter;
 
@@ -24,8 +24,8 @@ public class DatabaseDefinition extends BaseStateful implements Named {
 	@Getter
 	private Properties properties;
 	
-	public DatabaseDefinition(String name, String url, Properties properties, LocalDateTime downUntil) {
-		super(downUntil);
+	public DatabaseDefinition(String name, String url, Properties properties, Status status) {
+		super(status);
 		this.name = name;
 		this.url = url;
 		this.properties = properties;

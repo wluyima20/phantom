@@ -3,10 +3,9 @@
  */
 package com.amiyul.phantom.driver;
 
-import java.time.LocalDateTime;
-
 import com.amiyul.phantom.api.BaseStateful;
 import com.amiyul.phantom.api.Database;
+import com.amiyul.phantom.api.Status;
 
 import lombok.Getter;
 
@@ -18,8 +17,8 @@ class DefaultDriverConfig extends BaseStateful implements DriverConfig {
 	@Getter
 	private Database database;
 	
-	DefaultDriverConfig(Database database, LocalDateTime downUntil) {
-		super(downUntil);
+	DefaultDriverConfig(Database database, Status status) {
+		super(status);
 		this.database = database;
 	}
 	

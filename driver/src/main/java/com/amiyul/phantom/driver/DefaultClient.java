@@ -22,6 +22,7 @@ import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.DefaultRequest;
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.RequestContext;
+import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.StatusRequest;
 
 /**
@@ -44,37 +45,37 @@ public class DefaultClient implements Client {
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
 		DriverConfig config = DriverConfigUtils.getConfig();
 		final String targetDbName = requestData.getTargetDatabaseName();
-		LocalDateTime targetDbDownUntil = getStatus(targetDbName);
+		LocalDateTime targetUnavailableUntil = getStatus(targetDbName).getUnavailableUntil();
 		LocalDateTime asOfDate = now();
-		if (!config.isDown(asOfDate) && !isDateAfter(targetDbDownUntil, asOfDate)) {
+		if (!config.getStatus().isUnavailable(asOfDate) && !isDateAfter(targetUnavailableUntil, asOfDate)) {
 			return doConnect(requestData);
 		}
 		
 		//Sanity check just in case the configs have been updated to put the DB back up
 		DefaultClient.getInstance().reload();
 		config = DriverConfigUtils.getConfig();
-		targetDbDownUntil = getStatus(targetDbName);
-		if (!config.isDown(asOfDate) && !isDateAfter(targetDbDownUntil, asOfDate)) {
+		targetUnavailableUntil = getStatus(targetDbName).getUnavailableUntil();
+		if (!config.getStatus().isUnavailable(asOfDate) && !isDateAfter(targetUnavailableUntil, asOfDate)) {
 			return doConnect(requestData);
 		}
 		
-		if (config.isDown(asOfDate)) {
-			debug(Constants.DATABASE_NAME + " DB is down until -> " + config.getDownUntil());
+		if (config.getStatus().isUnavailable(asOfDate)) {
+			debug(Constants.DATABASE_NAME + " DB is unavailable until -> " + config.getStatus().getUnavailableUntil());
 		}
 		
-		if (isDateAfter(targetDbDownUntil, asOfDate)) {
-			debug(targetDbName + " DB is down until -> " + targetDbDownUntil);
+		if (isDateAfter(targetUnavailableUntil, asOfDate)) {
+			debug(targetDbName + " DB is unavailable until -> " + targetUnavailableUntil);
 		}
 		
-		LocalDateTime effectiveDownUntil = config.getDownUntil();
-		if (targetDbDownUntil != null) {
-			if (effectiveDownUntil == null || isDateAfter(targetDbDownUntil, effectiveDownUntil)) {
-				effectiveDownUntil = targetDbDownUntil;
+		LocalDateTime effectiveDate = config.getStatus().getUnavailableUntil();
+		if (targetUnavailableUntil != null) {
+			if (effectiveDate == null || isDateAfter(targetUnavailableUntil, effectiveDate)) {
+				effectiveDate = targetUnavailableUntil;
 			}
 		}
 		
-		//TODO Add support for a user to chose async processing in case if DB is down
-		long delay = Duration.between(now(), effectiveDownUntil).getSeconds();
+		//TODO Add support for a user to chose async processing in case if DB is unavailable
+		long delay = Duration.between(now(), effectiveDate).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		
@@ -158,7 +159,7 @@ public class DefaultClient implements Client {
 	}
 	
 	@Override
-	public LocalDateTime getStatus(String targetDatabaseName) throws SQLException {
+	public Status getStatus(String targetDatabaseName) throws SQLException {
 		debug("Requesting the status for database: " + targetDatabaseName);
 		
 		DefaultRequestContext requestContext = new DefaultRequestContext();

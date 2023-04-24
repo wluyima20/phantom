@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import com.amiyul.phantom.api.Constants;
+import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
@@ -27,8 +29,6 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 	
 	protected static final String PROP_PROPS = "properties";
 	
-	protected static final String PROP_UNDER_MAINTENANCE = "down.until";
-	
 	@Override
 	public DatabaseConfigMetadata createInstance(Properties properties) throws Exception {
 		final Map<String, String> map = cleanEntries(new HashMap(properties));
@@ -37,13 +37,13 @@ public class DatabasePropertiesFileParser extends BasePropertiesFileParser<Datab
 			Map<String, String> dbDefProps = getPropsWithPrefix(map, dbName);
 			Properties dbProps = new Properties();
 			dbProps.putAll(getPropsWithPrefix(dbDefProps, PROP_PROPS));
-			LocalDateTime downUntil = null;
-			final String downUntilStr = dbDefProps.get(PROP_UNDER_MAINTENANCE);
-			if (!Utils.isBlank(downUntilStr)) {
-				downUntil = Utils.parseDateString(downUntilStr);
+			LocalDateTime unavailableUntil = null;
+			final String unavailableUntilStr = dbDefProps.get(Constants.PROP_UNAVAILABLE_UNTIL);
+			if (!Utils.isBlank(unavailableUntilStr)) {
+				unavailableUntil = Utils.parseDateString(unavailableUntilStr);
 			}
 			
-			dbDefs.add(new DatabaseDefinition(dbName, dbDefProps.get(PROP_URL), dbProps, downUntil));
+			dbDefs.add(new DatabaseDefinition(dbName, dbDefProps.get(PROP_URL), dbProps, new Status(unavailableUntil)));
 		});
 		
 		return () -> dbDefs;

@@ -5,16 +5,19 @@ package com.amiyul.phantom.driver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+
+import com.amiyul.phantom.api.Status;
 
 /**
- * Simulation of a database client to be used by the {@link PhantomDriver} to send requests to the
- * {@link com.amiyul.phantom.api.Database}
+ * An implementation of this class is used by the {@link PhantomDriver} to communicate with the
+ * phantom {@link com.amiyul.phantom.api.Database} using the
+ * {@link com.amiyul.phantom.api.PhantomProtocol}.
  */
 public interface Client {
 	
 	/**
-	 * Requests connection from the database
+	 * Requests a connection from the database, i.e. implements the database
+	 * {@link com.amiyul.phantom.api.PhantomProtocol.Command#CONNECT} command.
 	 *
 	 * @param requestData the {@link ConnectionRequestData} instance
 	 * @return Connection object
@@ -23,20 +26,21 @@ public interface Client {
 	Connection connect(ConnectionRequestData requestData) throws SQLException;
 	
 	/**
-	 * Sends a reload signal to the database
+	 * Sends a reload signal to the database, i.e. implements the database
+	 * {@link com.amiyul.phantom.api.PhantomProtocol.Command#RELOAD} command.
 	 * 
 	 * @throws SQLException
 	 */
 	void reload() throws SQLException;
 	
 	/**
-	 * Gets the {@link LocalDateTime} when the database matching the specified name will be available if
-	 * it is temporarily down otherwise should return null.
-	 * 
+	 * Gets the {@link Status} for the database matching the specified name, i.e. implements the
+	 * database {@link com.amiyul.phantom.api.PhantomProtocol.Command#STATUS} command.
+	 *
 	 * @param targetDatabaseName the name of the target database
-	 * @return the {@link LocalDateTime} object
+	 * @return the {@link Status}
 	 * @throws SQLException
 	 */
-	LocalDateTime getStatus(String targetDatabaseName) throws SQLException;
+	Status getStatus(String targetDatabaseName) throws SQLException;
 	
 }
