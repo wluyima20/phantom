@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -143,6 +144,41 @@ public class Utils {
 		}
 		
 		return date != null && date.isAfter(other);
+	}
+	
+	/**
+	 * Tests if the specified method is a hashCode method
+	 * 
+	 * @param method {@link Method} object
+	 * @return true if it is a hashCode method otherwise false
+	 */
+	public static boolean isHashCodeMethod(Method method) {
+		return "hashCode".equals(method.getName()) && method.getParameterTypes().length == 0;
+	}
+	
+	/**
+	 * Tests if the specified method is a toString method
+	 *
+	 * @param method {@link Method} object
+	 * @return true if it is a toString method otherwise false
+	 */
+	public static boolean isToStringMethod(Method method) {
+		return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
+	}
+	
+	/**
+	 * Tests if the specified method is an equals method
+	 *
+	 * @param method {@link Method} object
+	 * @return true if it is an equals method otherwise false
+	 */
+	public static boolean isEqualsMethod(Method method) {
+		if ("equals".equals(method.getName())) {
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			return parameterTypes.length == 1 && parameterTypes[0] == Object.class;
+		}
+		
+		return false;
 	}
 	
 }

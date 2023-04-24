@@ -74,7 +74,7 @@ public class DefaultClient implements Client {
 			}
 		}
 		
-		//TODO Add support for a user to chose async processing in case if DB is unavailable
+		//TODO Add support for a user to chose async processing if the DB is unavailable
 		long delay = Duration.between(now(), effectiveDate).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
@@ -113,7 +113,7 @@ public class DefaultClient implements Client {
 		asyncExecutor.execute(new AsyncConnectTask(requestData));
 		
 		return (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-		    new Class[] { Connection.class }, new FailingConnectionInvocationHandler());
+		    new Class[] { Connection.class }, new ProxyConnectionInvocationHandler());
 	}
 	
 	/**
