@@ -131,8 +131,8 @@ public class Utils {
 	}
 	
 	/**
-	 * Tests if a {@link LocalDateTime} object is after another {@link LocalDateTime} object with a null
-	 * being the latest date
+	 * Tests if a {@link LocalDateTime} object is after another {@link LocalDateTime} object with null
+	 * being the earliest date
 	 * 
 	 * @param date the date object
 	 * @param other the other date to compare to

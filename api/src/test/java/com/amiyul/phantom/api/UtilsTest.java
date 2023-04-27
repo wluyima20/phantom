@@ -3,10 +3,17 @@
  */
 package com.amiyul.phantom.api;
 
+import static java.time.LocalDateTime.of;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
@@ -60,7 +67,7 @@ public class UtilsTest {
 	
 	@Test
 	public void isBlank_shouldReturnFalseForANonBlankString() {
-		Assert.assertFalse(Utils.isBlank("a"));
+		assertFalse(Utils.isBlank("a"));
 	}
 	
 	@Test
@@ -107,6 +114,85 @@ public class UtilsTest {
 		props.setProperty(Utils.BUILD_PROP_VERSION, TEST_VERSION);
 		Whitebox.setInternalState(Utils.class, "PROPERTIES", props);
 		assertEquals(TEST_VERSION, Utils.getVersion());
+	}
+	
+	@Test
+	public void parseDateString_shouldParseTheSpecifiedDate() {
+		LocalDateTime expected = ZonedDateTime.of(2023, 4, 27, 12, 5, 5, 0, ZoneId.of("UTC"))
+		        .withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+		Assert.assertEquals(expected, Utils.parseDateString("2023-04-27T15:05:05+03:00"));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnFalseForNullDate() {
+		assertFalse(Utils.isDateAfter(null, of(2023, 4, 27, 12, 5, 5)));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnFalseIfDateIsBeforeAsOfDate() {
+		assertFalse(Utils.isDateAfter(of(2023, 4, 27, 12, 5, 5, 0), of(2023, 4, 27, 12, 5, 5, 1)));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnFalseIfDateIsEqualsToAsOfDate() {
+		LocalDateTime dateTime = of(2023, 4, 27, 12, 5, 5, 0);
+		assertFalse(Utils.isDateAfter(dateTime, dateTime));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnTrueIfDateIsAfterAsOfDate() {
+		assertTrue(Utils.isDateAfter(of(2023, 4, 27, 12, 5, 5, 1), of(2023, 4, 27, 12, 5, 5, 0)));
+	}
+	
+	@Test
+	public void isDateAfter_shouldFailIfAsOfDateIsNull() {
+		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
+			Utils.isDateAfter(of(2023, 4, 27, 12, 5, 5, 1), null);
+		});
+		assertEquals("other date can't be null", thrown.getMessage());
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnTrueForHashCodeMethod() throws Exception {
+		assertTrue(Utils.isHashCodeMethod(new DemoClass().getClass().getMethod("hashCode")));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnFalseForNonHashCodeMethod() throws Exception {
+		assertFalse(Utils.isHashCodeMethod(new DemoClass().getClass().getMethod("wait")));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnTrueForToStringMethod() throws Exception {
+		assertTrue(Utils.isToStringMethod(new DemoClass().getClass().getMethod("toString")));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnFalseForNonToStringMethod() throws Exception {
+		assertFalse(Utils.isToStringMethod(new DemoClass().getClass().getMethod("wait")));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnTrueForEqualsMethod() throws Exception {
+		assertTrue(Utils.isEqualsMethod(new DemoClass().getClass().getMethod("equals", Object.class)));
+	}
+	
+	@Test
+	public void isDateAfter_shouldReturnFalseForNonEqualsMethod() throws Exception {
+		assertFalse(Utils.isEqualsMethod(new Object().getClass().getMethod("wait")));
+		assertFalse(Utils.isEqualsMethod(new DemoClass().getClass().getMethod("equals", Connection.class)));
+		assertFalse(Utils.isEqualsMethod(new DemoClass().getClass().getMethod("equals", Object.class, Connection.class)));
+	}
+	
+	private static class DemoClass {
+		
+		public boolean equals(Connection c) {
+			return false;
+		}
+		
+		public boolean equals(Object o, Connection c) {
+			return false;
+		}
 	}
 	
 }
