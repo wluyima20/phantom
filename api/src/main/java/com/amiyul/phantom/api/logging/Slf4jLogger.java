@@ -73,7 +73,7 @@ public class Slf4jLogger implements DriverLogger {
 		return invokeMethodSilently(debugEnabledMethod);
 	}
 	
-	private <T> T invokeMethodSilently(Method method, Object... args) {
+	protected <T> T invokeMethodSilently(Method method, Object... args) {
 		try {
 			return (T) method.invoke(nativeLogger, args);
 		}
