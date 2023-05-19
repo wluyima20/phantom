@@ -20,15 +20,14 @@ public class BaseCallableTaskTest {
 	@Mock
 	private Connection expectedResult;
 	
-	private DelayedConnectTask task;
+	private BaseCallableTask task;
 	
 	@Test
 	public void call_shouldInvokeDoCallAndReturnTheResult() throws Exception {
 		final String dbName = "test";
 		final String originalThreadName = Thread.currentThread().getName();
 		ConnectionRequestData requestData = new ConnectionRequestData(dbName, false, null);
-		task = new DelayedConnectTask(requestData);
-		task = Mockito.spy(task);
+		task = Mockito.spy(new DelayedConnectTask(requestData));
 		List<String> threadNames = new ArrayList<>();
 		Mockito.doAnswer(invocation -> {
 			threadNames.add(Thread.currentThread().getName());
