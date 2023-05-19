@@ -10,7 +10,7 @@ import lombok.Getter;
 /**
  * Encapsulates state information for a {@link Stateful} object
  */
-public final class Status {
+public class Status {
 	
 	@Getter
 	private LocalDateTime unavailableUntil;
