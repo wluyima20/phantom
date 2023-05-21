@@ -107,7 +107,7 @@ public class DefaultClient implements Client {
 		
 		//TODO Make the thread pool size configurable i.e. min and max
 		if (asyncExecutor == null) {
-			asyncExecutor = Executors.newScheduledThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
+			asyncExecutor = Executors.newFixedThreadPool(DriverUtils.getDefaultAsyncExecutorThreadCount());
 		}
 		
 		asyncExecutor.execute(new AsyncConnectTask(requestData));

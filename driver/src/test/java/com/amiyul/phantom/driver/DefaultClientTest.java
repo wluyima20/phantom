@@ -11,20 +11,25 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,16 +42,18 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import com.amiyul.phantom.api.ConnectionRequest;
 import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Status;
+import com.amiyul.phantom.api.StatusRequest;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DriverConfigUtils.class, DefaultClient.class, Utils.class, LoggerUtils.class, DelayedConnectTask.class,
-        Executors.class, DriverUtils.class })
+        Executors.class, DriverUtils.class, AsyncConnectTask.class })
 public class DefaultClientTest {
 	
 	@Mock
@@ -62,10 +69,16 @@ public class DefaultClientTest {
 	private DriverConfig mockConfig;
 	
 	@Mock
-	private ScheduledExecutorService mockExecutor;
+	private ScheduledExecutorService mockDelayedExecutor;
 	
 	@Mock
-	private DelayedConnectTask mockTask;
+	private ExecutorService mockAsyncExecutor;
+	
+	@Mock
+	private DelayedConnectTask mockDelayedTask;
+	
+	@Mock
+	private AsyncConnectTask mockAsyncTask;
 	
 	@Mock
 	private ScheduledFuture mockFuture;
@@ -80,7 +93,8 @@ public class DefaultClientTest {
 		PowerMockito.mockStatic(DelayedConnectTask.class);
 		PowerMockito.mockStatic(Executors.class);
 		PowerMockito.mockStatic(DriverUtils.class);
-		Whitebox.setInternalState(DefaultClient.class, "delayedExecutor", mockExecutor);
+		Whitebox.setInternalState(DefaultClient.class, "delayedExecutor", mockDelayedExecutor);
+		Whitebox.setInternalState(DefaultClient.class, "asyncExecutor", mockAsyncExecutor);
 		PowerMockito.spy(DefaultClient.class);
 		when(DriverConfigUtils.getConfig()).thenReturn(mockConfig);
 	}
@@ -88,6 +102,7 @@ public class DefaultClientTest {
 	@After
 	public void tearDown() {
 		Whitebox.setInternalState(DefaultClient.class, "delayedExecutor", (Object) null);
+		Whitebox.setInternalState(DefaultClient.class, "asyncExecutor", (Object) null);
 	}
 	
 	@Test
@@ -159,8 +174,8 @@ public class DefaultClientTest {
 		final long delay = 1;
 		Duration duration = Duration.ofSeconds(delay);
 		when(Utils.getDurationBetween(any(LocalDateTime.class), eq(unavailableUntil))).thenReturn(duration);
-		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockTask);
-		when(mockExecutor.schedule(mockTask, delay, TimeUnit.SECONDS)).thenReturn(mockFuture);
+		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockDelayedTask);
+		when(mockDelayedExecutor.schedule(mockDelayedTask, delay, TimeUnit.SECONDS)).thenReturn(mockFuture);
 		when(mockFuture.get()).thenReturn(mockConnection);
 		
 		assertEquals(mockConnection, client.connect(requestData));
@@ -186,8 +201,8 @@ public class DefaultClientTest {
 		final long delay = 1;
 		Duration duration = Duration.ofSeconds(delay);
 		when(Utils.getDurationBetween(any(LocalDateTime.class), eq(unavailableUntil))).thenReturn(duration);
-		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockTask);
-		when(mockExecutor.schedule(mockTask, delay, TimeUnit.SECONDS)).thenReturn(mockFuture);
+		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockDelayedTask);
+		when(mockDelayedExecutor.schedule(mockDelayedTask, delay, TimeUnit.SECONDS)).thenReturn(mockFuture);
 		when(mockFuture.get()).thenReturn(mockConnection);
 		
 		assertEquals(mockConnection, client.connect(requestData));
@@ -220,8 +235,8 @@ public class DefaultClientTest {
 		when(Utils.getDurationBetween(any(LocalDateTime.class), eq(dbUnavailableUntil))).thenReturn(dbDuration);
 		Duration targetDuration = Duration.ofSeconds(1);
 		when(Utils.getDurationBetween(any(LocalDateTime.class), eq(targetUnavailableUntil))).thenReturn(targetDuration);
-		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockTask);
-		when(mockExecutor.schedule(mockTask, dbDelay, TimeUnit.SECONDS)).thenReturn(mockFuture);
+		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockDelayedTask);
+		when(mockDelayedExecutor.schedule(mockDelayedTask, dbDelay, TimeUnit.SECONDS)).thenReturn(mockFuture);
 		when(mockFuture.get()).thenReturn(mockConnection);
 		
 		assertEquals(mockConnection, client.connect(requestData));
@@ -253,8 +268,8 @@ public class DefaultClientTest {
 		final long targetDelay = 2;
 		Duration targetDuration = Duration.ofSeconds(targetDelay);
 		when(Utils.getDurationBetween(any(LocalDateTime.class), eq(targetUnavailableUntil))).thenReturn(targetDuration);
-		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockTask);
-		when(mockExecutor.schedule(mockTask, targetDelay, TimeUnit.SECONDS)).thenReturn(mockFuture);
+		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockDelayedTask);
+		when(mockDelayedExecutor.schedule(mockDelayedTask, targetDelay, TimeUnit.SECONDS)).thenReturn(mockFuture);
 		when(mockFuture.get()).thenReturn(mockConnection);
 		
 		assertEquals(mockConnection, client.connect(requestData));
@@ -265,7 +280,7 @@ public class DefaultClientTest {
 	}
 	
 	@Test
-	public void connect_shouldCreateAndSetExecutorIfNecessary() throws Exception {
+	public void connect_shouldCreateAndSetDelayedExecutorIfNecessary() throws Exception {
 		final String dbName = "db";
 		ConnectionRequestData requestData = new ConnectionRequestData(dbName, false, null);
 		client = Mockito.spy(client);
@@ -280,23 +295,106 @@ public class DefaultClientTest {
 		final long delay = 1;
 		Duration duration = Duration.ofSeconds(delay);
 		when(Utils.getDurationBetween(any(LocalDateTime.class), eq(unavailableUntil))).thenReturn(duration);
-		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockTask);
-		when(mockExecutor.schedule(mockTask, delay, TimeUnit.SECONDS)).thenReturn(mockFuture);
+		PowerMockito.whenNew(DelayedConnectTask.class).withArguments(requestData).thenReturn(mockDelayedTask);
+		when(mockDelayedExecutor.schedule(mockDelayedTask, delay, TimeUnit.SECONDS)).thenReturn(mockFuture);
 		when(mockFuture.get()).thenReturn(mockConnection);
 		Whitebox.setInternalState(DefaultClient.class, "delayedExecutor", (Object) null);
 		final int threadSize = 1;
 		when(DriverUtils.getDefaultDelayedExecutorThreadCount()).thenReturn(threadSize);
-		when(Executors.newScheduledThreadPool(threadSize)).thenReturn(mockExecutor);
+		when(Executors.newScheduledThreadPool(threadSize)).thenReturn(mockDelayedExecutor);
 		
 		assertEquals(mockConnection, client.connect(requestData));
 		
 		verify(client).reload();
 		verifyStatic(DriverConfigUtils.class, times(2));
 		DriverConfigUtils.getConfig();
-		assertEquals(mockExecutor, Whitebox.getInternalState(DefaultClient.class, "delayedExecutor"));
+		assertEquals(mockDelayedExecutor, Whitebox.getInternalState(DefaultClient.class, "delayedExecutor"));
 	}
 	
-	//@Test
+	@Test
+	public void doConnect_shouldConnectForANonAsyncRequest() throws Exception {
+		client = Mockito.spy(client);
+		ConnectionRequestData requestData = new ConnectionRequestData(null, false, null);
+		doReturn(mockConnection).when(client).doConnectInternal(requestData);
+		
+		assertEquals(mockConnection, client.doConnect(requestData));
+		verifyNoInteractions(mockAsyncExecutor);
+	}
+	
+	@Test
+	public void doConnect_shouldConnectAsynchronouslyForAnAsyncRequest() throws Exception {
+		client = Mockito.spy(client);
+		ConnectionRequestData requestData = new ConnectionRequestData(null, true, null);
+		PowerMockito.whenNew(AsyncConnectTask.class).withArguments(requestData).thenReturn(mockAsyncTask);
+		
+		Connection connection = client.doConnect(requestData);
+		Assert.assertTrue(connection instanceof Proxy);
+		Mockito.verify(mockAsyncExecutor).execute(mockAsyncTask);
+	}
+	
+	@Test
+	public void doConnect_shouldCreateAndSetAsyncExecutorIfNecessary() throws Exception {
+		client = Mockito.spy(client);
+		ConnectionRequestData requestData = new ConnectionRequestData(null, true, null);
+		PowerMockito.whenNew(AsyncConnectTask.class).withArguments(requestData).thenReturn(mockAsyncTask);
+		Whitebox.setInternalState(DefaultClient.class, "asyncExecutor", (Object) null);
+		final int threadSize = 1;
+		when(DriverUtils.getDefaultAsyncExecutorThreadCount()).thenReturn(threadSize);
+		when(Executors.newFixedThreadPool(threadSize)).thenReturn(mockAsyncExecutor);
+		
+		Connection connection = client.doConnect(requestData);
+		Assert.assertTrue(connection instanceof Proxy);
+		Mockito.verify(mockAsyncExecutor).execute(mockAsyncTask);
+		assertEquals(mockAsyncExecutor, Whitebox.getInternalState(DefaultClient.class, "asyncExecutor"));
+	}
+	
+	@Test
+	public void doConnectInternal_shouldSendAConnectRequestToTheTargetDb() throws Exception {
+		final String dbName = "db";
+		client = Mockito.spy(client);
+		ConnectionRequestData requestData = new ConnectionRequestData(dbName, true, null);
+		List<RequestContext> contexts = new ArrayList();
+		Mockito.doAnswer((Answer<Object>) invocation -> {
+			RequestContext context = invocation.getArgument(0);
+			context.writeResult(mockConnection);
+			contexts.add(context);
+			return null;
+		}).when(client).sendRequest(ArgumentMatchers.any(DefaultRequestContext.class));
+		
+		assertEquals(mockConnection, client.doConnectInternal(requestData));
+		
+		assertEquals(1, contexts.size());
+		assertEquals(dbName, ((ConnectionRequest) contexts.get(0).getRequest()).getTargetDatabaseName());
+	}
+	
+	@Test
+	public void doConnectInternal_shouldReloadAndReSendAConnectRequestIfASqlExceptionIsEncountered() throws Exception {
+		final String dbName = "db";
+		client = Mockito.spy(client);
+		ConnectionRequestData requestData = new ConnectionRequestData(dbName, true, null);
+		List<RequestContext> contexts = new ArrayList();
+		Exception ex = Mockito.mock(SQLException.class);
+		List<Exception> exceptions = new ArrayList();
+		Mockito.doAnswer((Answer<Object>) invocation -> {
+			if (exceptions.isEmpty()) {
+				exceptions.add(ex);
+				throw ex;
+			}
+			RequestContext context = invocation.getArgument(0);
+			context.writeResult(mockConnection);
+			contexts.add(context);
+			return null;
+		}).when(client).sendRequest(ArgumentMatchers.any(DefaultRequestContext.class));
+		
+		assertEquals(mockConnection, client.doConnectInternal(requestData));
+		
+		PowerMockito.verifyStatic(DriverConfigUtils.class);
+		DriverConfigUtils.reloadConfig();
+		assertEquals(1, contexts.size());
+		assertEquals(dbName, ((ConnectionRequest) contexts.get(0).getRequest()).getTargetDatabaseName());
+	}
+	
+	@Test
 	public void reload_shouldSendAReloadRequest() throws Exception {
 		client = Mockito.spy(client);
 		List<RequestContext> contexts = new ArrayList();
@@ -311,17 +409,53 @@ public class DefaultClientTest {
 		assertEquals(Command.RELOAD, contexts.get(0).getRequest().getCommand());
 	}
 	
-	//@Test
+	@Test
+	public void getStatus_shouldSendAStatusRequestToTheTargetDb() throws Exception {
+		final String dbName = "db";
+		client = Mockito.spy(client);
+		List<RequestContext> contexts = new ArrayList();
+		Mockito.doAnswer((Answer<Object>) invocation -> {
+			RequestContext context = invocation.getArgument(0);
+			context.writeResult(mockTargetDbStatus);
+			contexts.add(context);
+			return null;
+		}).when(client).sendRequest(ArgumentMatchers.any(DefaultRequestContext.class));
+		
+		assertEquals(mockTargetDbStatus, client.getStatus(dbName));
+		
+		assertEquals(1, contexts.size());
+		assertEquals(dbName, ((StatusRequest) contexts.get(0).getRequest()).getTargetDatabaseName());
+	}
+	
+	@Test
 	public void sendRequest_shouldSendATheRequestToTheDatabase() throws Exception {
-		DriverConfig mockConfig = Mockito.mock(DriverConfig.class);
 		RequestContext mockContext = Mockito.mock(RequestContext.class);
 		Database mockDb = Mockito.mock(Database.class);
-		//when(DriverConfigUtils.getConfig()).thenReturn(mockConfig);
+		when(DriverConfigUtils.getConfig()).thenReturn(mockConfig);
 		when(mockConfig.getDatabase()).thenReturn(mockDb);
 		
 		client.sendRequest(mockContext);
 		
-		Mockito.verify(mockDb).process(mockContext);
+		verify(mockDb).process(mockContext);
+	}
+	
+	@Test
+	public void shutdown_shouldShutdownTheExecutors() {
+		client.shutdown();
+		
+		verify(mockDelayedExecutor).shutdownNow();
+		verify(mockAsyncExecutor).shutdownNow();
+	}
+	
+	@Test
+	public void shutdown_shouldSkipShuttingDownTheExecutorsIfTheyAreNotYetSet() {
+		Whitebox.setInternalState(DefaultClient.class, "delayedExecutor", (Object) null);
+		Whitebox.setInternalState(DefaultClient.class, "asyncExecutor", (Object) null);
+		
+		client.shutdown();
+		
+		verifyNoInteractions(mockDelayedExecutor);
+		verifyNoInteractions(mockAsyncExecutor);
 	}
 	
 }
