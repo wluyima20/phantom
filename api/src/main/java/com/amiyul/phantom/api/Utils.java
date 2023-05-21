@@ -12,8 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -179,6 +181,13 @@ public class Utils {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * @see Duration#between(Temporal, Temporal)
+	 */
+	public static Duration getDurationBetween(LocalDateTime start, LocalDateTime end) {
+		return Duration.between(start, end);
 	}
 	
 }

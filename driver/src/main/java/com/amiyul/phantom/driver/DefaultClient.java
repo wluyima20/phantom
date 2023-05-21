@@ -10,7 +10,6 @@ import static java.time.LocalDateTime.now;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +23,7 @@ import com.amiyul.phantom.api.PhantomProtocol.Command;
 import com.amiyul.phantom.api.RequestContext;
 import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.StatusRequest;
+import com.amiyul.phantom.api.Utils;
 
 /**
  * Default implementation of a {@link Client}
@@ -52,7 +52,7 @@ public class DefaultClient implements Client {
 		}
 		
 		//Sanity check just in case the configs have been updated to put the DB back up
-		DefaultClient.getInstance().reload();
+		getInstance().reload();
 		config = DriverConfigUtils.getConfig();
 		targetUnavailableUntil = getStatus(targetDbName).getUnavailableUntil();
 		if (!config.getStatus().isUnavailable(asOfDate) && !isDateAfter(targetUnavailableUntil, asOfDate)) {
@@ -75,7 +75,7 @@ public class DefaultClient implements Client {
 		}
 		
 		//TODO Add support for a user to chose async processing if the DB is unavailable
-		long delay = Duration.between(now(), effectiveDate).getSeconds();
+		long delay = Utils.getDurationBetween(now(), effectiveDate).getSeconds();
 		
 		debug("Waiting to connect for " + delay + " seconds");
 		

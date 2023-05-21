@@ -184,6 +184,13 @@ public class UtilsTest {
 		assertFalse(Utils.isEqualsMethod(new DemoClass().getClass().getMethod("equals", Object.class, Connection.class)));
 	}
 	
+	@Test
+	public void getDurationBetween_shouldReturnTheDurationInterval() {
+		LocalDateTime start = of(2023, 4, 27, 12, 5, 5);
+		LocalDateTime end = of(2023, 4, 27, 12, 6, 6);
+		Assert.assertEquals(61, Utils.getDurationBetween(start, end).getSeconds());
+	}
+	
 	private static class DemoClass {
 		
 		public boolean equals(Connection c) {
