@@ -6,12 +6,12 @@ package com.amiyul.phantom.driver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +31,29 @@ import org.powermock.reflect.Whitebox;
 import com.amiyul.phantom.api.BaseDatabase;
 import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.DatabaseProvider;
-import com.amiyul.phantom.api.RequestContext;
+import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.Utils;
+import com.amiyul.phantom.api.logging.LoggerUtils;
 import com.amiyul.phantom.db.FileDatabase;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Utils.class, DefaultClient.class })
+@PrepareForTest({ Utils.class, LoggerUtils.class, DefaultClient.class })
 public class DriverConfigUtilsTest {
 	
 	private static class MockDatabase extends BaseDatabase {
 		
 		@Override
-		public void process(RequestContext context) throws SQLException {
+		public Connection getConnection(String targetDatabaseName) throws SQLException {
+			return null;
+		}
+		
+		@Override
+		public void reload() {
+		}
+		
+		@Override
+		public Status getStatus(String targetDatabaseName) throws SQLException {
+			return null;
 		}
 		
 	}
@@ -66,10 +77,10 @@ public class DriverConfigUtilsTest {
 	private DefaultClient mockClient;
 	
 	@Before
-	public void setup() throws Exception {
+	public void setup() {
 		PowerMockito.mockStatic(Utils.class);
+		PowerMockito.mockStatic(LoggerUtils.class);
 		PowerMockito.mockStatic(DefaultClient.class);
-		Mockito.when(Utils.loadClass(anyString())).thenThrow(ClassNotFoundException.class);
 	}
 	
 	@After
@@ -104,15 +115,12 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
-	public void createMetadata_shouldCreateTheConfigMetadataWithTheLoadedClass() throws Exception {
-		Class clazz = DatabaseProvider.class;
-		assertEquals(clazz, DriverConfigUtils.createMetadata(clazz.getName()).getDatabaseProviderClass());
-	}
-	
-	@Test
-	public void createMetadata_shouldCreateTheConfigMetadataWithNoClassIfNoClassnameIsSpecified() throws Exception {
-		when(Utils.isBlank(any())).thenReturn(true);
-		assertNull(DriverConfigUtils.createMetadata("").getDatabaseProviderClass());
+	public void createMetadata_shouldCreateTheConfigMetadataWithTheLoadedClass() {
+		final String className = MockDatabaseProvider.class.getName();
+		final String unavailableUntil = "2023-05-23T22:25:10+03:00";
+		DriverConfigMetadata metadata = DriverConfigUtils.createMetadata(className, unavailableUntil);
+		assertEquals(className, metadata.getDatabaseProviderClassName());
+		assertEquals(unavailableUntil, metadata.getUnavailableUntil());
 	}
 	
 	@Test
@@ -186,10 +194,12 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
-	public void getConfig_shouldGetTheConfigObject() {
+	public void getConfig_shouldGetTheConfigObject() throws Exception {
+		final String className = MockDatabaseProvider.class.getName();
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
-		when(mockMetadata.getDatabaseProviderClass()).thenReturn((Class) MockDatabaseProvider.class);
+		when(mockMetadata.getDatabaseProviderClassName()).thenReturn(className);
 		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", mockMetadata);
+		when(Utils.loadClass(className)).thenCallRealMethod();
 		
 		assertEquals(MockDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());
 	}
