@@ -3,7 +3,8 @@
  */
 package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.DriverConfigMetadata.PROP_DB_PROVIDER_CLASS;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_PROVIDER_CLASS;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_UNAVAILABLE_UNTIL;
 
 import java.util.Properties;
 
@@ -25,10 +26,12 @@ public class DriverPropertiesFileParserTest {
 	public void createInstance_shouldCreateTheDriverConfigMetadata() throws Exception {
 		PowerMockito.mockStatic(DriverConfigUtils.class);
 		final String classname = "someClass";
+		final String date = "2023-05-23T22:25:10+03:00";
 		Properties props = new Properties();
 		props.put(PROP_DB_PROVIDER_CLASS, classname);
+		props.put(PROP_DB_UNAVAILABLE_UNTIL, date);
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
-		Mockito.when(DriverConfigUtils.createMetadata(classname)).thenReturn(mockMetadata);
+		Mockito.when(DriverConfigUtils.createMetadata(classname, date)).thenReturn(mockMetadata);
 		
 		Assert.assertEquals(mockMetadata, parser.createInstance(props));
 	}
