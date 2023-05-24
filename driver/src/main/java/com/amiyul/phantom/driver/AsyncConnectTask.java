@@ -11,10 +11,12 @@ import java.sql.Connection;
  */
 public class AsyncConnectTask extends BaseNotifyingTask<Connection> {
 	
+	protected static final String NAME_PREFIX = "async-connect-task:";
+	
 	private ConnectionRequestData requestData;
 	
 	public AsyncConnectTask(ConnectionRequestData requestData) {
-		super("async-connect-task:" + requestData.getTargetDatabaseName(), requestData.getListener());
+		super(NAME_PREFIX + requestData.getTargetDatabaseName(), requestData.getListener());
 		this.requestData = requestData;
 	}
 	

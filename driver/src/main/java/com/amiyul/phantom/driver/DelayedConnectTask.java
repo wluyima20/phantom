@@ -12,10 +12,12 @@ import java.sql.Connection;
  */
 public class DelayedConnectTask extends BaseCallableTask<Connection> {
 	
+	protected static final String NAME_PREFIX = "delayed-connect-task:";
+	
 	private ConnectionRequestData requestData;
 	
 	public DelayedConnectTask(ConnectionRequestData requestData) {
-		super("delayed-connect-task:" + requestData.getTargetDatabaseName());
+		super(NAME_PREFIX + requestData.getTargetDatabaseName());
 		this.requestData = requestData;
 	}
 	

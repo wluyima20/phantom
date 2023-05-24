@@ -16,13 +16,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DefaultClient.class)
-public class AsyncConnectTaskTest {
+public class DelayedConnectTaskTest {
 	
 	@Mock
 	private DefaultClient mockClient;
-	
-	@Mock
-	private ConnectionRequestData mockRequestData;
 	
 	@Mock
 	private Connection mockConnection;
@@ -30,18 +27,18 @@ public class AsyncConnectTaskTest {
 	@Test
 	public void shouldSetTheTaskNameFromTheConstructor() {
 		final String dbName = "test";
-		AsyncConnectTask task = new AsyncConnectTask(new ConnectionRequestData(dbName, false, null));
-		Assert.assertEquals(AsyncConnectTask.NAME_PREFIX + dbName, task.getName());
+		DelayedConnectTask task = new DelayedConnectTask(new ConnectionRequestData(dbName, false, null));
+		Assert.assertEquals(DelayedConnectTask.NAME_PREFIX + dbName, task.getName());
 	}
 	
 	@Test
-	public void getResult_shouldReturnTheConnectionObject() throws Exception {
+	public void doCall_should() throws Exception {
 		PowerMockito.mockStatic(DefaultClient.class);
 		Mockito.when(DefaultClient.getInstance()).thenReturn(mockClient);
-		Mockito.when(mockClient.doConnectInternal(mockRequestData)).thenReturn(mockConnection);
-		AsyncConnectTask task = new AsyncConnectTask(mockRequestData);
+		ConnectionRequestData requestData = new ConnectionRequestData(null, false, null);
+		Mockito.when(mockClient.doConnect(requestData)).thenReturn(mockConnection);
 		
-		Assert.assertEquals(mockConnection, task.getResult());
+		Assert.assertEquals(mockConnection, new DelayedConnectTask(requestData).doCall());
 	}
 	
 }
