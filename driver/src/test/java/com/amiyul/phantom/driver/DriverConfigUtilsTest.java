@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,12 +197,19 @@ public class DriverConfigUtilsTest {
 	@Test
 	public void getConfig_shouldGetTheConfigObject() throws Exception {
 		final String className = MockDatabaseProvider.class.getName();
+		final String unavailableUntil = "2023-05-23T22:25:10+03:00";
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
 		when(mockMetadata.getDatabaseProviderClassName()).thenReturn(className);
+		when(mockMetadata.getUnavailableUntil()).thenReturn(unavailableUntil);
 		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", mockMetadata);
 		when(Utils.loadClass(className)).thenCallRealMethod();
+		LocalDateTime mockDate = LocalDateTime.now();
+		when(Utils.parseDateString(unavailableUntil)).thenReturn(mockDate);
 		
-		assertEquals(MockDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());
+		DriverConfig config = DriverConfigUtils.getConfig();
+		
+		assertEquals(MockDatabase.class, config.getDatabase().getClass());
+		assertEquals(mockDate, config.getStatus().getUnavailableUntil());
 	}
 	
 	@Test
