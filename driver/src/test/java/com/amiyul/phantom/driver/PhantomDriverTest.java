@@ -3,17 +3,19 @@
  */
 package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.PhantomDriver.URL_PREFIX;
+import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -26,6 +28,9 @@ import com.amiyul.phantom.api.logging.LoggerUtils;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DriverUtils.class, LoggerUtils.class, Utils.class })
 public class PhantomDriverTest {
+	
+	@Mock
+	private Properties mockProps;
 	
 	private PhantomDriver driver;
 	
@@ -40,12 +45,12 @@ public class PhantomDriverTest {
 	
 	@Test
 	public void connect_shouldGetAConnection() throws Exception {
-		final String dbName = "test";
+		final String url = URL_PREFIX + "test";
 		
-		driver.connect(URL_PREFIX + dbName, null);
+		driver.connect(url, mockProps);
 		
 		PowerMockito.verifyStatic(DriverUtils.class);
-		DriverUtils.connect(dbName);
+		DriverUtils.connect(url, mockProps);
 	}
 	
 	@Test
@@ -55,11 +60,11 @@ public class PhantomDriverTest {
 	
 	@Test
 	public void connect_shouldThrowASqlExceptionIfAnErrorIsEncountered() throws Exception {
-		final String dbName = "test";
+		final String url = URL_PREFIX + "test";
 		final String errorMsg = "test error msg";
-		PowerMockito.when(DriverUtils.connect(dbName)).thenThrow(new RuntimeException(errorMsg));
+		PowerMockito.when(DriverUtils.connect(url, mockProps)).thenThrow(new RuntimeException(errorMsg));
 		
-		SQLException ex = Assert.assertThrows(SQLException.class, () -> driver.connect(URL_PREFIX + dbName, null));
+		SQLException ex = Assert.assertThrows(SQLException.class, () -> driver.connect(url, mockProps));
 		
 		assertEquals(errorMsg, ex.getCause().getMessage());
 	}
