@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.amiyul.phantom.api.RuntimeUtils;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
 
@@ -67,7 +68,7 @@ public class DriverUtils {
 	}
 	
 	private static int getDefaultThreadCount() {
-		int threadCount = Runtime.getRuntime().availableProcessors();
+		int threadCount = RuntimeUtils.getAvailableProcessors();
 		if (threadCount == 1) {
 			threadCount = DEFAULT_THREAD_SIZE;
 		}
@@ -76,13 +77,10 @@ public class DriverUtils {
 	}
 	
 	@SneakyThrows
-	private static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
+	protected static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
 		final int qnMarkIndex = url.indexOf(DriverConstants.URL_SEPARATOR_DB_PARAM);
 		String prefixAndName;
-		String asyncStr = null;
-		if (props.contains(URL_PARAM_ASYNC)) {
-			asyncStr = props.getProperty(URL_PARAM_ASYNC);
-		}
+		String asyncStr = props.getProperty(URL_PARAM_ASYNC);
 		
 		ConnectionListener listener = null;
 		if (qnMarkIndex > -1) {
