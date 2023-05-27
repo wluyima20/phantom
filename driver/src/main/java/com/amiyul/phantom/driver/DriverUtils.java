@@ -81,6 +81,7 @@ public class DriverUtils {
 		final int qnMarkIndex = url.indexOf(DriverConstants.URL_SEPARATOR_DB_PARAM);
 		String prefixAndName;
 		String asyncStr = props.getProperty(URL_PARAM_ASYNC);
+		String listenerClassname = props.getProperty(URL_PARAM_ASYNC_LISTENER);
 		
 		ConnectionListener listener = null;
 		if (qnMarkIndex > -1) {
@@ -96,11 +97,10 @@ public class DriverUtils {
 					}
 					
 					String value = keyAndValue[1];
-					if (asyncStr == null && URL_PARAM_ASYNC.equals(key)) {
+					if (Utils.isBlank(asyncStr) && URL_PARAM_ASYNC.equals(key)) {
 						asyncStr = value;
-					} else if (URL_PARAM_ASYNC_LISTENER.equals(key)) {
-						Class<ConnectionListener> clazz = Utils.loadClass(value);
-						listener = clazz.newInstance();
+					} else if (Utils.isBlank(listenerClassname) && URL_PARAM_ASYNC_LISTENER.equals(key)) {
+						listenerClassname = value;
 					}
 				}
 			}
@@ -111,8 +111,13 @@ public class DriverUtils {
 		//TODO read async and listener from the driver config if configured
 		
 		boolean async = Boolean.valueOf(asyncStr);
-		if (async && listener == null) {
-			throw new SQLException(URL_PARAM_ASYNC_LISTENER + " is required for asynchronous get connection calls");
+		if (async) {
+			if (Utils.isBlank(listenerClassname)) {
+				throw new SQLException(URL_PARAM_ASYNC_LISTENER + " is required for asynchronous get connection calls");
+			}
+			
+			Class<ConnectionListener> listenerClass = Utils.loadClass(listenerClassname);
+			listener = listenerClass.newInstance();
 		}
 		
 		String targetDbName = prefixAndName.substring(prefixAndName.indexOf(URL_PREFIX) + URL_PREFIX.length());

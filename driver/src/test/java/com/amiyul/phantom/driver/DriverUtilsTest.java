@@ -147,19 +147,18 @@ public class DriverUtilsTest {
 	}
 	
 	@Test
-	public void createRequest_shouldReadAndSetAsyncFromThePropertiesObject() throws Exception {
+	public void createRequest_shouldReadAndSetConfigsFromThePropertiesObject() throws Exception {
 		Properties props = new Properties();
 		props.setProperty(URL_PARAM_ASYNC, "true");
-		ConnectionRequestData reqData = DriverUtils.createRequest(
-		    URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + URL_PARAM_ASYNC_LISTENER + "=" + MockListener.class.getName(),
-		    props);
+		props.setProperty(URL_PARAM_ASYNC_LISTENER, MockListener.class.getName());
+		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + "test", props);
 		
 		assertTrue(reqData.isAsync());
 		assertEquals(MockListener.class, reqData.getListener().getClass());
 	}
 	
 	@Test
-	public void createRequest_shouldReadAndSetAsyncFromTheUrl() throws Exception {
+	public void createRequest_shouldReadAndSetConfigsFromTheUrl() throws Exception {
 		ConnectionRequestData reqData = DriverUtils
 		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + URL_PARAM_ASYNC + "=true"
 		                + URL_SEPARATOR_PARAMS + URL_PARAM_ASYNC_LISTENER + "=" + MockListener.class.getName(),
@@ -170,13 +169,13 @@ public class DriverUtilsTest {
 	}
 	
 	@Test
-	public void createRequest_propertyAsyncValueShouldOverrideThatSetOnTheUrl() throws Exception {
+	public void createRequest_propertyArgumentShouldTakePrecedenceOverThoseSetOnTheUrl() throws Exception {
 		Properties props = new Properties();
 		props.setProperty(URL_PARAM_ASYNC, "true");
-		ConnectionRequestData reqData = DriverUtils
-		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + URL_PARAM_ASYNC + "=false"
-		                + URL_SEPARATOR_PARAMS + URL_PARAM_ASYNC_LISTENER + "=" + MockListener.class.getName(),
-		            props);
+		props.setProperty(URL_PARAM_ASYNC_LISTENER, MockListener.class.getName());
+		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM
+		        + URL_PARAM_ASYNC + "=false" + URL_SEPARATOR_PARAMS + URL_PARAM_ASYNC_LISTENER + "=someClass",
+		    props);
 		
 		assertTrue(reqData.isAsync());
 		assertEquals(MockListener.class, reqData.getListener().getClass());
