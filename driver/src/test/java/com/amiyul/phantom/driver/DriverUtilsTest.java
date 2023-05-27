@@ -4,8 +4,8 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.DEFAULT_THREAD_SIZE;
-import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC;
-import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static com.amiyul.phantom.driver.DriverConstants.URL_SEPARATOR_DB_PARAM;
 import static com.amiyul.phantom.driver.DriverConstants.URL_SEPARATOR_PARAMS;
@@ -149,8 +149,8 @@ public class DriverUtilsTest {
 	@Test
 	public void createRequest_shouldReadAndSetConfigsFromThePropertiesObject() throws Exception {
 		Properties props = new Properties();
-		props.setProperty(URL_PARAM_ASYNC, "true");
-		props.setProperty(URL_PARAM_ASYNC_LISTENER, MockListener.class.getName());
+		props.setProperty(PROP_DRIVER_ASYNC, "true");
+		props.setProperty(PROP_DRIVER_CONN_LISTENER, MockListener.class.getName());
 		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + "test", props);
 		
 		assertTrue(reqData.isAsync());
@@ -160,8 +160,8 @@ public class DriverUtilsTest {
 	@Test
 	public void createRequest_shouldReadAndSetConfigsFromTheUrl() throws Exception {
 		ConnectionRequestData reqData = DriverUtils
-		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + URL_PARAM_ASYNC + "=true"
-		                + URL_SEPARATOR_PARAMS + URL_PARAM_ASYNC_LISTENER + "=" + MockListener.class.getName(),
+		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=true"
+		                + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER + "=" + MockListener.class.getName(),
 		            mockProps);
 		
 		assertTrue(reqData.isAsync());
@@ -171,10 +171,10 @@ public class DriverUtilsTest {
 	@Test
 	public void createRequest_propertyArgumentShouldTakePrecedenceOverThoseSetOnTheUrl() throws Exception {
 		Properties props = new Properties();
-		props.setProperty(URL_PARAM_ASYNC, "true");
-		props.setProperty(URL_PARAM_ASYNC_LISTENER, MockListener.class.getName());
+		props.setProperty(PROP_DRIVER_ASYNC, "true");
+		props.setProperty(PROP_DRIVER_CONN_LISTENER, MockListener.class.getName());
 		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM
-		        + URL_PARAM_ASYNC + "=false" + URL_SEPARATOR_PARAMS + URL_PARAM_ASYNC_LISTENER + "=someClass",
+		        + PROP_DRIVER_ASYNC + "=false" + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER + "=someClass",
 		    props);
 		
 		assertTrue(reqData.isAsync());
@@ -193,9 +193,9 @@ public class DriverUtilsTest {
 	@Test
 	public void createRequest_shouldFailForAnAsyncCallAndNoListenerIsSpecified() {
 		Throwable thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils
-		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + URL_PARAM_ASYNC + "=true", mockProps));
+		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=true", mockProps));
 		
-		assertEquals(URL_PARAM_ASYNC_LISTENER + " is required for asynchronous get connection calls", thrown.getMessage());
+		assertEquals(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous get connection calls", thrown.getMessage());
 	}
 	
 	@Test

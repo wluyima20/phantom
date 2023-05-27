@@ -13,11 +13,11 @@ import java.util.Properties;
  */
 public enum DriverProperty {
 	
-	TARGET_DB(DriverConstants.PROP_TARGET_DB, DriverConstants.PROP_DRIVER_DESCR_TARGET_DB, true),
+	TARGET_DB(DriverConstants.PROP_DRIVER_TARGET_DB, DriverConstants.PROP_DRIVER_DESCR_TARGET_DB, true),
 	
-	ASYNC(DriverConstants.URL_PARAM_ASYNC, DriverConstants.PROP_DRIVER_DESCR_ASYNC),
+	ASYNC(DriverConstants.PROP_DRIVER_ASYNC, DriverConstants.PROP_DRIVER_DESCR_ASYNC),
 	
-	CONNECTION_LISTENER(DriverConstants.URL_PARAM_ASYNC_LISTENER, DriverConstants.PROP_DRIVER_DESCR_LISTENER, false,
+	CONNECTION_LISTENER(DriverConstants.PROP_DRIVER_CONN_LISTENER, DriverConstants.PROP_DRIVER_DESCR_LISTENER, false,
 	        new String[] { Boolean.TRUE.toString(), Boolean.FALSE.toString() });
 	
 	private String name;

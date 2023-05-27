@@ -4,8 +4,8 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.DEFAULT_THREAD_SIZE;
-import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC;
-import static com.amiyul.phantom.driver.DriverConstants.URL_PARAM_ASYNC_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 
 import java.sql.Connection;
@@ -80,8 +80,8 @@ public class DriverUtils {
 	protected static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
 		final int qnMarkIndex = url.indexOf(DriverConstants.URL_SEPARATOR_DB_PARAM);
 		String prefixAndName;
-		String asyncStr = props.getProperty(URL_PARAM_ASYNC);
-		String listenerClassname = props.getProperty(URL_PARAM_ASYNC_LISTENER);
+		String asyncStr = props.getProperty(PROP_DRIVER_ASYNC);
+		String listenerClassname = props.getProperty(PROP_DRIVER_CONN_LISTENER);
 		
 		ConnectionListener listener = null;
 		if (qnMarkIndex > -1) {
@@ -97,9 +97,9 @@ public class DriverUtils {
 					}
 					
 					String value = keyAndValue[1];
-					if (Utils.isBlank(asyncStr) && URL_PARAM_ASYNC.equals(key)) {
+					if (Utils.isBlank(asyncStr) && PROP_DRIVER_ASYNC.equals(key)) {
 						asyncStr = value;
-					} else if (Utils.isBlank(listenerClassname) && URL_PARAM_ASYNC_LISTENER.equals(key)) {
+					} else if (Utils.isBlank(listenerClassname) && PROP_DRIVER_CONN_LISTENER.equals(key)) {
 						listenerClassname = value;
 					}
 				}
@@ -113,7 +113,7 @@ public class DriverUtils {
 		boolean async = Boolean.valueOf(asyncStr);
 		if (async) {
 			if (Utils.isBlank(listenerClassname)) {
-				throw new SQLException(URL_PARAM_ASYNC_LISTENER + " is required for asynchronous get connection calls");
+				throw new SQLException(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous get connection calls");
 			}
 			
 			Class<ConnectionListener> listenerClass = Utils.loadClass(listenerClassname);
