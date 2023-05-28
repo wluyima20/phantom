@@ -55,6 +55,11 @@ public class DriverPropertyTest {
 	}
 	
 	@Test
+	public void toPropertyValueMap_shouldReturnAnEmptyArrayIfPropsIsNull() {
+		assertTrue(DriverProperty.toPropertyValueMap(null).isEmpty());
+	}
+	
+	@Test
 	public void findByName_shouldReturnTheMatchingDriverPropertyEnum() {
 		assertEquals(ASYNC, DriverProperty.findByName(PROP_DRIVER_ASYNC));
 	}

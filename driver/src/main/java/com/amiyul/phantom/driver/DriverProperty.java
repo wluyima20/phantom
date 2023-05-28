@@ -104,6 +104,10 @@ enum DriverProperty {
 	 * @return a map
 	 */
 	protected static Map<DriverProperty, String> toPropertyValueMap(Properties props) {
+		if (props == null) {
+			return new HashMap<>();
+		}
+		
 		Map<DriverProperty, String> propValueMap = new HashMap<>(props.size());
 		props.forEach((key, value) -> {
 			if (!key.equals(TARGET_DB.name)) {

@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -58,7 +59,13 @@ public final class PhantomDriver implements Driver {
 	
 	@Override
 	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) {
-		return new DriverPropertyInfo[] {};
+		Map<DriverProperty, String> propValueMap = DriverUtils.createDriverPropertyAndValueMap(url, info);
+		
+		return propValueMap.entrySet().stream().map(e -> {
+			DriverPropertyInfo propInfo = e.getKey().toDriverPropertyInfo();
+			propInfo.value = e.getValue();
+			return propInfo;
+		}).toArray(DriverPropertyInfo[]::new);
 	}
 	
 	@Override

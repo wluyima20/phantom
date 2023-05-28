@@ -3,11 +3,17 @@
  */
 package com.amiyul.phantom.driver;
 
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_TARGET_DB;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static org.junit.Assert.assertEquals;
 
+import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -97,8 +103,36 @@ public class PhantomDriverTest {
 	}
 	
 	@Test
-	public void getPropertyInfo_shouldReturnAnEmptyArray() {
-		assertEquals(0, driver.getPropertyInfo(null, null).length);
+	public void getPropertyInfo_shouldReturnAnArrayOfDriverPropertyInfo() {
+		final String dbName = "test";
+		final String url = URL_PREFIX + dbName;
+		final String async = "true";
+		final String clazz = "someClass";
+		Map<DriverProperty, String> propValueMap = new HashMap<>();
+		propValueMap.put(DriverProperty.TARGET_DB, dbName);
+		propValueMap.put(DriverProperty.ASYNC, async);
+		propValueMap.put(DriverProperty.CONNECTION_LISTENER, clazz);
+		Mockito.when(DriverUtils.createDriverPropertyAndValueMap(url, mockProps)).thenReturn(propValueMap);
+		
+		DriverPropertyInfo[] info = driver.getPropertyInfo(url, mockProps);
+		
+		assertEquals(3, info.length);
+		DriverPropertyInfo targetDbInfo = null;
+		DriverPropertyInfo asyncInfo = null;
+		DriverPropertyInfo listenerInfo = null;
+		for (DriverPropertyInfo i : info) {
+			if (i.name.equals(PROP_DRIVER_TARGET_DB)) {
+				targetDbInfo = i;
+			} else if (i.name.equals(PROP_DRIVER_ASYNC)) {
+				asyncInfo = i;
+			} else if (i.name.equals(PROP_DRIVER_CONN_LISTENER)) {
+				listenerInfo = i;
+			}
+		}
+		
+		assertEquals(dbName, targetDbInfo.value);
+		assertEquals(async, asyncInfo.value);
+		assertEquals(clazz, listenerInfo.value);
 	}
 	
 	@Test
