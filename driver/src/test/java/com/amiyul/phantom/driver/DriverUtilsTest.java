@@ -9,15 +9,17 @@ import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENE
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static com.amiyul.phantom.driver.DriverConstants.URL_SEPARATOR_DB_PARAM;
 import static com.amiyul.phantom.driver.DriverConstants.URL_SEPARATOR_PARAMS;
+import static com.amiyul.phantom.driver.DriverProperty.ASYNC;
+import static com.amiyul.phantom.driver.DriverProperty.CONNECTION_LISTENER;
+import static com.amiyul.phantom.driver.DriverProperty.TARGET_DB;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -136,58 +138,77 @@ public class DriverUtilsTest {
 	}
 	
 	@Test
-	public void createRequest_shouldCreateAConnectionRequestDataObject() throws Exception {
+	public void createDriverPropertyAndValueMap_shouldCreateAConnectionRequestDataObject() {
 		final String dbName = "mysql-test";
 		
-		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + dbName, mockProps);
+		Map<DriverProperty, String> map = DriverUtils.createDriverPropertyAndValueMap(URL_PREFIX + dbName, mockProps);
 		
-		assertEquals(dbName, reqData.getTargetDbName());
-		assertFalse(reqData.isAsync());
-		assertNull(reqData.getListener());
+		assertEquals(dbName, map.get(TARGET_DB));
+		assertNull(map.get(ASYNC));
+		assertNull(map.get(CONNECTION_LISTENER));
 	}
 	
 	@Test
-	public void createRequest_shouldReadAndSetConfigsFromThePropertiesObject() throws Exception {
+	public void createDriverPropertyAndValueMap_shouldReadAndSetConfigsFromThePropertiesObject() {
 		Properties props = new Properties();
-		props.setProperty(PROP_DRIVER_ASYNC, "true");
+		final String async = "true";
+		props.setProperty(PROP_DRIVER_ASYNC, async);
 		props.setProperty(PROP_DRIVER_CONN_LISTENER, MockListener.class.getName());
-		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + "test", props);
 		
-		assertTrue(reqData.isAsync());
-		assertEquals(MockListener.class, reqData.getListener().getClass());
+		Map<DriverProperty, String> map = DriverUtils.createDriverPropertyAndValueMap(URL_PREFIX + "test", props);
+		
+		assertEquals(async, map.get(ASYNC));
+		assertEquals(MockListener.class.getName(), map.get(CONNECTION_LISTENER));
 	}
 	
 	@Test
-	public void createRequest_shouldReadAndSetConfigsFromTheUrl() throws Exception {
-		ConnectionRequestData reqData = DriverUtils
-		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=true"
-		                + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER + "=" + MockListener.class.getName(),
-		            mockProps);
+	public void createDriverPropertyAndValueMap_shouldReadAndSetConfigsFromTheUrl() {
+		final String async = "true";
 		
-		assertTrue(reqData.isAsync());
-		assertEquals(MockListener.class, reqData.getListener().getClass());
+		Map<DriverProperty, String> map = DriverUtils.createDriverPropertyAndValueMap(
+		    URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=" + async + URL_SEPARATOR_PARAMS
+		            + PROP_DRIVER_CONN_LISTENER + "=" + MockListener.class.getName(),
+		    mockProps);
+		
+		assertEquals(async, map.get(ASYNC));
+		assertEquals(MockListener.class.getName(), map.get(CONNECTION_LISTENER));
 	}
 	
 	@Test
-	public void createRequest_propertyArgumentShouldTakePrecedenceOverThoseSetOnTheUrl() throws Exception {
+	public void createDriverPropertyAndValueMap_propertyArgumentShouldTakePrecedenceOverThoseSetOnTheUrl() {
+		final String async = "true";
 		Properties props = new Properties();
-		props.setProperty(PROP_DRIVER_ASYNC, "true");
+		props.setProperty(PROP_DRIVER_ASYNC, async);
 		props.setProperty(PROP_DRIVER_CONN_LISTENER, MockListener.class.getName());
-		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM
-		        + PROP_DRIVER_ASYNC + "=false" + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER + "=someClass",
-		    props);
 		
-		assertTrue(reqData.isAsync());
-		assertEquals(MockListener.class, reqData.getListener().getClass());
+		Map<DriverProperty, String> map = DriverUtils
+		        .createDriverPropertyAndValueMap(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=false"
+		                + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER + "=someClass",
+		            props);
+		
+		assertEquals(async, map.get(ASYNC));
+		assertEquals(MockListener.class.getName(), map.get(CONNECTION_LISTENER));
 	}
 	
 	@Test
-	public void createRequest_shouldFailForAnInvalidUrlParam() {
+	public void createDriverPropertyAndValueMap_shouldFailForAnInvalidProperty() {
 		final String propName = "testProp";
-		Throwable thrown = Assert.assertThrows(SQLException.class,
-		    () -> DriverUtils.createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + propName + "=", mockProps));
+		Properties props = new Properties();
+		props.setProperty(propName, "");
 		
-		assertEquals("Connection URL contains unsupported parameter named: " + propName, thrown.getMessage());
+		Throwable thrown = Assert.assertThrows(RuntimeException.class,
+		    () -> DriverUtils.createDriverPropertyAndValueMap(URL_PREFIX + "test", props));
+		
+		assertEquals("Found an invalid driver property named: " + propName, thrown.getMessage());
+	}
+	
+	@Test
+	public void createDriverPropertyAndValueMap_shouldFailForAnInvalidUrlParam() {
+		final String propName = "testProp";
+		Throwable thrown = Assert.assertThrows(RuntimeException.class, () -> DriverUtils
+		        .createDriverPropertyAndValueMap(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + propName + "=", mockProps));
+		
+		assertEquals("Found an invalid driver property named: " + propName, thrown.getMessage());
 	}
 	
 	@Test
@@ -195,11 +216,11 @@ public class DriverUtilsTest {
 		Throwable thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils
 		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=true", mockProps));
 		
-		assertEquals(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous get connection calls", thrown.getMessage());
+		assertEquals(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous connection requests", thrown.getMessage());
 	}
 	
 	@Test
-	public void createRequest_shouldFailIfNoTargetDbIsSpecified() throws Exception {
+	public void createRequest_shouldFailIfNoTargetDbIsSpecified() {
 		Throwable thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils.createRequest(URL_PREFIX, mockProps));
 		
 		assertEquals("No target database name defined in the database URL", thrown.getMessage());

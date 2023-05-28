@@ -78,14 +78,20 @@ public enum DriverProperty {
 		return propValueMap;
 	}
 	
-	private static DriverProperty findByName(String name) {
+	/**
+	 * Looks up the {@link DriverProperty} enum value that matches the specified property name
+	 * 
+	 * @param propertyName the property name
+	 * @return DriverProperty instance
+	 */
+	protected static DriverProperty findByName(String propertyName) {
 		for (DriverProperty prop : values()) {
-			if (prop.name.equals(name)) {
+			if (prop.name.equals(propertyName)) {
 				return prop;
 			}
 		}
 		
-		throw new RuntimeException("Found no driver property named: " + name);
+		throw new RuntimeException("Found an invalid driver property named: " + propertyName);
 	}
 	
 }

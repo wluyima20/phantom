@@ -4,12 +4,15 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.DEFAULT_THREAD_SIZE;
-import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
+import static com.amiyul.phantom.driver.DriverProperty.ASYNC;
+import static com.amiyul.phantom.driver.DriverProperty.CONNECTION_LISTENER;
+import static com.amiyul.phantom.driver.DriverProperty.TARGET_DB;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 import com.amiyul.phantom.api.RuntimeUtils;
@@ -76,14 +79,54 @@ public class DriverUtils {
 		return threadCount;
 	}
 	
+	/**
+	 * Creates a {@link ConnectionRequestData} object from the specified database URL and
+	 * {@link Properties} object
+	 * 
+	 * @param url the database url
+	 * @param props {@link Properties} object
+	 * @return ConnectionRequestData object
+	 */
 	@SneakyThrows
-	protected static ConnectionRequestData createRequest(String url, Properties props) throws SQLException {
+	protected static ConnectionRequestData createRequest(String url, Properties props) {
+		Map<DriverProperty, String> propValueMap = createDriverPropertyAndValueMap(url, props);
+		String asyncStr = propValueMap.get(ASYNC);
+		String listenerClassname = propValueMap.get(CONNECTION_LISTENER);
+		//TODO read async and listener from the driver config if configured
+		Boolean async = Boolean.valueOf(asyncStr);
+		ConnectionListener listener = null;
+		if (async) {
+			if (Utils.isBlank(listenerClassname)) {
+				throw new SQLException(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous connection requests");
+			}
+			
+			Class<ConnectionListener> listenerClass = Utils.loadClass(listenerClassname);
+			listener = listenerClass.newInstance();
+		}
+		
+		String targetDbName = propValueMap.get(TARGET_DB);
+		if (Utils.isBlank(targetDbName)) {
+			throw new SQLException("No target database name defined in the database URL");
+		}
+		
+		return new ConnectionRequestData(targetDbName, async, listener);
+	}
+	
+	/**
+	 * Generates a mappings between {@link DriverProperty} and value from the specified database URL and
+	 * {@link Properties} object
+	 *
+	 * @param url the database url
+	 * @param props {@link Properties} object
+	 * @return Map
+	 */
+	protected static Map<DriverProperty, String> createDriverPropertyAndValueMap(String url, Properties props) {
+		Map<DriverProperty, String> propValueMap = DriverProperty.toPropertyValueMap(props);
+		String asyncStr = propValueMap.get(ASYNC);
+		String listenerClassname = propValueMap.get(CONNECTION_LISTENER);
+		
 		final int qnMarkIndex = url.indexOf(DriverConstants.URL_SEPARATOR_DB_PARAM);
 		String prefixAndName;
-		String asyncStr = props.getProperty(PROP_DRIVER_ASYNC);
-		String listenerClassname = props.getProperty(PROP_DRIVER_CONN_LISTENER);
-		
-		ConnectionListener listener = null;
 		if (qnMarkIndex > -1) {
 			prefixAndName = url.substring(0, qnMarkIndex);
 			String urlParams = url.substring(qnMarkIndex + 1);
@@ -92,14 +135,11 @@ public class DriverUtils {
 				for (String pair : params) {
 					String[] keyAndValue = pair.split(DriverConstants.URL_SEPARATOR_PARAM_KEY_VALUE);
 					String key = keyAndValue[0];
-					if (!DriverConstants.PROP_NAMES.contains(key)) {
-						throw new SQLException("Connection URL contains unsupported parameter named: " + key);
-					}
-					
+					DriverProperty driverProp = DriverProperty.findByName(key);
 					String value = keyAndValue[1];
-					if (Utils.isBlank(asyncStr) && PROP_DRIVER_ASYNC.equals(key)) {
+					if (driverProp == ASYNC && Utils.isBlank(asyncStr)) {
 						asyncStr = value;
-					} else if (Utils.isBlank(listenerClassname) && PROP_DRIVER_CONN_LISTENER.equals(key)) {
+					} else if (driverProp == CONNECTION_LISTENER && Utils.isBlank(listenerClassname)) {
 						listenerClassname = value;
 					}
 				}
@@ -108,25 +148,12 @@ public class DriverUtils {
 			prefixAndName = url;
 		}
 		
-		//TODO read async and listener from the driver config if configured
-		
-		boolean async = Boolean.valueOf(asyncStr);
-		if (async) {
-			if (Utils.isBlank(listenerClassname)) {
-				throw new SQLException(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous get connection calls");
-			}
-			
-			Class<ConnectionListener> listenerClass = Utils.loadClass(listenerClassname);
-			listener = listenerClass.newInstance();
-		}
-		
 		String targetDbName = prefixAndName.substring(prefixAndName.indexOf(URL_PREFIX) + URL_PREFIX.length());
+		propValueMap.put(TARGET_DB, targetDbName);
+		propValueMap.put(ASYNC, asyncStr);
+		propValueMap.put(CONNECTION_LISTENER, listenerClassname);
 		
-		if (Utils.isBlank(targetDbName)) {
-			throw new SQLException("No target database name defined in the database URL");
-		}
-		
-		return new ConnectionRequestData(targetDbName, async, listener);
+		return propValueMap;
 	}
 	
 }

@@ -3,9 +3,6 @@
  */
 package com.amiyul.phantom.driver;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.amiyul.phantom.api.Constants;
 
 public final class DriverConstants {
@@ -41,7 +38,5 @@ public final class DriverConstants {
 	protected static final String PROP_DB_PROVIDER_CLASS = PREFIX_DB + "provider.class";
 	
 	protected static final int DEFAULT_THREAD_SIZE = 5;
-	
-	protected static final List<String> PROP_NAMES = Arrays.asList(PROP_DRIVER_ASYNC, PROP_DRIVER_CONN_LISTENER);
 	
 }
