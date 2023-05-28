@@ -4,6 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import java.sql.DriverPropertyInfo;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -11,22 +12,22 @@ import java.util.Properties;
 /**
  * Encapsulates info about a driver property
  */
-public enum DriverProperty {
+enum DriverProperty {
 	
 	TARGET_DB(DriverConstants.PROP_DRIVER_TARGET_DB, DriverConstants.PROP_DRIVER_DESCR_TARGET_DB, true),
 	
-	ASYNC(DriverConstants.PROP_DRIVER_ASYNC, DriverConstants.PROP_DRIVER_DESCR_ASYNC),
+	ASYNC(DriverConstants.PROP_DRIVER_ASYNC, DriverConstants.PROP_DRIVER_DESCR_ASYNC, false,
+	        new String[] { Boolean.TRUE.toString(), Boolean.FALSE.toString() }),
 	
-	CONNECTION_LISTENER(DriverConstants.PROP_DRIVER_CONN_LISTENER, DriverConstants.PROP_DRIVER_DESCR_LISTENER, false,
-	        new String[] { Boolean.TRUE.toString(), Boolean.FALSE.toString() });
+	CONNECTION_LISTENER(DriverConstants.PROP_DRIVER_CONN_LISTENER, DriverConstants.PROP_DRIVER_DESCR_LISTENER);
 	
-	private String name;
+	final private String name;
 	
-	private String description;
+	final private String description;
 	
-	private boolean required;
+	final private boolean required;
 	
-	private String[] choices;
+	final private String[] choices;
 	
 	DriverProperty(String name, String description) {
 		this(name, description, false);
@@ -44,6 +45,42 @@ public enum DriverProperty {
 	}
 	
 	/**
+	 * Gets the name
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Gets the description
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * Gets the required
+	 *
+	 * @return the required
+	 */
+	public boolean isRequired() {
+		return required;
+	}
+	
+	/**
+	 * Gets the choices
+	 *
+	 * @return the choices
+	 */
+	public String[] getChoices() {
+		return choices;
+	}
+	
+	/**
 	 * Creates a {@link DriverPropertyInfo} instance from this {@link DriverProperty}
 	 * 
 	 * @return a {@link DriverPropertyInfo} instance
@@ -51,7 +88,11 @@ public enum DriverProperty {
 	public DriverPropertyInfo toDriverPropertyInfo() {
 		DriverPropertyInfo info = new DriverPropertyInfo(name, null);
 		info.description = description;
-		info.choices = choices;
+		info.required = required;
+		if (getChoices() != null) {
+			info.choices = Arrays.copyOf(getChoices(), getChoices().length);
+		}
+		
 		return info;
 	}
 	
