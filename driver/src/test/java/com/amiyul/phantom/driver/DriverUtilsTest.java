@@ -5,7 +5,7 @@ package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.DEFAULT_THREAD_SIZE;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
-import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER_CLASS;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static com.amiyul.phantom.driver.DriverConstants.URL_SEPARATOR_DB_PARAM;
 import static com.amiyul.phantom.driver.DriverConstants.URL_SEPARATOR_PARAMS;
@@ -153,7 +153,7 @@ public class DriverUtilsTest {
 		Properties props = new Properties();
 		final String async = "true";
 		props.setProperty(PROP_DRIVER_ASYNC, async);
-		props.setProperty(PROP_DRIVER_CONN_LISTENER, MockListener.class.getName());
+		props.setProperty(PROP_DRIVER_CONN_LISTENER_CLASS, MockListener.class.getName());
 		
 		Map<DriverProperty, String> map = DriverUtils.createDriverPropertyAndValueMap(URL_PREFIX + "test", props);
 		
@@ -167,7 +167,7 @@ public class DriverUtilsTest {
 		
 		Map<DriverProperty, String> map = DriverUtils.createDriverPropertyAndValueMap(
 		    URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=" + async + URL_SEPARATOR_PARAMS
-		            + PROP_DRIVER_CONN_LISTENER + "=" + MockListener.class.getName(),
+		            + PROP_DRIVER_CONN_LISTENER_CLASS + "=" + MockListener.class.getName(),
 		    mockProps);
 		
 		assertEquals(async, map.get(ASYNC));
@@ -179,11 +179,11 @@ public class DriverUtilsTest {
 		final String async = "true";
 		Properties props = new Properties();
 		props.setProperty(PROP_DRIVER_ASYNC, async);
-		props.setProperty(PROP_DRIVER_CONN_LISTENER, MockListener.class.getName());
+		props.setProperty(PROP_DRIVER_CONN_LISTENER_CLASS, MockListener.class.getName());
 		
 		Map<DriverProperty, String> map = DriverUtils
 		        .createDriverPropertyAndValueMap(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=false"
-		                + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER + "=someClass",
+		                + URL_SEPARATOR_PARAMS + PROP_DRIVER_CONN_LISTENER_CLASS + "=someClass",
 		            props);
 		
 		assertEquals(async, map.get(ASYNC));
@@ -216,7 +216,7 @@ public class DriverUtilsTest {
 		Throwable thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils
 		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=true", mockProps));
 		
-		assertEquals(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous connection requests", thrown.getMessage());
+		assertEquals(PROP_DRIVER_CONN_LISTENER_CLASS + " is required for asynchronous connection requests", thrown.getMessage());
 	}
 	
 	@Test

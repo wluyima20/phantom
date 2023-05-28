@@ -19,7 +19,7 @@ enum DriverProperty {
 	ASYNC(DriverConstants.PROP_DRIVER_ASYNC, DriverConstants.PROP_DRIVER_DESCR_ASYNC, false,
 	        new String[] { Boolean.TRUE.toString(), Boolean.FALSE.toString() }),
 	
-	CONNECTION_LISTENER(DriverConstants.PROP_DRIVER_CONN_LISTENER, DriverConstants.PROP_DRIVER_DESCR_LISTENER);
+	CONNECTION_LISTENER(DriverConstants.PROP_DRIVER_CONN_LISTENER_CLASS, DriverConstants.PROP_DRIVER_DESCR_LISTENER);
 	
 	final private String name;
 	

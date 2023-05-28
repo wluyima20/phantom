@@ -4,7 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
-import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER_CLASS;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_TARGET_DB;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static org.junit.Assert.assertEquals;
@@ -125,7 +125,7 @@ public class PhantomDriverTest {
 				targetDbInfo = i;
 			} else if (i.name.equals(PROP_DRIVER_ASYNC)) {
 				asyncInfo = i;
-			} else if (i.name.equals(PROP_DRIVER_CONN_LISTENER)) {
+			} else if (i.name.equals(PROP_DRIVER_CONN_LISTENER_CLASS)) {
 				listenerInfo = i;
 			}
 		}

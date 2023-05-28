@@ -4,7 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.DEFAULT_THREAD_SIZE;
-import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER_CLASS;
 import static com.amiyul.phantom.driver.DriverConstants.URL_PREFIX;
 import static com.amiyul.phantom.driver.DriverProperty.ASYNC;
 import static com.amiyul.phantom.driver.DriverProperty.CONNECTION_LISTENER;
@@ -97,7 +97,7 @@ public class DriverUtils {
 		ConnectionListener listener = null;
 		if (async) {
 			if (Utils.isBlank(listenerClassname)) {
-				throw new SQLException(PROP_DRIVER_CONN_LISTENER + " is required for asynchronous connection requests");
+				throw new SQLException(PROP_DRIVER_CONN_LISTENER_CLASS + " is required for asynchronous connection requests");
 			}
 			
 			Class<ConnectionListener> listenerClass = Utils.loadClass(listenerClassname);

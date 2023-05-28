@@ -21,13 +21,13 @@ public final class DriverConstants {
 	
 	protected static final String PROP_DRIVER_ASYNC = "async";
 	
-	protected static final String PROP_DRIVER_CONN_LISTENER = "connectionListener";
+	protected static final String PROP_DRIVER_CONN_LISTENER_CLASS = "connectionListenerClassname";
 	
 	protected static final String PROP_DRIVER_DESCR_TARGET_DB = "A unique name of a target database to which to connect";
 	
 	protected static final String PROP_DRIVER_DESCR_ASYNC = "Specifies whether the connection request should be "
 	        + "processed asynchronously or not, if set to true the connection listener MUST be specified via the "
-	        + "property named " + PROP_DRIVER_CONN_LISTENER;
+	        + "property named " + PROP_DRIVER_CONN_LISTENER_CLASS;
 	
 	protected static final String PROP_DRIVER_DESCR_LISTENER = "Specifies the fully qualified java classname of the listener "
 	        + "class to be notified upon connection success or failure, this is ONLY required if " + PROP_DRIVER_ASYNC

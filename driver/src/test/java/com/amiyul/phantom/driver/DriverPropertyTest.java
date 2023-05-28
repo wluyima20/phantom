@@ -4,7 +4,7 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_ASYNC;
-import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER;
+import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_CONN_LISTENER_CLASS;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DRIVER_TARGET_DB;
 import static com.amiyul.phantom.driver.DriverProperty.ASYNC;
 import static com.amiyul.phantom.driver.DriverProperty.CONNECTION_LISTENER;
@@ -45,7 +45,7 @@ public class DriverPropertyTest {
 		Properties props = new Properties();
 		props.setProperty(PROP_DRIVER_TARGET_DB, "test");
 		props.setProperty(PROP_DRIVER_ASYNC, async);
-		props.setProperty(PROP_DRIVER_CONN_LISTENER, clazz);
+		props.setProperty(PROP_DRIVER_CONN_LISTENER_CLASS, clazz);
 		
 		Map<DriverProperty, String> map = DriverProperty.toPropertyValueMap(props);
 		
