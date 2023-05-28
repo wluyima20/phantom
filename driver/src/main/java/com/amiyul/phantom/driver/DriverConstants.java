@@ -20,7 +20,7 @@ public final class DriverConstants {
 	
 	protected static final String URL_SEPARATOR_PARAM_KEY_VALUE = "=";
 	
-	protected static final String PROP_DRIVER_TARGET_DB = "targetDb";
+	protected static final String PROP_DRIVER_TARGET_DB = "targetDbName";
 	
 	protected static final String PROP_DRIVER_ASYNC = "async";
 	

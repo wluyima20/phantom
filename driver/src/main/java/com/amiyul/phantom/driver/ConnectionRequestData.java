@@ -11,7 +11,7 @@ import lombok.Getter;
 public class ConnectionRequestData {
 	
 	@Getter
-	private final String targetDatabaseName;
+	private final String targetDbName;
 	
 	@Getter
 	private final boolean async;
@@ -19,15 +19,15 @@ public class ConnectionRequestData {
 	@Getter
 	private final ConnectionListener listener;
 	
-	public ConnectionRequestData(String targetDatabaseName, boolean async, ConnectionListener listener) {
-		this.targetDatabaseName = targetDatabaseName;
+	public ConnectionRequestData(String targetDbName, boolean async, ConnectionListener listener) {
+		this.targetDbName = targetDbName;
 		this.async = async;
 		this.listener = listener;
 	}
 	
 	@Override
 	public String toString() {
-		return "{" + "targetDatabaseName=" + targetDatabaseName + ", async=" + async + ", listener=" + listener + "}";
+		return "{" + "targetDbName=" + targetDbName + ", async=" + async + ", listener=" + listener + "}";
 	}
 	
 }

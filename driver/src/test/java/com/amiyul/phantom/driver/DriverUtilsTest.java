@@ -141,7 +141,7 @@ public class DriverUtilsTest {
 		
 		ConnectionRequestData reqData = DriverUtils.createRequest(URL_PREFIX + dbName, mockProps);
 		
-		assertEquals(dbName, reqData.getTargetDatabaseName());
+		assertEquals(dbName, reqData.getTargetDbName());
 		assertFalse(reqData.isAsync());
 		assertNull(reqData.getListener());
 	}

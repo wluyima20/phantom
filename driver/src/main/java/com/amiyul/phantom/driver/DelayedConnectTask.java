@@ -17,7 +17,7 @@ public class DelayedConnectTask extends BaseCallableTask<Connection> {
 	private ConnectionRequestData requestData;
 	
 	public DelayedConnectTask(ConnectionRequestData requestData) {
-		super(NAME_PREFIX + requestData.getTargetDatabaseName());
+		super(NAME_PREFIX + requestData.getTargetDbName());
 		this.requestData = requestData;
 	}
 	

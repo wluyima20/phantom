@@ -16,7 +16,7 @@ public class AsyncConnectTask extends BaseNotifyingTask<Connection> {
 	private ConnectionRequestData requestData;
 	
 	public AsyncConnectTask(ConnectionRequestData requestData) {
-		super(NAME_PREFIX + requestData.getTargetDatabaseName(), requestData.getListener());
+		super(NAME_PREFIX + requestData.getTargetDbName(), requestData.getListener());
 		this.requestData = requestData;
 	}
 	

@@ -44,7 +44,7 @@ public class DefaultClient implements Client {
 	@Override
 	public Connection connect(ConnectionRequestData requestData) throws SQLException {
 		DriverConfig config = DriverConfigUtils.getConfig();
-		final String targetDbName = requestData.getTargetDatabaseName();
+		final String targetDbName = requestData.getTargetDbName();
 		LocalDateTime targetUnavailableUntil = getStatus(targetDbName).getUnavailableUntil();
 		LocalDateTime asOfDate = now();
 		if (!config.getStatus().isUnavailable(asOfDate) && !isDateAfter(targetUnavailableUntil, asOfDate)) {
@@ -124,7 +124,7 @@ public class DefaultClient implements Client {
 	 * @throws SQLException
 	 */
 	protected Connection doConnectInternal(ConnectionRequestData requestData) throws SQLException {
-		final String targetDbName = requestData.getTargetDatabaseName();
+		final String targetDbName = requestData.getTargetDbName();
 		
 		debug("Requesting connection to database: " + targetDbName);
 		
