@@ -27,6 +27,7 @@
 
         <!-- Other tools -->
         <lombokVersion>1.18.24</lombokVersion>
+        <yGuardVersion>4.0.0</yGuardVersion>
 
         <!-- Test dependencies-->
         <junitVersion>4.13.2</junitVersion>
@@ -40,6 +41,7 @@
         <compilerPluginVerison>3.10.1</compilerPluginVerison>
         <jarPluginVerison>3.3.0</jarPluginVerison>
         <surefirePluginVersion>3.0.0-M8</surefirePluginVersion>
+        <antRunPluginVersion>1.8</antRunPluginVersion>
     </properties>
 
     <dependencyManagement>
@@ -55,6 +57,12 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombokVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.yworks</groupId>
+                <artifactId>yguard</artifactId>
+                <version>${yGuardVersion}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -91,6 +99,10 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.yworks</groupId>
+            <artifactId>yguard</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -173,6 +185,39 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefirePluginVersion}</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <version>${antRunPluginVersion}</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <id>obfuscate</id>
+                            <configuration>
+                                <tasks>
+                                    <property name="yguard_classpath" refid="maven.compile.classpath"/>
+                                    <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${yguard_classpath}"/>
+                                    <yguard>
+                                        <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${project.build.directory}/${project.build.finalName}.jar" />
+                                        <!--
+                                        <rename logfile="${project.build.directory}/yguard.log.xml">
+                                            <property name="error-checking" value="pedantic"/>
+                                            <keep>
+                                                <class name="com.amiyul.phantom.driver.Listener"/>
+                                                <class name="com.amiyul.phantom.driver.ConnectionListener"/>
+                                                <class name="com.amiyul.phantom.driver.DriverConstants" />
+                                            </keep>
+                                        </rename>
+                                        -->
+                                    </yguard>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -184,6 +229,10 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
         </plugins>
 

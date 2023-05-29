@@ -216,7 +216,8 @@ public class DriverUtilsTest {
 		Throwable thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils
 		        .createRequest(URL_PREFIX + "test" + URL_SEPARATOR_DB_PARAM + PROP_DRIVER_ASYNC + "=true", mockProps));
 		
-		assertEquals(PROP_DRIVER_CONN_LISTENER_CLASS + " is required for asynchronous connection requests", thrown.getMessage());
+		assertEquals(PROP_DRIVER_CONN_LISTENER_CLASS + " is required for asynchronous connection requests",
+		    thrown.getMessage());
 	}
 	
 	@Test

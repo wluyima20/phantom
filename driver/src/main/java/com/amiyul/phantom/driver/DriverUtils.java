@@ -97,7 +97,8 @@ public class DriverUtils {
 		ConnectionListener listener = null;
 		if (async) {
 			if (Utils.isBlank(listenerClassname)) {
-				throw new SQLException(PROP_DRIVER_CONN_LISTENER_CLASS + " is required for asynchronous connection requests");
+				throw new SQLException(
+				        PROP_DRIVER_CONN_LISTENER_CLASS + " is required for asynchronous connection requests");
 			}
 			
 			Class<ConnectionListener> listenerClass = Utils.loadClass(listenerClassname);
