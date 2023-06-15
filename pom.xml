@@ -198,21 +198,34 @@
                             <id>obfuscate</id>
                             <configuration>
                                 <tasks>
-                                    <property name="compileClasspath" refid="maven.compile.classpath"/>
-                                    <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}"/>
+                                    <property name="compileClasspath" refid="maven.compile.classpath" />
+                                    <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}" />
                                     <yguard>
                                         <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${project.build.directory}/${project.build.finalName}.jar" />
                                         <rename logfile="${project.build.directory}/yguard.log.xml">
-                                            <property name="error-checking" value="pedantic"/>
-                                            <map>
-                                                <class name="com.amiyul.phantom.driver.PhantomDriver" map="PD"/>
-                                                <class name="com.amiyul.phantom.driver.DriverConfigFileParser" map="DCFP" />
-                                                <class name="com.amiyul.phantom.driver.DriverPropertiesFileParser" map="DPFP"/>
-                                            </map>
+                                            <property name="error-checking" value="pedantic" />
+                                            <!-- TODO Change to mix or best
+                                            <property name="naming-scheme" value="mix" />
+                                             -->
                                             <keep>
-                                                <class name="com.amiyul.phantom.driver.Listener" />
-                                                <class name="com.amiyul.phantom.driver.ConnectionListener" />
+                                                <class name="${groupId}.driver.Listener" methods="public" />
+                                                <class name="${groupId}.driver.ConnectionListener" />
+
+                                                <!-- DB module -->
+                                                <package name="${groupId}.db" />
+                                                <class name="${groupId}.db.FileDatabaseProvider" />
                                             </keep>
+                                            <map>
+                                                <!-- Driver module -->
+                                                <class name="${groupId}.driver.PhantomDriver" map="PD" />
+                                                <class name="${groupId}.driver.DriverConfigFileParser" map="DCFP" />
+                                                <class name="${groupId}.driver.DriverPropertiesFileParser" map="DPFP" />
+
+                                                <!-- DB module -->
+                                                <class name="${groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
+                                                <class name="${groupId}.db.DatabasePropertiesFileParser" map="DBPFP" />
+                                                <class name="${groupId}.db.FileDatabaseProvider" map="FDP" />
+                                            </map>
                                         </rename>
                                     </yguard>
                                 </tasks>
