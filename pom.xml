@@ -198,20 +198,22 @@
                             <id>obfuscate</id>
                             <configuration>
                                 <tasks>
-                                    <property name="yguard_classpath" refid="maven.compile.classpath"/>
-                                    <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${yguard_classpath}"/>
+                                    <property name="compileClasspath" refid="maven.compile.classpath"/>
+                                    <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}"/>
                                     <yguard>
                                         <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${project.build.directory}/${project.build.finalName}.jar" />
-                                        <!--
                                         <rename logfile="${project.build.directory}/yguard.log.xml">
                                             <property name="error-checking" value="pedantic"/>
+                                            <map>
+                                                <class name="com.amiyul.phantom.driver.PhantomDriver" map="PD"/>
+                                                <class name="com.amiyul.phantom.driver.DriverConfigFileParser" map="DCFP" />
+                                                <class name="com.amiyul.phantom.driver.DriverPropertiesFileParser" map="DPFP"/>
+                                            </map>
                                             <keep>
-                                                <class name="com.amiyul.phantom.driver.Listener"/>
-                                                <class name="com.amiyul.phantom.driver.ConnectionListener"/>
-                                                <class name="com.amiyul.phantom.driver.DriverConstants" />
+                                                <class name="com.amiyul.phantom.driver.Listener" />
+                                                <class name="com.amiyul.phantom.driver.ConnectionListener" />
                                             </keep>
                                         </rename>
-                                        -->
                                     </yguard>
                                 </tasks>
                             </configuration>
@@ -229,10 +231,6 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
         </plugins>
 
