@@ -16,12 +16,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.powermock.reflect.Whitebox.setInternalState;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +39,6 @@ import com.amiyul.phantom.api.RuntimeUtils;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DriverConfigUtils.class, DefaultClient.class, DriverUtils.class, RuntimeUtils.class })
 public class DriverUtilsTest {
-	
-	private static final String TEST_VERSION = "1.2.3";
 	
 	public static class MockListener implements ConnectionListener {
 		
@@ -64,6 +64,8 @@ public class DriverUtilsTest {
 	@Mock
 	private Properties mockProps;
 	
+	private Properties initialProps;
+	
 	@Before
 	public void setup() {
 		PowerMockito.mockStatic(DefaultClient.class);
@@ -72,6 +74,14 @@ public class DriverUtilsTest {
 		PowerMockito.mockStatic(RuntimeUtils.class);
 		when(DefaultClient.getInstance()).thenReturn(mockClient);
 		PowerMockito.spy(DriverUtils.class);
+		initialProps = Whitebox.getInternalState(DriverUtils.class, "PROPERTIES");
+	}
+	
+	@After
+	public void tearDown() {
+		if (initialProps != null) {
+			setInternalState(DriverUtils.class, "PROPERTIES", initialProps);
+		}
 	}
 	
 	@Test
@@ -231,11 +241,32 @@ public class DriverUtilsTest {
 	}
 	
 	@Test
-	public void getVersion_shouldReturnTheBuildVersion() {
+	public void getVersion_shouldReturnTheDriverVersion() {
+		final String TEST_VERSION = "1.2.3";
 		Properties props = new Properties();
 		props.setProperty(DriverUtils.PROP_VERSION, TEST_VERSION);
-		Whitebox.setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, "PROPERTIES", props);
 		assertEquals(TEST_VERSION, DriverUtils.getVersion());
+	}
+	
+	@Test
+	public void getGroupId_shouldReturnTheProjectGroupId() {
+		final String TEST_GROUP_ID = "com.amiyul.phantom";
+		Properties props = new Properties();
+		props.setProperty(DriverUtils.PROP_GROUP_ID, TEST_GROUP_ID);
+		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		assertEquals(TEST_GROUP_ID, DriverUtils.getGroupId());
+	}
+	
+	@Test
+	public void getDefaultDbProviderClass_shouldReturnTheFileDbProvider() {
+		final String TEST_GROUP_ID = "com.amiyul.phantom";
+		final String TEST_CLASSNAME = "demo";
+		Properties props = new Properties();
+		props.setProperty(DriverUtils.PROP_GROUP_ID, TEST_GROUP_ID);
+		props.setProperty(DriverUtils.PROP_FILE_DB_PROVIDER, TEST_CLASSNAME);
+		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		assertEquals(TEST_GROUP_ID + ".db." + TEST_CLASSNAME, DriverUtils.getDefaultDbProviderClass());
 	}
 	
 }

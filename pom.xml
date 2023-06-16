@@ -29,6 +29,9 @@
         <lombokVersion>1.18.24</lombokVersion>
         <yGuardVersion>4.0.0</yGuardVersion>
 
+        <!-- obfuscation class mappings -->
+        <fileDbProvider>FDP</fileDbProvider>
+
         <!-- Test dependencies-->
         <junitVersion>4.13.2</junitVersion>
         <powerMockVersion>2.0.9</powerMockVersion>
@@ -208,12 +211,10 @@
                                             <property name="naming-scheme" value="mix" />
                                              -->
                                             <keep>
-                                                <class name="${groupId}.driver.Listener" methods="public" />
-                                                <class name="${groupId}.driver.ConnectionListener" />
+                                                <class implements="${groupId}.driver.Listener" methods="public" />
 
                                                 <!-- DB module -->
                                                 <package name="${groupId}.db" />
-                                                <class name="${groupId}.db.FileDatabaseProvider" />
                                             </keep>
                                             <map>
                                                 <!-- Driver module -->
@@ -224,7 +225,7 @@
                                                 <!-- DB module -->
                                                 <class name="${groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
                                                 <class name="${groupId}.db.DatabasePropertiesFileParser" map="DBPFP" />
-                                                <class name="${groupId}.db.FileDatabaseProvider" map="FDP" />
+                                                <class name="${groupId}.db.FileDatabaseProvider" map="${fileDbProvider}" />
                                             </map>
                                         </rename>
                                     </yguard>

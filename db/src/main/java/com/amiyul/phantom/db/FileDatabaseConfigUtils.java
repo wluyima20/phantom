@@ -76,7 +76,7 @@ public class FileDatabaseConfigUtils {
 				throw new RuntimeException("No appropriate parser found for specified database config file");
 			}
 			
-			LoggerUtils.debug("Found database config file parser -> " + parser.getClass());
+			LoggerUtils.debug("Found database config file parser");
 		}
 		
 		return parser;
