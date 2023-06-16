@@ -30,12 +30,15 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.amiyul.phantom.api.RuntimeUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DriverConfigUtils.class, DefaultClient.class, DriverUtils.class, RuntimeUtils.class })
 public class DriverUtilsTest {
+	
+	private static final String TEST_VERSION = "1.2.3";
 	
 	public static class MockListener implements ConnectionListener {
 		
@@ -225,6 +228,14 @@ public class DriverUtilsTest {
 		Throwable thrown = Assert.assertThrows(SQLException.class, () -> DriverUtils.createRequest(URL_PREFIX, mockProps));
 		
 		assertEquals("No target database name defined in the database URL", thrown.getMessage());
+	}
+	
+	@Test
+	public void getVersion_shouldReturnTheBuildVersion() {
+		Properties props = new Properties();
+		props.setProperty(DriverUtils.PROP_VERSION, TEST_VERSION);
+		Whitebox.setInternalState(DriverUtils.class, "PROPERTIES", props);
+		assertEquals(TEST_VERSION, DriverUtils.getVersion());
 	}
 	
 }

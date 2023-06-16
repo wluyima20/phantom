@@ -138,14 +138,14 @@ public class PhantomDriverTest {
 	@Test
 	public void getMajorVersion_shouldReturnTheMajor() {
 		final int majorVersion = 2;
-		Mockito.when(Utils.getVersion()).thenReturn(majorVersion + ".3");
+		Mockito.when(DriverUtils.getVersion()).thenReturn(majorVersion + ".3");
 		assertEquals(majorVersion, driver.getMajorVersion());
 	}
 	
 	@Test
 	public void getMinorVersion_shouldReturnTheMinorVersion() {
 		final int minorVersion = 3;
-		Mockito.when(Utils.getVersion()).thenReturn("2." + minorVersion);
+		Mockito.when(DriverUtils.getVersion()).thenReturn("2." + minorVersion);
 		assertEquals(minorVersion, driver.getMinorVersion());
 	}
 	

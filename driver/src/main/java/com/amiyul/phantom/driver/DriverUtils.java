@@ -10,6 +10,8 @@ import static com.amiyul.phantom.driver.DriverProperty.ASYNC;
 import static com.amiyul.phantom.driver.DriverProperty.CONNECTION_LISTENER;
 import static com.amiyul.phantom.driver.DriverProperty.TARGET_DB;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
@@ -25,6 +27,36 @@ import lombok.SneakyThrows;
  * Contains utilities used by the driver
  */
 public class DriverUtils {
+	
+	protected static final String PROPERTIES_FILE = "driver.properties";
+	
+	protected static final String PROP_VERSION = "version";
+	
+	private static Properties PROPERTIES;
+	
+	static {
+		try (InputStream file = Utils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
+			PROPERTIES = new Properties();
+			PROPERTIES.load(file);
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Failed to load the driver properties file: ", e);
+		}
+	}
+	
+	/**
+	 * Gets the driver version
+	 *
+	 * @return driver version
+	 */
+	public static String getVersion() {
+		String version = PROPERTIES.getProperty(PROP_VERSION);
+		if (Utils.isBlank(version)) {
+			throw new RuntimeException("Failed to determine the driver version");
+		}
+		
+		return version;
+	}
 	
 	/**
 	 * Obtains a connection object to the target database

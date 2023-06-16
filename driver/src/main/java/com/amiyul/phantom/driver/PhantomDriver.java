@@ -71,7 +71,7 @@ public final class PhantomDriver implements Driver {
 	@Override
 	public int getMajorVersion() {
 		if (majorVersion == null) {
-			majorVersion = Integer.valueOf(Utils.getVersion().split("\\.")[0]);
+			majorVersion = Integer.valueOf(DriverUtils.getVersion().split("\\.")[0]);
 		}
 		
 		return majorVersion;
@@ -80,7 +80,7 @@ public final class PhantomDriver implements Driver {
 	@Override
 	public int getMinorVersion() {
 		if (minorVersion == null) {
-			minorVersion = Integer.valueOf(Utils.getVersion().split("\\.")[1]);
+			minorVersion = Integer.valueOf(DriverUtils.getVersion().split("\\.")[1]);
 		}
 		
 		return minorVersion;
