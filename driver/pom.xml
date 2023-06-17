@@ -45,7 +45,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${project.parent.artifactId}-${project.parent.version}-single</finalName>
+                            <finalName>${project.artifactId}-${project.parent.version}-single</finalName>
                         </configuration>
                     </execution>
                 </executions>
