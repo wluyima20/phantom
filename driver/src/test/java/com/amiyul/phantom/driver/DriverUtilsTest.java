@@ -52,6 +52,8 @@ public class DriverUtilsTest {
 		
 	}
 	
+	private static final String PROPERTIES_FIELD_NAME = "properties";
+	
 	@Mock
 	private DefaultClient mockClient;
 	
@@ -74,13 +76,13 @@ public class DriverUtilsTest {
 		PowerMockito.mockStatic(RuntimeUtils.class);
 		when(DefaultClient.getInstance()).thenReturn(mockClient);
 		PowerMockito.spy(DriverUtils.class);
-		initialProps = Whitebox.getInternalState(DriverUtils.class, "PROPERTIES");
+		initialProps = Whitebox.getInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME);
 	}
 	
 	@After
 	public void tearDown() {
 		if (initialProps != null) {
-			setInternalState(DriverUtils.class, "PROPERTIES", initialProps);
+			setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, initialProps);
 		}
 	}
 	
@@ -245,14 +247,14 @@ public class DriverUtilsTest {
 		final String TEST_VERSION = "1.2.3";
 		Properties props = new Properties();
 		props.setProperty(DriverUtils.PROP_VERSION, TEST_VERSION);
-		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, props);
 		assertEquals(TEST_VERSION, DriverUtils.getVersion());
 	}
 	
 	@Test
 	public void getVersion_shouldFailIfVersionIsBlank() {
 		Properties props = new Properties();
-		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, props);
 		
 		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
 			DriverUtils.getVersion();
@@ -266,14 +268,14 @@ public class DriverUtilsTest {
 		final String TEST_GROUP_ID = "com.amiyul.phantom";
 		Properties props = new Properties();
 		props.setProperty(DriverUtils.PROP_GROUP_ID, TEST_GROUP_ID);
-		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, props);
 		assertEquals(TEST_GROUP_ID, DriverUtils.getGroupId());
 	}
 	
 	@Test
 	public void getGroupId_shouldFailIfGroupIdIsBlank() {
 		Properties props = new Properties();
-		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, props);
 		
 		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
 			DriverUtils.getGroupId();
@@ -289,14 +291,14 @@ public class DriverUtilsTest {
 		Properties props = new Properties();
 		props.setProperty(DriverUtils.PROP_GROUP_ID, TEST_GROUP_ID);
 		props.setProperty(DriverUtils.PROP_FILE_DB_PROVIDER, TEST_CLASSNAME);
-		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, props);
 		assertEquals(TEST_GROUP_ID + ".db." + TEST_CLASSNAME, DriverUtils.getDefaultDbProviderClass());
 	}
 	
 	@Test
 	public void getDefaultDbProviderClass_shouldReturnTheFileDbProviderIfNoneIsFound() {
 		Properties props = new Properties();
-		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		setInternalState(DriverUtils.class, PROPERTIES_FIELD_NAME, props);
 		
 		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
 			DriverUtils.getDefaultDbProviderClass();

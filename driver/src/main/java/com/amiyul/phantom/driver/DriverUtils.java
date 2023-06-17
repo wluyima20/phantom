@@ -36,16 +36,21 @@ public class DriverUtils {
 	
 	protected static final String PROP_GROUP_ID = "groupId";
 	
-	private static Properties PROPERTIES;
+	private static Properties properties;
 	
-	static {
-		try (InputStream file = Utils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-			PROPERTIES = new Properties();
-			PROPERTIES.load(file);
+	private static Properties getProperties() {
+		if (properties == null) {
+			try (InputStream file = Utils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
+				Properties props = new Properties();
+				props.load(file);
+				properties = props;
+			}
+			catch (IOException e) {
+				throw new RuntimeException("Failed to load the driver properties file: ", e);
+			}
 		}
-		catch (IOException e) {
-			throw new RuntimeException("Failed to load the driver properties file: ", e);
-		}
+		
+		return properties;
 	}
 	
 	/**
@@ -54,7 +59,7 @@ public class DriverUtils {
 	 * @return driver version
 	 */
 	public static String getVersion() {
-		String version = PROPERTIES.getProperty(PROP_VERSION);
+		String version = getProperties().getProperty(PROP_VERSION);
 		if (Utils.isBlank(version)) {
 			throw new RuntimeException("Failed to determine the driver version");
 		}
@@ -68,7 +73,7 @@ public class DriverUtils {
 	 * @return classname
 	 */
 	public static String getGroupId() {
-		String groupId = PROPERTIES.getProperty(PROP_GROUP_ID);
+		String groupId = getProperties().getProperty(PROP_GROUP_ID);
 		if (Utils.isBlank(groupId)) {
 			throw new RuntimeException("Failed to determine the project group id");
 		}
@@ -82,7 +87,7 @@ public class DriverUtils {
 	 * @return classname
 	 */
 	public static String getDefaultDbProviderClass() {
-		String classname = PROPERTIES.getProperty(PROP_FILE_DB_PROVIDER);
+		String classname = getProperties().getProperty(PROP_FILE_DB_PROVIDER);
 		if (Utils.isBlank(classname)) {
 			throw new RuntimeException("Failed to determine the default db provider class name");
 		}
