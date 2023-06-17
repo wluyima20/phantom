@@ -28,6 +28,7 @@
         <!-- Other tools -->
         <lombokVersion>1.18.24</lombokVersion>
         <yGuardVersion>4.0.0</yGuardVersion>
+        <fileDbProvider>FileDatabaseProvider</fileDbProvider>
         <skipObfuscation>true</skipObfuscation>
 
         <!-- Test dependencies-->

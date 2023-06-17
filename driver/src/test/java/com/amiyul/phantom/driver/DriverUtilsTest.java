@@ -250,12 +250,36 @@ public class DriverUtilsTest {
 	}
 	
 	@Test
+	public void getVersion_shouldFailIfVersionIsBlank() {
+		Properties props = new Properties();
+		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		
+		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
+			DriverUtils.getVersion();
+		});
+		
+		assertEquals("Failed to determine the driver version", thrown.getMessage());
+	}
+	
+	@Test
 	public void getGroupId_shouldReturnTheProjectGroupId() {
 		final String TEST_GROUP_ID = "com.amiyul.phantom";
 		Properties props = new Properties();
 		props.setProperty(DriverUtils.PROP_GROUP_ID, TEST_GROUP_ID);
 		setInternalState(DriverUtils.class, "PROPERTIES", props);
 		assertEquals(TEST_GROUP_ID, DriverUtils.getGroupId());
+	}
+	
+	@Test
+	public void getGroupId_shouldFailIfGroupIdIsBlank() {
+		Properties props = new Properties();
+		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		
+		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
+			DriverUtils.getGroupId();
+		});
+		
+		assertEquals("Failed to determine the project group id", thrown.getMessage());
 	}
 	
 	@Test
@@ -267,6 +291,18 @@ public class DriverUtilsTest {
 		props.setProperty(DriverUtils.PROP_FILE_DB_PROVIDER, TEST_CLASSNAME);
 		setInternalState(DriverUtils.class, "PROPERTIES", props);
 		assertEquals(TEST_GROUP_ID + ".db." + TEST_CLASSNAME, DriverUtils.getDefaultDbProviderClass());
+	}
+	
+	@Test
+	public void getDefaultDbProviderClass_shouldReturnTheFileDbProviderIfNoneIsFound() {
+		Properties props = new Properties();
+		setInternalState(DriverUtils.class, "PROPERTIES", props);
+		
+		Exception thrown = Assert.assertThrows(RuntimeException.class, () -> {
+			DriverUtils.getDefaultDbProviderClass();
+		});
+		
+		assertEquals("Failed to determine the default db provider class name", thrown.getMessage());
 	}
 	
 }
