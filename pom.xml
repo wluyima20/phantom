@@ -55,6 +55,9 @@
                 <skipObfuscation>false</skipObfuscation>
 
                 <!-- obfuscation class mappings -->
+                <driverClassName>PD</driverClassName>
+                <driverConfigParserClassName>DPFP</driverConfigParserClassName>
+                <dbConfigParserClassName>DBPFP</dbConfigParserClassName>
                 <fileDbProvider>FDP</fileDbProvider>
             </properties>
         </profile>
@@ -214,7 +217,7 @@
                             <id>obfuscate</id>
                             <configuration>
                                 <skip>${skipObfuscation}</skip>
-                                <tasks>
+                                <target>
                                     <property name="compileClasspath" refid="maven.compile.classpath" />
                                     <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}" />
                                     <yguard>
@@ -225,25 +228,31 @@
                                             <property name="naming-scheme" value="mix" />
                                              -->
                                             <keep>
+                                                <package>
+                                                    <patternset>
+                                                        <include name="${groupId}.**" />
+                                                    </patternset>
+                                                </package>
                                                 <class implements="${groupId}.driver.Listener" methods="public" />
-
-                                                <!-- DB module -->
-                                                <package name="${groupId}.db" />
                                             </keep>
                                             <map>
                                                 <!-- Driver module -->
-                                                <class name="${groupId}.driver.PhantomDriver" map="PD" />
+                                                <class name="${groupId}.driver.PhantomDriver" map="${driverClassName}" />
                                                 <class name="${groupId}.driver.DriverConfigFileParser" map="DCFP" />
-                                                <class name="${groupId}.driver.DriverPropertiesFileParser" map="DPFP" />
+                                                <class name="${groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
 
                                                 <!-- DB module -->
                                                 <class name="${groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
-                                                <class name="${groupId}.db.DatabasePropertiesFileParser" map="DBPFP" />
+                                                <class name="${groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
                                                 <class name="${groupId}.db.FileDatabaseProvider" map="${fileDbProvider}" />
                                             </map>
+                                            <adjust replacePathPolicy="file">
+                                                <include name="META-INF/services/com.amiyul.phantom.db.DatabaseConfigFileParser" />
+                                                <include name="META-INF/services/com.amiyul.phantom.driver.DriverConfigFileParser" />
+                                            </adjust>
                                         </rename>
                                     </yguard>
-                                </tasks>
+                                </target>
                             </configuration>
                         </execution>
                     </executions>

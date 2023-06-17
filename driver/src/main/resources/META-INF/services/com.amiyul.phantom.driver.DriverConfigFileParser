@@ -1,1 +1,1 @@
-com.amiyul.phantom.driver.DriverPropertiesFileParser
+com.amiyul.phantom.driver.${driverConfigParserClassName}
