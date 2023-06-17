@@ -230,21 +230,21 @@
                                             <keep>
                                                 <package>
                                                     <patternset>
-                                                        <include name="${groupId}.**" />
+                                                        <include name="${project.parent.groupId}.**" />
                                                     </patternset>
                                                 </package>
-                                                <class implements="${groupId}.driver.Listener" methods="public" />
+                                                <class implements="${project.parent.groupId}.driver.Listener" methods="public" />
                                             </keep>
                                             <map>
                                                 <!-- Driver module -->
-                                                <class name="${groupId}.driver.PhantomDriver" map="${driverClassName}" />
-                                                <class name="${groupId}.driver.DriverConfigFileParser" map="DCFP" />
-                                                <class name="${groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
+                                                <class name="${project.parent.groupId}.driver.PhantomDriver" map="${driverClassName}" />
+                                                <class name="${project.parent.groupId}.driver.DriverConfigFileParser" map="DCFP" />
+                                                <class name="${project.parent.groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
 
                                                 <!-- DB module -->
-                                                <class name="${groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
-                                                <class name="${groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
-                                                <class name="${groupId}.db.FileDatabaseProvider" map="${fileDbProvider}" />
+                                                <class name="${project.parent.groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
+                                                <class name="${project.parent.groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
+                                                <class name="${project.parent.groupId}.db.FileDatabaseProvider" map="${fileDbProvider}" />
                                             </map>
                                             <adjust replacePathPolicy="file">
                                                 <include name="META-INF/services/com.amiyul.phantom.db.DatabaseConfigFileParser" />
