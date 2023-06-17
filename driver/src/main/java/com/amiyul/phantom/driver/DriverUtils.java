@@ -28,7 +28,7 @@ import lombok.SneakyThrows;
  */
 public class DriverUtils {
 	
-	protected static final String PROPERTIES_FILE = "driver.properties";
+	protected static final String PROPERTIES_FILE = "driver.build.properties";
 	
 	protected static final String PROP_VERSION = "version";
 	
