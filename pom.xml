@@ -44,6 +44,7 @@
         <jarPluginVerison>3.3.0</jarPluginVerison>
         <surefirePluginVersion>3.0.0-M8</surefirePluginVersion>
         <antRunPluginVersion>1.8</antRunPluginVersion>
+        <assemblyPluginVersion>3.3.0</assemblyPluginVersion>
     </properties>
 
     <profiles>
