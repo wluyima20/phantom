@@ -19,6 +19,7 @@
         <module>db</module>
         <module>driver</module>
         <module>driver-single</module>
+        <module>driver-distribution</module>
     </modules>
 
     <properties>
