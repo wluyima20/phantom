@@ -25,6 +25,14 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <!-- obfuscation class mappings -->
+        <driverClassName>PD</driverClassName>
+        <driverConfigParserClassName>DPFP</driverConfigParserClassName>
+        <dbConfigParserClassName>DBPFP</dbConfigParserClassName>
+        <fileDbProviderClassName>FDP</fileDbProviderClassName>
+    </properties>
+    
     <build>
         <plugins>
             <plugin>
@@ -49,6 +57,70 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <id>obfuscate</id>
+                        <configuration>
+                            <target>
+                                <property name="compileClasspath" refid="maven.compile.classpath" />
+                                <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}" />
+                                <yguard>
+                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${project.build.directory}/${project.build.finalName}-final.jar" />
+                                    <rename logfile="${project.build.directory}/yguard.log.xml">
+                                        <property name="error-checking" value="pedantic" />
+                                        <!-- TODO Change to mix or best
+                                        <property name="naming-scheme" value="mix" />
+                                         -->
+                                        <keep>
+                                            <package>
+                                                <patternset>
+                                                    <include name="${project.parent.groupId}.**" />
+                                                </patternset>
+                                            </package>
+                                            <class implements="${project.parent.groupId}.driver.Listener" methods="public" />
+                                        </keep>
+                                        <map>
+                                            <!-- Driver module -->
+                                            <class name="${project.parent.groupId}.driver.PhantomDriver" map="${driverClassName}" />
+                                            <class name="${project.parent.groupId}.driver.DriverConfigFileParser" map="DCFP" />
+                                            <class name="${project.parent.groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
+
+                                            <!-- DB module -->
+                                            <class name="${project.parent.groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
+                                            <class name="${project.parent.groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
+                                            <class name="${project.parent.groupId}.db.FileDatabaseProvider" map="${fileDbProviderClassName}" />
+                                        </map>
+                                        <adjust replacePathPolicy="file" replaceContent="true">
+                                            <include name="META-INF/services/com.amiyul.phantom.db.DatabaseConfigFileParser" />
+                                            <include name="META-INF/services/com.amiyul.phantom.driver.DriverConfigFileParser" />
+                                        </adjust>
+                                    </rename>
+                                </yguard>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>update-resources-classes</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/../bin/jar</executable>
+                            <commandlineArgs>uvf ${project.build.directory}/${project.build.finalName}-final.jar META-INF/services/java.sql.Driver META-INF/services/com.amiyul.phantom.db.DBCFP META-INF/services/com.amiyul.phantom.driver.DCFP</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
