@@ -58,11 +58,11 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>obfuscate</id>
                         <phase>package</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <id>obfuscate</id>
                         <configuration>
                             <target>
                                 <property name="compileClasspath" refid="maven.compile.classpath" />
