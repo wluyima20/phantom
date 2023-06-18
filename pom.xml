@@ -25,6 +25,9 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <servicesDir>META-INF/services</servicesDir>
+        <artifactName>${project.build.directory}/${project.build.finalName}</artifactName>
+        <artifactNameObfuscated>${artifactName}</artifactNameObfuscated>
 
         <!-- Other tools -->
         <lombokVersion>1.18.24</lombokVersion>
