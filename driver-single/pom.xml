@@ -26,6 +26,10 @@
     </dependencies>
 
     <properties>
+        <servicesDir>META-INF/services</servicesDir>
+        <artifactName>${project.build.directory}/${project.build.finalName}</artifactName>
+        <artifactNameFinal>${artifactName}-final</artifactNameFinal>
+
         <!-- obfuscation class mappings -->
         <driverClassName>PD</driverClassName>
         <driverConfigParserClassName>DPFP</driverConfigParserClassName>
@@ -69,7 +73,7 @@
                                 <property name="compileClasspath" refid="maven.compile.classpath" />
                                 <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}" />
                                 <yguard>
-                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${project.build.directory}/${project.build.finalName}-final.jar" />
+                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${artifactNameFinal}.jar" />
                                     <rename logfile="${project.build.directory}/yguard.log.xml">
                                         <property name="error-checking" value="pedantic" />
                                         <!-- TODO Change to mix or best
@@ -78,25 +82,25 @@
                                         <keep>
                                             <package>
                                                 <patternset>
-                                                    <include name="${project.parent.groupId}.**" />
+                                                    <include name="${project.groupId}.**" />
                                                 </patternset>
                                             </package>
-                                            <class implements="${project.parent.groupId}.driver.Listener" methods="public" />
+                                            <class implements="${project.groupId}.driver.Listener" methods="public" />
                                         </keep>
                                         <map>
                                             <!-- Driver module -->
-                                            <class name="${project.parent.groupId}.driver.PhantomDriver" map="${driverClassName}" />
-                                            <class name="${project.parent.groupId}.driver.DriverConfigFileParser" map="DCFP" />
-                                            <class name="${project.parent.groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
+                                            <class name="${project.groupId}.driver.PhantomDriver" map="${driverClassName}" />
+                                            <class name="${project.groupId}.driver.DriverConfigFileParser" map="DCFP" />
+                                            <class name="${project.groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
 
                                             <!-- DB module -->
-                                            <class name="${project.parent.groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
-                                            <class name="${project.parent.groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
-                                            <class name="${project.parent.groupId}.db.FileDatabaseProvider" map="${fileDbProviderClassName}" />
+                                            <class name="${project.groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
+                                            <class name="${project.groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
+                                            <class name="${project.groupId}.db.FileDatabaseProvider" map="${fileDbProviderClassName}" />
                                         </map>
-                                        <adjust replacePathPolicy="file" replaceContent="true">
-                                            <include name="META-INF/services/com.amiyul.phantom.db.DatabaseConfigFileParser" />
-                                            <include name="META-INF/services/com.amiyul.phantom.driver.DriverConfigFileParser" />
+                                        <adjust replacePathPolicy="file">
+                                            <include name="${servicesDir}/${project.groupId}.db.DatabaseConfigFileParser" />
+                                            <include name="${servicesDir}/${project.groupId}.driver.DriverConfigFileParser" />
                                         </adjust>
                                     </rename>
                                 </yguard>
@@ -110,14 +114,16 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>update-resources-classes</id>
+                        <id>update-classes-resources</id>
                         <phase>package</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
                             <executable>${java.home}/../bin/jar</executable>
-                            <commandlineArgs>uvf ${project.build.directory}/${project.build.finalName}-final.jar META-INF/services/java.sql.Driver META-INF/services/com.amiyul.phantom.db.DBCFP META-INF/services/com.amiyul.phantom.driver.DCFP</commandlineArgs>
+                            <commandlineArgs>
+                                uvf ${artifactNameFinal}.jar ${servicesDir}/java.sql.Driver ${servicesDir}/${project.groupId}.db.DBCFP ${servicesDir}/${project.groupId}.driver.DCFP
+                            </commandlineArgs>
                         </configuration>
                     </execution>
                 </executions>
