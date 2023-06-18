@@ -1,1 +1,1 @@
-com.amiyul.phantom.db.${dbConfigParserClassName}
+com.amiyul.phantom.db.DatabasePropertiesFileParser

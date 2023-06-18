@@ -29,8 +29,6 @@
         <!-- Other tools -->
         <lombokVersion>1.18.24</lombokVersion>
         <yGuardVersion>4.0.0</yGuardVersion>
-        <fileDbProvider>FileDatabaseProvider</fileDbProvider>
-        <skipObfuscation>true</skipObfuscation>
 
         <!-- Test dependencies-->
         <junitVersion>4.13.2</junitVersion>
@@ -47,21 +45,6 @@
         <antRunPluginVersion>1.8</antRunPluginVersion>
         <assemblyPluginVersion>3.3.0</assemblyPluginVersion>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>obfuscate</id>
-            <properties>
-                <skipObfuscation>false</skipObfuscation>
-
-                <!-- obfuscation class mappings -->
-                <driverClassName>PD</driverClassName>
-                <driverConfigParserClassName>DPFP</driverConfigParserClassName>
-                <dbConfigParserClassName>DBPFP</dbConfigParserClassName>
-                <fileDbProvider>FDP</fileDbProvider>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -208,54 +191,6 @@
                     <artifactId>maven-antrun-plugin</artifactId>
                     <groupId>org.apache.maven.plugins</groupId>
                     <version>${antRunPluginVersion}</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <id>obfuscate</id>
-                            <configuration>
-                                <skip>${skipObfuscation}</skip>
-                                <target>
-                                    <property name="compileClasspath" refid="maven.compile.classpath" />
-                                    <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}" />
-                                    <yguard>
-                                        <inoutpair in="${project.build.directory}/${project.build.finalName}.jar" out="${project.build.directory}/${project.build.finalName}.jar" />
-                                        <rename logfile="${project.build.directory}/yguard.log.xml">
-                                            <property name="error-checking" value="pedantic" />
-                                            <!-- TODO Change to mix or best
-                                            <property name="naming-scheme" value="mix" />
-                                             -->
-                                            <keep>
-                                                <package>
-                                                    <patternset>
-                                                        <include name="${project.parent.groupId}.**" />
-                                                    </patternset>
-                                                </package>
-                                                <class implements="${project.parent.groupId}.driver.Listener" methods="public" />
-                                            </keep>
-                                            <map>
-                                                <!-- Driver module -->
-                                                <class name="${project.parent.groupId}.driver.PhantomDriver" map="${driverClassName}" />
-                                                <class name="${project.parent.groupId}.driver.DriverConfigFileParser" map="DCFP" />
-                                                <class name="${project.parent.groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
-
-                                                <!-- DB module -->
-                                                <class name="${project.parent.groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
-                                                <class name="${project.parent.groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
-                                                <class name="${project.parent.groupId}.db.FileDatabaseProvider" map="${fileDbProvider}" />
-                                            </map>
-                                            <adjust replacePathPolicy="file">
-                                                <include name="META-INF/services/com.amiyul.phantom.db.DatabaseConfigFileParser" />
-                                                <include name="META-INF/services/com.amiyul.phantom.driver.DriverConfigFileParser" />
-                                            </adjust>
-                                        </rename>
-                                    </yguard>
-                                </target>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
