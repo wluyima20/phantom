@@ -216,17 +216,13 @@ public class DriverConfigUtilsTest {
 	public void getConfig_shouldDefaultToTheFileDatabaseProvider() throws Exception {
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
 		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", mockMetadata);
-		when(Utils.loadClass(DriverUtils.getDefaultDbProviderClass())).thenCallRealMethod();
 		
 		assertEquals(FileDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());
 	}
 	
 	@Test
 	public void getConfig_shouldDefaultToTheFileDatabaseProviderIfNoConfigMetadataExists() throws Exception {
-		when(Utils.loadClass(DriverUtils.getDefaultDbProviderClass())).thenCallRealMethod();
-		//Return true for Utils.isBlank checks in DriverConfigUtils.getConfigMetadata and
-		//DriverConfigUtils.getConfig() and then after that false for remaining calls
-		PowerMockito.when(Utils.isBlank(any())).thenReturn(true).thenReturn(true).thenReturn(false);
+		when(Utils.isBlank(any())).thenReturn(true);
 		
 		assertEquals(FileDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());
 	}

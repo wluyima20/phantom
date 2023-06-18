@@ -13,6 +13,7 @@ import com.amiyul.phantom.api.DatabaseProvider;
 import com.amiyul.phantom.api.Status;
 import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.logging.LoggerUtils;
+import com.amiyul.phantom.db.FileDatabaseProvider;
 
 /**
  * Contains driver config utilities
@@ -97,7 +98,7 @@ public class DriverConfigUtils {
 				}
 				
 				if (clazz == null) {
-					clazz = Utils.loadClass(DriverUtils.getDefaultDbProviderClass());
+					clazz = FileDatabaseProvider.class;
 					LoggerUtils.debug("No configured database provider, defaulting to file database provider");
 				}
 				

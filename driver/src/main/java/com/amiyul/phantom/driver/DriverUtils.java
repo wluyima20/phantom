@@ -32,10 +32,6 @@ public class DriverUtils {
 	
 	protected static final String PROP_VERSION = "version";
 	
-	protected static final String PROP_FILE_DB_PROVIDER = "fdp";
-	
-	protected static final String PROP_GROUP_ID = "groupId";
-	
 	private static Properties properties;
 	
 	private static Properties getProperties() {
@@ -65,34 +61,6 @@ public class DriverUtils {
 		}
 		
 		return version;
-	}
-	
-	/**
-	 * Gets project group id
-	 *
-	 * @return classname
-	 */
-	public static String getGroupId() {
-		String groupId = getProperties().getProperty(PROP_GROUP_ID);
-		if (Utils.isBlank(groupId)) {
-			throw new RuntimeException("Failed to determine the project group id");
-		}
-		
-		return groupId;
-	}
-	
-	/**
-	 * Gets the fully qualified java class name of the file DB provider implementation
-	 *
-	 * @return classname
-	 */
-	public static String getDefaultDbProviderClass() {
-		String classname = getProperties().getProperty(PROP_FILE_DB_PROVIDER);
-		if (Utils.isBlank(classname)) {
-			throw new RuntimeException("Failed to determine the default db provider class name");
-		}
-		
-		return getGroupId() + ".db." + classname;
 	}
 	
 	/**
