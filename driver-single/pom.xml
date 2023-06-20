@@ -24,12 +24,6 @@
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
-
-    <properties>
-        <!-- obfuscation class mappings -->
-        <driverConfigParserClassName>DPFP</driverConfigParserClassName>
-        <dbConfigParserClassName>DBPFP</dbConfigParserClassName>
-    </properties>
     
     <build>
         <plugins>
@@ -80,17 +74,12 @@
                                                 </patternset>
                                             </package>
                                             <class name="${project.groupId}.driver.PhantomDriver" />
+                                            <class name="${project.groupId}.driver.DriverConfigFileParser" />
+                                            <class name="${project.groupId}.driver.DriverPropertiesFileParser" />
+                                            <class name="${project.groupId}.db.DatabaseConfigFileParser" />
+                                            <class name="${project.groupId}.db.DatabasePropertiesFileParser" />
                                             <class implements="${project.groupId}.driver.Listener" methods="public" />
                                         </keep>
-                                        <map>
-                                            <!-- Driver module -->
-                                            <class name="${project.groupId}.driver.DriverConfigFileParser" map="DCFP" />
-                                            <class name="${project.groupId}.driver.DriverPropertiesFileParser" map="${driverConfigParserClassName}" />
-
-                                            <!-- DB module -->
-                                            <class name="${project.groupId}.db.DatabaseConfigFileParser" map="DBCFP" />
-                                            <class name="${project.groupId}.db.DatabasePropertiesFileParser" map="${dbConfigParserClassName}" />
-                                        </map>
                                         <adjust replacePathPolicy="file">
                                             <include name="${servicesDir}/${project.groupId}.db.DatabaseConfigFileParser" />
                                             <include name="${servicesDir}/${project.groupId}.driver.DriverConfigFileParser" />
@@ -98,25 +87,6 @@
                                     </rename>
                                 </yguard>
                             </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>update-classes-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${java.home}/../bin/jar</executable>
-                            <commandlineArgs>
-                                uvf ${artifactNameObfuscated}.jar ${servicesDir}/${project.groupId}.db.DBCFP ${servicesDir}/${project.groupId}.driver.DCFP
-                            </commandlineArgs>
                         </configuration>
                     </execution>
                 </executions>
