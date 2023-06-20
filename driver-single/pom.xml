@@ -36,6 +36,19 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <packageName>${project.parent.groupId}</packageName>
+                        </manifest>
+                        <manifestEntries>
+                            <Name>${driverName}</Name>
+                            <Specification-Title>JDBC</Specification-Title>
+                            <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                            <Implementation-Title>${driverName}</Implementation-Title>
+                            <Implementation-Version>${project.parent.version}</Implementation-Version>
+                            <Implementation-Vendor>${organization.name}</Implementation-Vendor>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>
