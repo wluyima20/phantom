@@ -13,6 +13,19 @@
     <artifactId>phantom-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>Phantom</name>
+    <description>Database facade for Java applications</description>
+    
+    <developers>
+        <developer>
+            <name>Amiyul LLC</name>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>${developers[0].name}</name>
+        <url>https://www.amiyul.com</url>
+    </organization>
 
     <modules>
         <module>api</module>
@@ -26,7 +39,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <servicesDir>META-INF/services</servicesDir>
+        <driverName>${project.parent.name} Driver</driverName>
         <artifactName>${project.build.directory}/${project.build.finalName}</artifactName>
         <artifactNameObfuscated>${artifactName}</artifactNameObfuscated>
 
@@ -185,6 +198,21 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${jarPluginVerison}</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <packageName>${project.parent.groupId}</packageName>
+                            </manifest>
+                            <manifestEntries>
+                                <Name>${driverName}</Name>
+                                <Specification-Title>JDBC</Specification-Title>
+                                <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                                <Implementation-Title>${driverName}</Implementation-Title>
+                                <Implementation-Version>${project.parent.version}</Implementation-Version>
+                                <Implementation-Vendor>${organization.name}</Implementation-Vendor>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

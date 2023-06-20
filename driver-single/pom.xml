@@ -62,7 +62,7 @@
                                 <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${compileClasspath}" />
                                 <yguard>
                                     <inoutpair in="${artifactName}.jar" out="${artifactNameObfuscated}.jar" />
-                                    <rename logfile="${project.build.directory}/yguard.log.xml">
+                                    <rename conservemanifest="true" logfile="${project.build.directory}/yguard.log.xml">
                                         <property name="error-checking" value="pedantic" />
                                         <!-- TODO Change to mix or best
                                         <property name="naming-scheme" value="mix" />
@@ -80,10 +80,6 @@
                                             <class name="${project.groupId}.db.DatabasePropertiesFileParser" />
                                             <class implements="${project.groupId}.driver.Listener" methods="public" />
                                         </keep>
-                                        <adjust replacePathPolicy="file">
-                                            <include name="${servicesDir}/${project.groupId}.db.DatabaseConfigFileParser" />
-                                            <include name="${servicesDir}/${project.groupId}.driver.DriverConfigFileParser" />
-                                        </adjust>
                                     </rename>
                                 </yguard>
                             </target>
