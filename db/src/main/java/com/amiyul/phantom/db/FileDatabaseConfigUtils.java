@@ -5,6 +5,7 @@ package com.amiyul.phantom.db;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,7 +19,8 @@ import com.amiyul.phantom.api.logging.LoggerUtils;
  */
 public class FileDatabaseConfigUtils {
 	
-	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".db.config.location";
+	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME.toUpperCase(Locale.ENGLISH)
+	        + "_DB_CONFIG_LOCATION";
 	
 	private static String configFilePath;
 	

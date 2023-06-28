@@ -6,6 +6,7 @@ package com.amiyul.phantom.driver;
 import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Database;
@@ -20,7 +21,8 @@ import com.amiyul.phantom.db.FileDatabaseProvider;
  */
 public class DriverConfigUtils {
 	
-	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME + ".driver.config.location";
+	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME.toUpperCase(Locale.ENGLISH)
+	        + "_DRIVER_CONFIG_LOCATION";
 	
 	private static String configFilePath;
 	
