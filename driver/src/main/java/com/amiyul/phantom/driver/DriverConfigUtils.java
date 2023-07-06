@@ -64,10 +64,12 @@ public class DriverConfigUtils {
 	 *
 	 * @param dbProviderClassName the database provider class name
 	 * @param unavailableUntil time when the database will be available
+	 * @param licenseFilePath the path to the license file
 	 * @return ConfigMetadata object
 	 * @throws Exception
 	 */
-	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String unavailableUntil) {
+	protected static DriverConfigMetadata createMetadata(String dbProviderClassName, String unavailableUntil,
+	                                                     String licenseFilePath) {
 		return new DriverConfigMetadata() {
 			
 			@Override
@@ -80,6 +82,11 @@ public class DriverConfigUtils {
 				return unavailableUntil;
 			}
 			
+			@Override
+			public String getLicenseFilePath() {
+				return licenseFilePath;
+			}
+			
 		};
 	}
 	
@@ -90,20 +97,20 @@ public class DriverConfigUtils {
 	 */
 	protected synchronized static DriverConfig getConfig() {
 		if (config == null) {
+			File licenseFile;
 			DatabaseProvider<Database> provider;
 			LocalDateTime unavailableUntil = null;
 			
 			try {
 				DriverConfigMetadata metadata = getConfigMetadata();
+				licenseFile = new File(metadata.getLicenseFilePath());
 				Class<? extends DatabaseProvider> clazz = null;
-				if (metadata != null) {
-					if (!Utils.isBlank(metadata.getDatabaseProviderClassName())) {
-						clazz = Utils.loadClass(metadata.getDatabaseProviderClassName());
-					}
-					
-					if (!Utils.isBlank(metadata.getUnavailableUntil())) {
-						unavailableUntil = Utils.parseDateString(metadata.getUnavailableUntil());
-					}
+				if (!Utils.isBlank(metadata.getDatabaseProviderClassName())) {
+					clazz = Utils.loadClass(metadata.getDatabaseProviderClassName());
+				}
+				
+				if (!Utils.isBlank(metadata.getUnavailableUntil())) {
+					unavailableUntil = Utils.parseDateString(metadata.getUnavailableUntil());
 				}
 				
 				if (clazz == null) {
@@ -117,7 +124,7 @@ public class DriverConfigUtils {
 				throw new RuntimeException(e);
 			}
 			
-			config = new DefaultDriverConfig(provider.get(), new Status(unavailableUntil));
+			config = new DefaultDriverConfig(licenseFile, provider.get(), new Status(unavailableUntil));
 		}
 		
 		return config;
@@ -166,10 +173,12 @@ public class DriverConfigUtils {
 			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " driver configuration");
 			
 			String filePath = getConfigFile();
-			if (!Utils.isBlank(filePath)) {
-				File configFile = new File(filePath);
-				configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
+			if (Utils.isBlank(filePath)) {
+				throw new RuntimeException("No driver config file specified");
 			}
+			
+			File configFile = new File(filePath);
+			configMetadata = getParser(configFile).parse(Utils.getInputStream(configFile));
 		}
 		
 		return configMetadata;

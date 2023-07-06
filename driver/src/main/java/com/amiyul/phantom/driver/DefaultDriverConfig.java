@@ -10,6 +10,8 @@
  */
 package com.amiyul.phantom.driver;
 
+import java.io.File;
+
 import com.amiyul.phantom.api.BaseStateful;
 import com.amiyul.phantom.api.Database;
 import com.amiyul.phantom.api.Status;
@@ -22,10 +24,14 @@ import lombok.Getter;
 class DefaultDriverConfig extends BaseStateful implements DriverConfig {
 	
 	@Getter
+	private File licenseFile;
+	
+	@Getter
 	private Database database;
 	
-	DefaultDriverConfig(Database database, Status status) {
+	DefaultDriverConfig(File licenseFile, Database database, Status status) {
 		super(status);
+		this.licenseFile = licenseFile;
 		this.database = database;
 	}
 	

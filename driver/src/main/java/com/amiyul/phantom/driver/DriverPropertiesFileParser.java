@@ -15,6 +15,7 @@ import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_UNAVAILABLE_UNTI
 
 import java.util.Properties;
 
+import com.amiyul.phantom.api.Utils;
 import com.amiyul.phantom.api.config.BasePropertiesFileParser;
 import com.amiyul.phantom.api.config.ConfigFileParser;
 
@@ -27,7 +28,12 @@ public class DriverPropertiesFileParser extends BasePropertiesFileParser<DriverC
 	public DriverConfigMetadata createInstance(Properties properties) throws Exception {
 		final String providerClass = properties.getProperty(PROP_DB_PROVIDER_CLASS);
 		final String unavailableUntil = properties.getProperty(PROP_DB_UNAVAILABLE_UNTIL);
-		return DriverConfigUtils.createMetadata(providerClass, unavailableUntil);
+		final String licensePath = properties.getProperty(SecurityConstants.PROP_LICENSE_PATH);
+		if (Utils.isBlank(licensePath)) {
+			throw new RuntimeException(SecurityUtils.decrypt(SecurityConstants.MSG_CODE_MISSING_LICENSE_PATH));
+		}
+		
+		return DriverConfigUtils.createMetadata(providerClass, unavailableUntil, licensePath);
 	}
 	
 }

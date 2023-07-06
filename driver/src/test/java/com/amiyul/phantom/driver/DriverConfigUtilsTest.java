@@ -126,9 +126,11 @@ public class DriverConfigUtilsTest {
 	public void createMetadata_shouldCreateTheConfigMetadataWithTheLoadedClass() {
 		final String className = MockDatabaseProvider.class.getName();
 		final String unavailableUntil = "2023-05-23T22:25:10+03:00";
-		DriverConfigMetadata metadata = DriverConfigUtils.createMetadata(className, unavailableUntil);
+		final String licensePath = "/my/path";
+		DriverConfigMetadata metadata = DriverConfigUtils.createMetadata(className, unavailableUntil, licensePath);
 		assertEquals(className, metadata.getDatabaseProviderClassName());
 		assertEquals(unavailableUntil, metadata.getUnavailableUntil());
+		assertEquals(licensePath, metadata.getLicenseFilePath());
 	}
 	
 	@Test
@@ -195,10 +197,11 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
-	public void getConfigMetadata_shouldReturnNullIfNoConfigFileIsSpecified() throws Exception {
+	public void getConfigMetadata_shouldFailIfNoConfigFileIsSpecified() throws Exception {
 		when(Utils.isBlank(any())).thenReturn(true);
+		RuntimeException e = Assert.assertThrows(RuntimeException.class, () -> DriverConfigUtils.getConfigMetadata());
 		
-		assertNull(DriverConfigUtils.getConfigMetadata());
+		assertEquals("No driver config file specified", e.getMessage());
 	}
 	
 	@Test
@@ -208,6 +211,7 @@ public class DriverConfigUtilsTest {
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
 		when(mockMetadata.getDatabaseProviderClassName()).thenReturn(className);
 		when(mockMetadata.getUnavailableUntil()).thenReturn(unavailableUntil);
+		when(mockMetadata.getLicenseFilePath()).thenReturn("/test");
 		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", mockMetadata);
 		when(Utils.loadClass(className)).thenCallRealMethod();
 		LocalDateTime mockDate = LocalDateTime.now();
@@ -220,15 +224,19 @@ public class DriverConfigUtilsTest {
 	}
 	
 	@Test
-	public void getConfig_shouldDefaultToTheFileDatabaseProvider() throws Exception {
+	public void getConfig_shouldDefaultToTheFileDatabaseProvider() {
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
+		when(mockMetadata.getLicenseFilePath()).thenReturn("/test");
 		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", mockMetadata);
 		
 		assertEquals(FileDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());
 	}
 	
 	@Test
-	public void getConfig_shouldDefaultToTheFileDatabaseProviderIfNoConfigMetadataExists() throws Exception {
+	public void getConfig_shouldDefaultToTheFileDatabaseProviderIfNoConfigMetadataExists() {
+		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
+		when(mockMetadata.getLicenseFilePath()).thenReturn("/test");
+		Whitebox.setInternalState(DriverConfigUtils.class, "configMetadata", mockMetadata);
 		when(Utils.isBlank(any())).thenReturn(true);
 		
 		assertEquals(FileDatabase.class, DriverConfigUtils.getConfig().getDatabase().getClass());

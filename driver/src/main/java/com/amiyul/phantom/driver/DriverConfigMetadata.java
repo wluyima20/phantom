@@ -32,4 +32,11 @@ public interface DriverConfigMetadata extends ConfigMetadata {
 	 */
 	String getUnavailableUntil();
 	
+	/**
+	 * Gets the path to the license file
+	 *
+	 * @return the file path
+	 */
+	String getLicenseFilePath();
+	
 }

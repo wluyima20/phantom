@@ -12,6 +12,7 @@ package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_PROVIDER_CLASS;
 import static com.amiyul.phantom.driver.DriverConstants.PROP_DB_UNAVAILABLE_UNTIL;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
@@ -34,13 +35,23 @@ public class DriverPropertiesFileParserTest {
 		PowerMockito.mockStatic(DriverConfigUtils.class);
 		final String classname = "someClass";
 		final String date = "2023-05-23T22:25:10+03:00";
+		final String licensePath = "/my/path";
 		Properties props = new Properties();
 		props.put(PROP_DB_PROVIDER_CLASS, classname);
 		props.put(PROP_DB_UNAVAILABLE_UNTIL, date);
+		props.put(SecurityConstants.PROP_LICENSE_PATH, licensePath);
 		DriverConfigMetadata mockMetadata = Mockito.mock(DriverConfigMetadata.class);
-		Mockito.when(DriverConfigUtils.createMetadata(classname, date)).thenReturn(mockMetadata);
+		Mockito.when(DriverConfigUtils.createMetadata(classname, date, licensePath)).thenReturn(mockMetadata);
 		
 		Assert.assertEquals(mockMetadata, parser.createInstance(props));
+	}
+	
+	@Test
+	public void createInstance_shouldFailIfLicenseFIlePathIsNotSpecified() {
+		RuntimeException e = Assert.assertThrows(RuntimeException.class, () -> parser.createInstance(new Properties()));
+		
+		assertEquals(SecurityUtils.decrypt(SecurityConstants.MSG_CODE_MISSING_LICENSE_PATH), e.getMessage());
+		
 	}
 	
 }
