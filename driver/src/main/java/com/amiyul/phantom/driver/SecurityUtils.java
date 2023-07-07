@@ -53,7 +53,7 @@ class SecurityUtils {
 	
 	public static SecretKey getKeyFromPassword(String password, String salt) throws Exception {
 		SecretKeyFactory f = SecretKeyFactory.getInstance(SecurityConstants.MSG_CODE_KEY_ALG);
-		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(),
+		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8),
 		        Integer.valueOf(decrypt(SecurityConstants.MSG_CODE_KEY_ITERATION_COUNT)),
 		        Integer.valueOf(decrypt(SecurityConstants.MSG_CODE_KEY_BIT_COUNT)));
 		
@@ -79,11 +79,11 @@ class SecurityUtils {
 	}
 	
 	protected static byte[] encode(String in) {
-		return Base64.getEncoder().encode(in.getBytes());
+		return Base64.getEncoder().encode(in.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	protected static byte[] decode(String in) {
-		return Base64.getEncoder().encode(in.getBytes());
+		return Base64.getEncoder().encode(in.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	private static String getAlgorithm() {
