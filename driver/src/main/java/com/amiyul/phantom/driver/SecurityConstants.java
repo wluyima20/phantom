@@ -12,13 +12,23 @@ package com.amiyul.phantom.driver;
 
 final class SecurityConstants {
 	
-	//TODO encrypt value
-	public static final String PROP_LICENSE_PATH = "license.file.path";
+	//TODO encrypt all values
+	protected static final String MSG_CODE_AES = "AES";
 	
-	//TODO encrypt value
-	public static final String MSG_CODE_MISSING_LICENSE_PATH = "X";
+	protected static final String MSG_CODE_ENC_ALG = MSG_CODE_AES + "/GCM/NoPadding";
 	
-	//TODO encrypt value
-	//protected static final String CODED_MSG_LICENSE_EXPIRED = "XX";
+	protected static final String MSG_CODE_TAG_LENGTH = "128";
+	
+	protected static final String MSG_CODE_KEY_ITERATION_COUNT = "65536";
+	
+	protected static final String MSG_CODE_KEY_BIT_COUNT = "256";
+	
+	protected static final String MSG_CODE_KEY_ALG = "PBKDF2WithHmacSHA" + MSG_CODE_KEY_BIT_COUNT;
+	
+	protected static final String MSG_CODE_MISSING_LICENSE_PATH = "Path to license file is not specified";
+	
+	protected static final String MSG_CODE_LICENSE_EXPIRED = "License expired";
+	
+	protected static final String PROP_LICENSE_PATH = "license.file.path";
 	
 }
