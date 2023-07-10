@@ -34,7 +34,7 @@ public class BasePropertiesFileParserTest {
 	
 	@Test
 	public void getParser_shouldReturnTheAppropriateParser() throws Exception {
-		FileInputStream i = new FileInputStream((getClass().getClassLoader().getResource("test.properties").getFile()));
+		FileInputStream i = new FileInputStream(getClass().getClassLoader().getResource("test.properties").getFile());
 		
 		parser.parse(i);
 		
