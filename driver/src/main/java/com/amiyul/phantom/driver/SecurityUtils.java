@@ -10,19 +10,19 @@
  */
 package com.amiyul.phantom.driver;
 
-import static com.amiyul.phantom.driver.SecurityConstants.MSG_CODE_TAG_LENGTH;
+import static com.amiyul.phantom.driver.SecurityConstants.ALG;
+import static com.amiyul.phantom.driver.SecurityConstants.LICENSE_PROP_EXP_DATE;
 
-import java.nio.charset.StandardCharsets;
-import java.security.spec.KeySpec;
+import java.io.ByteArrayInputStream;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.time.LocalDate;
-import java.util.Base64;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
+
+import com.amiyul.phantom.api.Utils;
 
 class SecurityUtils {
 	
@@ -35,14 +35,6 @@ class SecurityUtils {
 		}
 	}*/
 	
-	protected byte[] loadLicense() {
-		return null;
-	}
-	
-	protected static boolean isLicenseExpired() {
-		return true;
-	}
-	
 	protected static String encrypt(String in) {
 		return in;
 	}
@@ -51,43 +43,40 @@ class SecurityUtils {
 		return in;
 	}
 	
-	public static SecretKey getKeyFromPassword(String password, String salt) throws Exception {
-		SecretKeyFactory f = SecretKeyFactory.getInstance(SecurityConstants.MSG_CODE_KEY_ALG);
-		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8),
-		        Integer.valueOf(decrypt(SecurityConstants.MSG_CODE_KEY_ITERATION_COUNT)),
-		        Integer.valueOf(decrypt(SecurityConstants.MSG_CODE_KEY_BIT_COUNT)));
-		
-		return new SecretKeySpec(f.generateSecret(spec).getEncoded(), decrypt(SecurityConstants.MSG_CODE_AES));
+	/**
+	 * Encrypts the specified bytes using the specified {@link PrivateKey}
+	 * 
+	 * @param in the bytes to encrypt
+	 * @param key PrivateKey object
+	 * @return encrypted bytes
+	 * @throws Exception
+	 */
+	public static byte[] encrypt(byte[] in, PrivateKey key) throws Exception {
+		Cipher c = Cipher.getInstance(ALG);
+		c.init(Cipher.ENCRYPT_MODE, key);
+		return c.doFinal(in);
 	}
 	
-	public static String encrypt(String in, SecretKey key, byte[] iv) throws Exception {
-		Cipher c = Cipher.getInstance(getAlgorithm());
-		c.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(Integer.valueOf(decrypt(MSG_CODE_TAG_LENGTH)), iv));
-		byte[] out = c.doFinal(in.getBytes(StandardCharsets.UTF_8));
-		return Base64.getEncoder().encodeToString(out);
+	/**
+	 * Decrypts the specified bytes using the specified {@link PublicKey}
+	 * 
+	 * @param in the bytes to decrypt
+	 * @param key PublicKey object
+	 * @return decrypted bytes
+	 * @throws Exception
+	 */
+	public static byte[] decrypt(byte[] in, PublicKey key) throws Exception {
+		Cipher c = Cipher.getInstance(ALG);
+		c.init(Cipher.DECRYPT_MODE, key);
+		return c.doFinal(in);
 	}
 	
-	public static String decrypt(String in, SecretKey key, byte[] iv) throws Exception {
-		Cipher c = Cipher.getInstance(getAlgorithm());
-		c.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(Integer.valueOf(decrypt(MSG_CODE_TAG_LENGTH)), iv));
-		byte[] out = c.doFinal(Base64.getDecoder().decode(in));
-		return new String(out);
-	}
-	
-	protected static LocalDate getLicenseExpiryDate() {
-		return null;
-	}
-	
-	protected static byte[] encode(String in) {
-		return Base64.getEncoder().encode(in.getBytes(StandardCharsets.UTF_8));
-	}
-	
-	protected static byte[] decode(String in) {
-		return Base64.getEncoder().encode(in.getBytes(StandardCharsets.UTF_8));
-	}
-	
-	private static String getAlgorithm() {
-		return decrypt(SecurityConstants.MSG_CODE_ENC_ALG);
+	protected static LocalDate getLicenseExpiryDate(PublicKey publicKey) throws Exception {
+		byte[] raw = Utils.readFile(DriverConfigUtils.getConfig().getLicenseFile());
+		byte[] data = decrypt(raw, publicKey);
+		Properties props = new Properties();
+		props.load(new ByteArrayInputStream(data));
+		return LocalDate.parse(props.getProperty(LICENSE_PROP_EXP_DATE), DateTimeFormatter.ISO_LOCAL_DATE);
 	}
 	
 }

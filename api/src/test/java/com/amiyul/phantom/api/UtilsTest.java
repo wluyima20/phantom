@@ -77,14 +77,14 @@ public class UtilsTest {
 	public void getFilePath_shouldReturnTheSystemPropertyValue() {
 		final String propValue = "test_val";
 		System.setProperty(PROP_NAME, propValue);
-		Assert.assertEquals(propValue, Utils.getFilePath(PROP_NAME));
+		assertEquals(propValue, Utils.getFilePath(PROP_NAME));
 	}
 	
 	@Test
 	public void getFilePath_shouldReturnTheEnvironmentPropertyIfNoSystemPropertyIsSet() {
 		final String propValue = "test_val";
 		when(SystemUtils.getEnv(PROP_NAME)).thenReturn(propValue);
-		Assert.assertEquals(propValue, Utils.getFilePath(PROP_NAME));
+		assertEquals(propValue, Utils.getFilePath(PROP_NAME));
 	}
 	
 	@Test
@@ -97,7 +97,7 @@ public class UtilsTest {
 		when(ServiceLoaderUtils.getProviders(ConfigFileParser.class)).thenReturn(parserIterator);
 		when(mockParser2.canParse(mockFile)).thenReturn(true);
 		
-		Assert.assertEquals(mockParser2, Utils.getParser(ConfigFileParser.class, mockFile));
+		assertEquals(mockParser2, Utils.getParser(ConfigFileParser.class, mockFile));
 	}
 	
 	@Test
@@ -115,7 +115,7 @@ public class UtilsTest {
 	public void parseDateString_shouldParseTheSpecifiedDate() {
 		LocalDateTime expected = ZonedDateTime.of(2023, 4, 27, 12, 5, 5, 0, ZoneId.of("UTC"))
 		        .withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-		Assert.assertEquals(expected, Utils.parseDateString("2023-04-27T15:05:05+03:00"));
+		assertEquals(expected, Utils.parseDateString("2023-04-27T15:05:05+03:00"));
 	}
 	
 	@Test
@@ -183,7 +183,13 @@ public class UtilsTest {
 	public void getDurationBetween_shouldReturnTheDurationInterval() {
 		LocalDateTime start = of(2023, 4, 27, 12, 5, 5);
 		LocalDateTime end = of(2023, 4, 27, 12, 6, 6);
-		Assert.assertEquals(61, Utils.getDurationBetween(start, end).getSeconds());
+		assertEquals(61, Utils.getDurationBetween(start, end).getSeconds());
+	}
+	
+	@Test
+	public void readFile_shouldLoadTheContentsOfTheSpecifiedFile() throws Exception {
+		File f = new File(getClass().getClassLoader().getResource("test.txt").getFile());
+		assertEquals("test", new String(Utils.readFile(f)));
 	}
 	
 	private static class DemoClass {

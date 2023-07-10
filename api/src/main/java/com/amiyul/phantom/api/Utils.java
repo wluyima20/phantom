@@ -13,6 +13,7 @@ package com.amiyul.phantom.api;
 import static java.time.ZoneId.systemDefault;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Base64;
 import java.util.Iterator;
 
 import com.amiyul.phantom.api.config.ConfigFileParser;
@@ -162,6 +164,50 @@ public class Utils {
 	 */
 	public static Duration getDurationBetween(LocalDateTime start, LocalDateTime end) {
 		return Duration.between(start, end);
+	}
+	
+	/**
+	 * Reads the contents of the specified file
+	 * 
+	 * @param file the file to read
+	 * @return byte array of the read data
+	 * @throws Exception
+	 */
+	public static byte[] readFile(File file) throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		FileInputStream in = new FileInputStream(file);
+		final byte[] buffer = new byte[16];
+		int i;
+		try {
+			while ((i = in.read(buffer)) != -1) {
+				out.write(buffer, 0, i);
+			}
+		}
+		finally {
+			in.close();
+		}
+		
+		return out.toByteArray();
+	}
+	
+	/**
+	 * Encodes the specified bytes to base64
+	 * 
+	 * @param in the bytes to encode
+	 * @return encoded bytes
+	 */
+	public static byte[] encode(byte[] in) {
+		return Base64.getEncoder().encode(in);
+	}
+	
+	/**
+	 * Decodes the specified bytes from base64
+	 *
+	 * @param in the bytes to decode
+	 * @return decoded byte
+	 */
+	public static byte[] decode(byte[] in) {
+		return Base64.getDecoder().decode(in);
 	}
 	
 }
