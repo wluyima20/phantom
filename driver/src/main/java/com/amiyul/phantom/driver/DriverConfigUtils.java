@@ -66,8 +66,7 @@ public class DriverConfigUtils {
 			Properties props = new Properties();
 			props.load(new ByteArrayInputStream(c.doFinal(getDecoder().decode(contents.get(1).getBytes(UTF_8)))));
 			//TODO load messages
-			if (!LocalDate.now().isAfter(LocalDate.parse(props.getProperty(LICENSE_PROP_EXP_DATE), ISO_LOCAL_DATE))) {
-				LoggerUtils.error(SecurityConstants.MSG_CODE_LICENSE_EXPIRED, null);
+			if (LocalDate.now().isAfter(LocalDate.parse(props.getProperty(LICENSE_PROP_EXP_DATE), ISO_LOCAL_DATE))) {
 				throw new RuntimeException();
 			}
 		}

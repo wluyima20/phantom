@@ -11,7 +11,6 @@
 package com.amiyul.phantom.driver;
 
 import static com.amiyul.phantom.api.Constants.PROJECT_NAME;
-import static com.amiyul.phantom.api.Constants.DB_NAME;
 
 final class SecurityConstants {
 	
@@ -20,9 +19,8 @@ final class SecurityConstants {
 	//TODO encrypt all values
 	protected static final String MSG_CODE_MISSING_LICENSE_PATH = "Path to license file is not specified";
 	
-	protected static final String MSG_CODE_LICENSE_EXPIRED = "Your " + DB_NAME + " license has expired";
-	
-	protected static final String MSG_CODE_REGISTER_DRIVER_FAIL = "Failed to register " + PROJECT_NAME + " driver";
+	protected static final String MSG_CODE_REGISTER_DRIVER_FAIL = "Failed to register " + PROJECT_NAME
+	        + " driver, make sure your license has not expired";
 	
 	protected static final String PROP_LICENSE_PATH = "license.file.path";
 	
