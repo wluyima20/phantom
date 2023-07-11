@@ -16,7 +16,7 @@ public final class DriverConstants {
 	
 	private static final String PREFIX_DB = "database.";
 	
-	protected static final String URL_PREFIX = "jdbc:" + Constants.DATABASE_NAME + "://";
+	protected static final String URL_PREFIX = "jdbc:" + Constants.PROJECT_NAME + "://";
 	
 	protected static final char URL_SEPARATOR_DB_PARAM = '?';
 	

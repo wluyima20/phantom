@@ -12,9 +12,9 @@ package com.amiyul.phantom.api;
 
 public class Constants {
 	
-	public static final String DATABASE_NAME = "phantom";
+	public static final String PROJECT_NAME = "phantom";
 	
-	public static final String FULL_DATABASE_NAME = DATABASE_NAME + "DB";
+	public static final String DB_NAME = PROJECT_NAME + "DB";
 	
 	public static final String PROP_UNAVAILABLE_UNTIL = "unavailable.until";
 	

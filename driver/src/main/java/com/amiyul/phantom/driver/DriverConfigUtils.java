@@ -45,7 +45,7 @@ import com.amiyul.phantom.db.FileDatabaseProvider;
  */
 public class DriverConfigUtils {
 	
-	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME.toUpperCase(Locale.ENGLISH)
+	public static final String PROP_CONFIG_LOCATION = Constants.PROJECT_NAME.toUpperCase(Locale.ENGLISH)
 	        + "_DRIVER_CONFIG_LOCATION";
 	
 	private static String configFilePath;
@@ -214,7 +214,7 @@ public class DriverConfigUtils {
 	 */
 	protected synchronized static DriverConfigMetadata getConfigMetadata() throws Exception {
 		if (configMetadata == null) {
-			LoggerUtils.debug("Loading " + Constants.DATABASE_NAME + " driver configuration");
+			LoggerUtils.debug("Loading " + Constants.PROJECT_NAME + " driver configuration");
 			
 			String filePath = getConfigFile();
 			if (Utils.isBlank(filePath)) {

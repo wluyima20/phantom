@@ -26,7 +26,7 @@ import com.amiyul.phantom.api.logging.LoggerUtils;
  */
 public class FileDatabaseConfigUtils {
 	
-	public static final String PROP_CONFIG_LOCATION = Constants.DATABASE_NAME.toUpperCase(Locale.ENGLISH)
+	public static final String PROP_CONFIG_LOCATION = Constants.PROJECT_NAME.toUpperCase(Locale.ENGLISH)
 	        + "_DB_CONFIG_LOCATION";
 	
 	private static String configFilePath;

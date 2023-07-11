@@ -67,7 +67,7 @@ public class DefaultClient implements Client {
 		}
 		
 		if (config.getStatus().isUnavailable(asOfDate)) {
-			debug(Constants.DATABASE_NAME + " DB is unavailable until -> " + config.getStatus().getUnavailableUntil());
+			debug(Constants.PROJECT_NAME + " DB is unavailable until -> " + config.getStatus().getUnavailableUntil());
 		}
 		
 		if (isDateAfter(targetUnavailableUntil, asOfDate)) {
@@ -162,7 +162,7 @@ public class DefaultClient implements Client {
 		requestContext.setRequest(new DefaultRequest(Command.RELOAD, requestContext));
 		sendRequest(requestContext);
 		
-		debug("Successfully reloaded " + Constants.DATABASE_NAME + " DB");
+		debug("Successfully reloaded " + Constants.PROJECT_NAME + " DB");
 	}
 	
 	@Override
