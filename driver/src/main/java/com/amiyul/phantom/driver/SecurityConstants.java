@@ -13,9 +13,9 @@ package com.amiyul.phantom.driver;
 final class SecurityConstants {
 	
 	protected static final String ALG = "RSA";
-
-    //TODO encrypt all values
-    protected static final String MSG_CODE_MISSING_LICENSE_PATH = "Path to license file is not specified";
+	
+	//TODO encrypt all values
+	protected static final String MSG_CODE_MISSING_LICENSE_PATH = "Path to license file is not specified";
 	
 	protected static final String MSG_CODE_LICENSE_EXPIRED = "License expired";
 	

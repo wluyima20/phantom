@@ -188,7 +188,7 @@ public class UtilsTest {
 	
 	@Test
 	public void readFile_shouldLoadTheContentsOfTheSpecifiedFile() throws Exception {
-		File f = new File(getClass().getClassLoader().getResource("test.txt").getFile());
+		File f = new File(getClass().getClassLoader().getResource("test.env").getFile());
 		assertEquals("test", new String(Utils.readFile(f)));
 	}
 	

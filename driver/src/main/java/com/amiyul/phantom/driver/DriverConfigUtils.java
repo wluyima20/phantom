@@ -39,6 +39,17 @@ public class DriverConfigUtils {
 	
 	private static DriverConfig config;
 	
+	static {
+		try {
+			if (SecurityUtils.isLicenseExpired()) {
+				throw new RuntimeException(SecurityConstants.MSG_CODE_LICENSE_EXPIRED);
+			}
+		}
+		catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	/**
 	 * Gets {@link DriverConfigFileParser} via the service loader mechanism that can parse the specified
 	 * driver config file.

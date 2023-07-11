@@ -13,8 +13,10 @@ package com.amiyul.phantom.driver;
 import static com.amiyul.phantom.api.Utils.decode;
 import static com.amiyul.phantom.api.Utils.encode;
 import static com.amiyul.phantom.driver.SecurityConstants.ALG;
+import static com.amiyul.phantom.driver.SecurityConstants.LICENSE_PROP_EXP_DATE;
 import static org.junit.Assert.assertArrayEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -24,6 +26,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -94,17 +97,28 @@ public class SecurityUtilsTest {
 	public void decrypt_shouldDecryptAString() throws Exception {
 		PublicKey key = KeyFactory.getInstance(ALG).generatePublic(new X509EncodedKeySpec(Utils.decode(PUBLIC_KEY)));
 		assertArrayEquals(ORIGINAL_DATA, SecurityUtils.decrypt(decode(CYPHER_DATA), key));
+		//generateLicense();
 	}
 	
-	private void generateTestKeyPair() throws Exception {
-		KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
-		gen.initialize(1024);
+	private void generateLicense() throws Exception {
+		KeyPairGenerator gen = KeyPairGenerator.getInstance(ALG);
+		gen.initialize(4096);
 		KeyPair keyPair = gen.generateKeyPair();
-		try (FileOutputStream fos = new FileOutputStream("private.key")) {
-			fos.write(Utils.encode(keyPair.getPrivate().getEncoded()));
+		try (FileOutputStream fos = new FileOutputStream("private.env")) {
+			fos.write(encode(keyPair.getPrivate().getEncoded()));
 		}
-		try (FileOutputStream fos = new FileOutputStream("public.key")) {
-			fos.write(Utils.encode(keyPair.getPublic().getEncoded()));
+		
+		Properties licenseProps = new Properties();
+		licenseProps.setProperty(LICENSE_PROP_EXP_DATE, "2023-07-11");
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		licenseProps.store(out, "");
+		
+		StringBuilder license = new StringBuilder();
+		license.append(new String(encode(keyPair.getPublic().getEncoded())));
+		license.append(System.lineSeparator());
+		license.append(new String(encode(SecurityUtils.encrypt(out.toByteArray(), keyPair.getPrivate()))));
+		try (FileOutputStream fos = new FileOutputStream("flonaDB.license")) {
+			fos.write(license.toString().getBytes(StandardCharsets.UTF_8));
 		}
 	}
 	
