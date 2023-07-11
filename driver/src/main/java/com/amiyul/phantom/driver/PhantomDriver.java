@@ -30,9 +30,11 @@ public final class PhantomDriver implements Driver {
 	
 	private static Integer minorVersion;
 	
+	protected static final PhantomDriver DRIVER = new PhantomDriver();
+	
 	static {
 		try {
-			DriverManager.registerDriver(new PhantomDriver());
+			DriverManager.registerDriver(DRIVER);
 			Runtime.getRuntime().addShutdownHook(new Thread(ShutdownHook.getInstance()));
 		}
 		catch (SQLException e) {

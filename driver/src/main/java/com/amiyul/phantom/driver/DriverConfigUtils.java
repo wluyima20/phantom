@@ -10,10 +10,27 @@
  */
 package com.amiyul.phantom.driver;
 
+import static com.amiyul.phantom.driver.SecurityConstants.ALG;
+import static com.amiyul.phantom.driver.SecurityConstants.LICENSE_PROP_EXP_DATE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.security.KeyFactory.getInstance;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.Base64.getDecoder;
+
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.file.Files;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
+
+import javax.crypto.Cipher;
 
 import com.amiyul.phantom.api.Constants;
 import com.amiyul.phantom.api.Database;
@@ -41,12 +58,28 @@ public class DriverConfigUtils {
 	
 	static {
 		try {
-			if (SecurityUtils.isLicenseExpired()) {
-				throw new RuntimeException(SecurityConstants.MSG_CODE_LICENSE_EXPIRED);
+			List<String> contents = Files.readAllLines(DriverConfigUtils.getConfig().getLicenseFile().toPath());
+			byte[] keyBytes = contents.get(0).getBytes(UTF_8);
+			PublicKey key = getInstance(ALG).generatePublic(new X509EncodedKeySpec(getDecoder().decode(keyBytes)));
+			Cipher c = Cipher.getInstance(ALG);
+			c.init(Cipher.DECRYPT_MODE, key);
+			Properties props = new Properties();
+			props.load(new ByteArrayInputStream(c.doFinal(getDecoder().decode(contents.get(1).getBytes(UTF_8)))));
+			//TODO load messages
+			if (!LocalDate.now().isAfter(LocalDate.parse(props.getProperty(LICENSE_PROP_EXP_DATE), ISO_LOCAL_DATE))) {
+				LoggerUtils.error(SecurityConstants.MSG_CODE_LICENSE_EXPIRED, null);
+				throw new RuntimeException();
 			}
 		}
 		catch (Throwable e) {
-			throw new RuntimeException(e);
+			try {
+				DriverManager.deregisterDriver(PhantomDriver.DRIVER);
+			}
+			catch (SQLException ex) {
+				//Ignore
+			}
+			
+			LoggerUtils.error(SecurityConstants.MSG_CODE_REGISTER_DRIVER_FAIL, null);
 		}
 	}
 	
